@@ -1,0 +1,3 @@
+#define sigmaker_VERSION_MAJOR @sigmaker_VERSION_MAJOR@
+#define sigmaker_VERSION_MINOR @sigmaker_VERSION_MINOR@
+#define sigmaker_VERSION_PATCH @sigmaker_VERSION_PATCH@

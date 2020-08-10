@@ -1,0 +1,12 @@
+module: witcher.exe
+window: The Witcher (1.4.5.1304)
+offsets:
+  - 00DC09E4
+  - 29C
+  - 4
+  - 24
+  - 0
+  - 58
+size: 4
+offset: -100
+length: 200

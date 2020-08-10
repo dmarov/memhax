@@ -1,0 +1,5 @@
+build
+!build/.gitignore
+vcpkg
+.clangd
+compile_commands.json
