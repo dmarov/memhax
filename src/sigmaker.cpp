@@ -1,7 +1,7 @@
 #include <locale>
 #include <sqlite3.h>
 #include "modules/sigmaker.h"
-#include "main.h"
+#include "memhax.h"
 #include <iostream>
 #include <boost/program_options.hpp>
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     po::notify(vm);
 
     if (vm.count("version")) {
-        std::cout << "v" << sigmaker_VERSION_MAJOR << "." << sigmaker_VERSION_MINOR << "." << sigmaker_VERSION_PATCH << std::endl;
+        std::cout << "v" << memhax_VERSION_MAJOR << "." << memhax_VERSION_MINOR << "." << memhax_VERSION_PATCH << std::endl;
         return 0;
     }
 
