@@ -5,8 +5,10 @@
 class ProcessMemoryEditor {
 
 public:
-    virtual void readAtMultiLvlPointer(MultiLvlPtr, void* value, size_t n_bytes)=0;
-    virtual void writeAtMultiLvlPointer(MultiLvlPtr, void* value, size_t n_bytes)=0;
+    virtual void read(uintptr_t address, void* value, size_t n_bytes)=0;
+    virtual void write(uintptr_t address, void* value, size_t n_bytes)=0;
 
+    void readAtMultiLvlPointer(MultiLvlPtr, void* value, size_t n_bytes);
+    void writeAtMultiLvlPointer(MultiLvlPtr, void* value, size_t n_bytes);
     void setFloat(MultiLvlPtr ptr, float value);
 };
