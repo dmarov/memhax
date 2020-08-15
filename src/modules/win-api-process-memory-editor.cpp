@@ -1,8 +1,11 @@
 #include "multi-lvl-ptr.h"
 #include "win-api-process-memory-editor.h"
+#include <string>
 #include <windows.h>
 #include <psapi.h>
+#include <tchar.h>
 #include <sstream>
+#include <iostream>
 
 WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
 {
@@ -54,7 +57,7 @@ std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
         HMODULE module_handle;
         DWORD cb_needed;
 
-        if (EnumProcessModules(module_handle, &module_handle, sizeof(module_handle), &cb_needed))
+        if (EnumProcessModules(proc_handle, &module_handle, sizeof(module_handle), &cb_needed))
         {
             GetModuleBaseName(proc_handle, module_handle, proc_name, sizeof(proc_name)/sizeof(TCHAR));
         }
@@ -64,7 +67,6 @@ std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
 
     std::string res(proc_name);
     std::wstring wres(res.begin(), res.end());
-
     return wres;
 }
 
@@ -78,3 +80,48 @@ void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_b
     WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID*) value, (SIZE_T)n_bytes, NULL);
 }
 
+
+uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
+{
+    uintptr_t module_base_addr = NULL;
+    DWORD bytes_required;
+    HMODULE modules[1024];
+
+    bool success = EnumProcessModules(this->handle, modules, sizeof(modules), &bytes_required);
+
+    if (!success)
+    {
+        throw std::exception("failed to scan for modules");
+    }
+
+    unsigned modules_count = bytes_required / sizeof(HMODULE);
+
+    for (unsigned i = 0; i < modules_count; ++i)
+    {
+        TCHAR module_name_buf[MAX_PATH];
+        DWORD name_size = sizeof(module_name_buf) / sizeof(TCHAR);
+
+        if (GetModuleBaseNameA(this->handle, modules[i], module_name_buf, name_size))
+        {
+            std::string buf(module_name_buf);
+            std::wstring wbuf(buf.begin(), buf.end());
+
+            if (module_name.compare(wbuf) == 0)
+            {
+                module_base_addr = (uintptr_t)modules[i];
+            }
+        }
+    }
+
+    if (module_base_addr == NULL)
+    {
+        throw std::exception("unable to find module");
+    }
+
+    return module_base_addr;
+}
+
+WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()
+{
+    CloseHandle(this->handle);
+}

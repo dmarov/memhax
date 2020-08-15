@@ -6,11 +6,11 @@
 class MultiLvlPtr {
 
 private:
-    std::wstring module_name;
+    uintptr_t base;
     std::vector<uintptr_t> offsets;
 
 public:
-    MultiLvlPtr(std::wstring module_name, std::vector<uintptr_t> offsets);
-    std::wstring getModuleName();
+    MultiLvlPtr(uintptr_t base, std::vector<uintptr_t> offsets);
+    uintptr_t getBase();
     std::vector<uintptr_t> getOffsets();
 };

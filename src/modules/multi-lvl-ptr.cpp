@@ -1,14 +1,14 @@
 #include "multi-lvl-ptr.h"
 
-MultiLvlPtr::MultiLvlPtr(std::wstring module_name, std::vector<uintptr_t> offsets)
+MultiLvlPtr::MultiLvlPtr(uintptr_t base, std::vector<uintptr_t> offsets)
 {
-    this->module_name = module_name;
+    this->base = base;
     this->offsets = offsets;
 }
 
-std::wstring MultiLvlPtr::getModuleName()
+uintptr_t MultiLvlPtr::getBase()
 {
-    return this->module_name;
+    return this->base;
 }
 
 std::vector<uintptr_t> MultiLvlPtr::getOffsets()
