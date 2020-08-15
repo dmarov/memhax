@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         float health_val;
         mem.getFloat(health, &health_val);
         std::cout << health_val << std::endl;
-        /* mem.setFloat(health, 1000000); */
+        mem.setFloat(health, 1000000);
     }
     catch(std::exception &e)
     {

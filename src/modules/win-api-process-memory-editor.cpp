@@ -73,7 +73,7 @@ std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
 
 void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes)
 {
-    ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID) value, (SIZE_T)n_bytes, NULL);
+    ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, NULL);
 }
 
 void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes)
