@@ -28,6 +28,12 @@ void ProcessMemoryEditor::readAtMultiLvlPointer(MultiLvlPtr ptr, void* value, si
 void ProcessMemoryEditor::writeAtMultiLvlPointer(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
+
+    if (ptr_reg == NULL)
+    {
+        throw new std::exception("invalid regular pointer");
+    }
+
     this->write(ptr_reg, value , n_bytes);
 }
 
