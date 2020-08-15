@@ -6,6 +6,7 @@
 #include <tchar.h>
 #include <sstream>
 #include <iostream>
+#include <TlHelp32.h>
 
 WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
 {
@@ -83,42 +84,77 @@ void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_b
 
 uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
 {
-    uintptr_t module_base_addr = NULL;
-    DWORD bytes_required;
-    HMODULE modules[1024];
+    uintptr_t modBaseAddr = 0;
 
-    bool success = EnumProcessModules(this->handle, modules, sizeof(modules), &bytes_required);
+    HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, this->process_id);
 
-    if (!success)
+    if (hSnap != INVALID_HANDLE_VALUE)
     {
-        throw std::exception("failed to scan for modules");
-    }
+        MODULEENTRY32 modEntry;
+        modEntry.dwSize = sizeof(modEntry);
 
-    unsigned modules_count = bytes_required / sizeof(HMODULE);
-
-    for (unsigned i = 0; i < modules_count; ++i)
-    {
-        TCHAR module_name_buf[MAX_PATH];
-        DWORD name_size = sizeof(module_name_buf) / sizeof(TCHAR);
-
-        if (GetModuleBaseNameA(this->handle, modules[i], module_name_buf, name_size))
+        if (Module32First(hSnap, &modEntry))
         {
-            std::string buf(module_name_buf);
-            std::wstring wbuf(buf.begin(), buf.end());
-
-            if (module_name.compare(wbuf) == 0)
+            do
             {
-                module_base_addr = (uintptr_t)modules[i];
-            }
+                std::string buf(modEntry.szModule);
+                std::wstring wbuf(buf.begin(), buf.end());
+                if (!module_name.compare(wbuf))
+                {
+                    modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
+                    /* std::cout << std::hex << modBaseAddr << std::endl; */
+                    break;
+                }
+            } while (Module32Next(hSnap, &modEntry));
         }
     }
 
-    if (module_base_addr == NULL)
-    {
-        throw std::exception("unable to find module");
-    }
+    CloseHandle(hSnap);
 
-    return module_base_addr;
+    return modBaseAddr;
+
+/*     uintptr_t module_base_addr = NULL; */
+/*     DWORD bytes_required; */
+/*     HMODULE modules[1024]; */
+
+/*     bool success = EnumProcessModules(this->handle, modules, sizeof(modules), &bytes_required); */
+
+/*     if (!success) */
+/*     { */
+/*         throw std::exception("failed to scan for modules"); */
+/*     } */
+
+/*     unsigned modules_count = bytes_required / sizeof(HMODULE); */
+
+/*     for (unsigned i = 0; i < modules_count; ++i) */
+/*     { */
+/*         TCHAR module_name_buf[MAX_PATH]; */
+/*         DWORD name_size = sizeof(module_name_buf) / sizeof(TCHAR); */
+
+/*         if (GetModuleBaseName(this->handle, modules[i], module_name_buf, name_size)) */
+/*         { */
+/*             std::string buf(module_name_buf); */
+/*             std::wstring wbuf(buf.begin(), buf.end()); */
+
+/*             if (module_name.compare(wbuf) == 0) */
+/*             { */
+/*                 std::wcout << module_name << std::endl; */
+/*                 module_base_addr = (uintptr_t)modules[i]; */
+/*                 /1* MODULEINFO info; *1/ */
+/*                 /1* GetModuleInformation(this->handle, modules[i], &info, sizeof(info)); *1/ */
+/*                 /1* std::cout << std::hex << info.lpBaseOfDll << std::endl; *1/ */
+/*                 std::cout << std::hex << (uintptr_t)modules[i] << std::endl; */
+/*                 // 300905A4D */
+/*             } */
+/*         } */
+/*     } */
+
+/*     if (module_base_addr == NULL) */
+/*     { */
+/*         throw std::exception("unable to find module"); */
+/*     } */
+
+/*     return module_base_addr; */
 }
 
 WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()
