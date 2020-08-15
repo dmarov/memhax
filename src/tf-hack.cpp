@@ -1,63 +1,42 @@
-#include <locale>
-#include <sqlite3.h>
-#include "modules/sigmaker.h"
-#include "memhax.h"
 #include <iostream>
-#include <boost/program_options.hpp>
+#include <string>
+#include <vector>
+#include <chrono>
+#include <thread>
+#include "modules/multi-lvl-ptr.h"
 
-namespace po = boost::program_options;
 
+void setFloat(float value, MultiLvlPtr ptr)
+{
+
+}
 
 int main(int argc, char **argv)
 {
 
-    /* po::options_description desc("Supported options"); */
+    const char* module = "mono-2.0-bdwgc.dll";
 
-    /* desc.add_options() */
-    /*     ("help", "produce help message") */
-    /*     ("version,v", "print version") */
-    /*     ("enable", po::value<std::string>(), "specify enabled features"); */
+    MultiLvlPtr health(           module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x14 });
+    MultiLvlPtr max_health(       module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x18 });
+    MultiLvlPtr max_speed(        module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x28, 0x18 });
+    MultiLvlPtr turret_speed(     module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x30, 0x14 });
+    MultiLvlPtr max_turret_speed( module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x30, 0x18 });
+    MultiLvlPtr turn_speed(       module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x14 });
+    MultiLvlPtr max_turn_speed(   module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x18 });
+    MultiLvlPtr current_ammo(     module, { 0x00491DE8, 0x90, 0xDF8, 0x68, 0x40, 0x20, 0x18, 0x14 });
 
-    /* po::variables_map vm; */
-    /* po::store(po::parse_command_line(argc, argv, desc), vm); */
-    /* po::notify(vm); */
+    setFloat(1000000, health);
+    setFloat(1000000, max_health);
+    setFloat(1000, max_speed);
+    setFloat(1000, turret_speed);
+    setFloat(1000, max_turret_speed);
+    setFloat(1000, turn_speed);
+    setFloat(1000, max_turn_speed);
 
-    /* if (vm.count("version")) { */
-    /*     std::cout << "v" << memhax_VERSION_MAJOR << "." << memhax_VERSION_MINOR << "." << memhax_VERSION_PATCH << std::endl; */
-    /*     return 0; */
-    /* } */
-
-    /* if (vm.count("help")) { */
-    /*     std::cout << desc << std::endl; */
-    /*     return 0; */
-    /* } */
-
-    /* if (!vm.count("config")) { */
-    /*     std::cout << "specify config via --config option" << std::endl; */
-    /*     return 1; */
-    /* } */
-
-    /* auto config = vm["config"].as<std::string>(); */
-
-    /* if (!vm.count("command")) */
-    /* { */
-    /*     std::cout << "specify command via --command option" << std::endl; */
-    /*     return 1; */
-    /* } */
-
-    /* auto command = vm["command"].as<std::string>(); */
-
-    /* if (command.compare("append") == 0) */
-    /* { */
-    /*     SigMaker::appendSample(config); */
-    /*     return 0; */
-    /* } */
-
-    /* if (command.compare("generate") == 0) */
-    /* { */
-    /*     std::cout << SigMaker::generateSignature(config) << std::endl; */
-    /*     return 0; */
-    /* } */
+    while (true) {
+        setFloat(1000, current_ammo);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
 
     return 0;
 }
