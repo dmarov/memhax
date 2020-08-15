@@ -24,7 +24,10 @@ int main(int argc, char **argv)
     MultiLvlPtr     current_ammo(base, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x20, 0x18, 0x14 });
 
     try {
-        mem.setFloat(health, 1000000);
+        float health_val;
+        mem.getFloat(health, &health_val);
+        /* std::cout << health_val << std::endl; */
+        /* mem.setFloat(health, 1000000); */
     }
     catch(std::exception &e)
     {
