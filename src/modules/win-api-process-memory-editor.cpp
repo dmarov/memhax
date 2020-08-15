@@ -4,7 +4,7 @@
 #include <psapi.h>
 #include <sstream>
 
-WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::string exe_name)
+WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
 {
     this->process_id = this->getProcessIdByName(exe_name);
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
@@ -17,7 +17,7 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::string exe_name)
     }
 }
 
-DWORD WinApiProcessMemoryEditor::getProcessIdByName(std::string exe_name)
+DWORD WinApiProcessMemoryEditor::getProcessIdByName(std::wstring exe_name)
 {
     DWORD all_processes[1024], cb_needed, total;
 
@@ -32,7 +32,7 @@ DWORD WinApiProcessMemoryEditor::getProcessIdByName(std::string exe_name)
     {
         if (all_processes[i] != 0)
         {
-            std::string p_name = this->getProcessNameById(all_processes[i]);
+            std::wstring p_name = this->getProcessNameById(all_processes[i]);
 
             if (exe_name.compare(p_name) == 0)
             {
@@ -44,24 +44,30 @@ DWORD WinApiProcessMemoryEditor::getProcessIdByName(std::string exe_name)
     return NULL;
 }
 
-std::string WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
+std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
 {
-    TCHAR proc_name[MAX_PATH];
-    bool found = FALSE;
+    TCHAR proc_name[MAX_PATH] = "";
     HANDLE proc_handle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
 
     if (proc_handle != NULL)
     {
         HMODULE module_handle;
+        DWORD cb_needed;
+
+        if (EnumProcessModules(module_handle, &module_handle, sizeof(module_handle), &cb_needed))
+        {
+            GetModuleBaseName(proc_handle, module_handle, proc_name, sizeof(proc_name)/sizeof(TCHAR));
+        }
     }
 
-    if (found)
-    {
+    CloseHandle(proc_handle);
 
-    }
+    std::string res(proc_name);
+    std::wstring wres(res.begin(), res.end());
 
-    return std::string("");
+    return wres;
 }
+
 void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes)
 {
     ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID*) value, (SIZE_T)n_bytes, NULL);

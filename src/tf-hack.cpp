@@ -6,8 +6,8 @@
 
 int main(int argc, char **argv)
 {
-    const char* module = "mono-2.0-bdwgc.dll";
-    const char* exe = "TankForce.exe";
+    const wchar_t* module = L"mono-2.0-bdwgc.dll";
+    const wchar_t* exe = L"TankForce.exe";
 
     MultiLvlPtr           health(module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x14 });
     MultiLvlPtr       max_health(module, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x18 });
