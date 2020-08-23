@@ -157,7 +157,15 @@ uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
 /*     return module_base_addr; */
 }
 
+unsigned short WinApiProcessMemoryEditor::getPointerSize()
+{
+    BOOL is_32_bit = false;
+    is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;
+    return is_32_bit ? 4 : 8;
+}
+
 WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()
 {
     CloseHandle(this->handle);
 }
+

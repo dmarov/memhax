@@ -53,7 +53,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
         result = base_addr + *it;
         /* std::cout << std::hex << offset << std::endl; */
         /* std::cout << std::hex << result << std::endl; */
-        this->read(result, &new_value, sizeof(new_value));
+        this->read(result, &new_value, ptr.getPointerSize());
         if (new_value == NULL)
         {
             throw std::exception("failed to read valid pointer");
