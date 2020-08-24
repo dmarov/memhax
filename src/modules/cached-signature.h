@@ -6,14 +6,14 @@
 class CachedSignature {
 
 private:
-    char* values;
-    char* mask;
+    std::string values;
+    std::string mask;
     unsigned offset;
     unsigned size;
 
 public:
-    CachedSignature(char* values, char* mask, unsigned offset);
-    char* getValues();
-    char* getMask();
+    CachedSignature(std::string values, std::string mask, unsigned offset);
+    std::string getValues();
+    std::string getMask();
     unsigned getOffset();
 };

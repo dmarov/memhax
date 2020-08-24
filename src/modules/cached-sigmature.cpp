@@ -1,18 +1,18 @@
 #include "cached-signature.h"
 
-CachedSignature::CachedSignature(char* values, char* mask, unsigned offset)
+CachedSignature::CachedSignature(std::string values, std::string mask, unsigned offset)
 {
     this->values = values;
     this->mask = mask;
     this->offset = offset;
 }
 
-char* CachedSignature::getValues()
+std::string CachedSignature::getValues()
 {
     return this->values;
 }
 
-char* CachedSignature::getMask()
+std::string CachedSignature::getMask()
 {
     return this->mask;
 }
