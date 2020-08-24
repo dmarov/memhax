@@ -1,4 +1,5 @@
 #include "process-memory-editor.h"
+#include "cached-signature.h"
 #include <exception>
 #include <iostream>
 #include <windows.h>
@@ -68,3 +69,10 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     return result;
 }
 
+void ProcessMemoryEditor::readAtSignature(CachedSignature &sig, uintptr_t start, uintptr_t end, size_t n_bytes) {
+
+}
+
+void ProcessMemoryEditor::writeAtSignature(CachedSignature &sig, uintptr_t start, uintptr_t end, void* value, size_t n_bytes) {
+
+}

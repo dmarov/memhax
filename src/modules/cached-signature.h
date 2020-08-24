@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-class Signature {
+class CachedSignature {
 
 private:
     char* values;
@@ -12,9 +12,8 @@ private:
     unsigned size;
 
 public:
-    Signature(char* values, char* mask, unsigned offset, unsigned size);
+    CachedSignature(char* values, char* mask, unsigned offset);
     char* getValues();
     char* getMask();
     unsigned getOffset();
-    unsigned getSize();
 };
