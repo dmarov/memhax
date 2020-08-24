@@ -16,6 +16,7 @@ public:
     void writeAtMultiLvlPointer(MultiLvlPtr, void* value, size_t n_bytes);
 
     uintptr_t getRegularPointer(MultiLvlPtr ptr);
+
     void setFloat(MultiLvlPtr ptr, float value);
     void getFloat(MultiLvlPtr ptr, float* value);
 };

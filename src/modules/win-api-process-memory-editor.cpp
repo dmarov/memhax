@@ -68,6 +68,7 @@ std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
 
     std::string res(proc_name);
     std::wstring wres(res.begin(), res.end());
+
     return wres;
 }
 
@@ -102,9 +103,9 @@ uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
                 if (!module_name.compare(wbuf))
                 {
                     modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
-                    /* std::cout << std::hex << modBaseAddr << std::endl; */
                     break;
                 }
+
             } while (Module32Next(hSnap, &modEntry));
         }
     }
@@ -112,49 +113,6 @@ uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
     CloseHandle(hSnap);
 
     return modBaseAddr;
-
-/*     uintptr_t module_base_addr = NULL; */
-/*     DWORD bytes_required; */
-/*     HMODULE modules[1024]; */
-
-/*     bool success = EnumProcessModules(this->handle, modules, sizeof(modules), &bytes_required); */
-
-/*     if (!success) */
-/*     { */
-/*         throw std::exception("failed to scan for modules"); */
-/*     } */
-
-/*     unsigned modules_count = bytes_required / sizeof(HMODULE); */
-
-/*     for (unsigned i = 0; i < modules_count; ++i) */
-/*     { */
-/*         TCHAR module_name_buf[MAX_PATH]; */
-/*         DWORD name_size = sizeof(module_name_buf) / sizeof(TCHAR); */
-
-/*         if (GetModuleBaseName(this->handle, modules[i], module_name_buf, name_size)) */
-/*         { */
-/*             std::string buf(module_name_buf); */
-/*             std::wstring wbuf(buf.begin(), buf.end()); */
-
-/*             if (module_name.compare(wbuf) == 0) */
-/*             { */
-/*                 std::wcout << module_name << std::endl; */
-/*                 module_base_addr = (uintptr_t)modules[i]; */
-/*                 /1* MODULEINFO info; *1/ */
-/*                 /1* GetModuleInformation(this->handle, modules[i], &info, sizeof(info)); *1/ */
-/*                 /1* std::cout << std::hex << info.lpBaseOfDll << std::endl; *1/ */
-/*                 std::cout << std::hex << (uintptr_t)modules[i] << std::endl; */
-/*                 // 300905A4D */
-/*             } */
-/*         } */
-/*     } */
-
-/*     if (module_base_addr == NULL) */
-/*     { */
-/*         throw std::exception("unable to find module"); */
-/*     } */
-
-/*     return module_base_addr; */
 }
 
 unsigned short WinApiProcessMemoryEditor::getPointerSize()
@@ -168,4 +126,3 @@ WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()
 {
     CloseHandle(this->handle);
 }
-

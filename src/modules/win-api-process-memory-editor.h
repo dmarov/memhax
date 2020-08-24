@@ -1,6 +1,5 @@
 #pragma once
 
-#include "multi-lvl-ptr.h"
 #include "process-memory-editor.h"
 #include <string>
 #include <windows.h>
@@ -13,10 +12,13 @@ private:
 
 public:
     WinApiProcessMemoryEditor(std::wstring exe_name);
+
     void read(uintptr_t address, void* value, size_t n_bytes);
     void write(uintptr_t address, void* value, size_t n_bytes);
+
     uintptr_t getModuleBaseAddr(std::wstring module);
     unsigned short getPointerSize();
+
     ~WinApiProcessMemoryEditor();
 
 private:
