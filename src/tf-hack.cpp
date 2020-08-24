@@ -4,6 +4,7 @@
 #include "modules/multi-lvl-ptr.h"
 #include "modules/win-api-process-memory-editor.h"
 #include <winuser.h>
+#include <bitset>
 
 int main(int argc, char **argv)
 {
@@ -24,19 +25,14 @@ int main(int argc, char **argv)
     MultiLvlPtr   max_turn_speed(base, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x18 }, p_size);
     MultiLvlPtr     current_ammo(base, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x20, 0x18, 0x14 }, p_size);
 
-    bool need_patch = false;
-    bool key_released = true;
-
     std::cout << "press F9 to apply memory patch" << std::endl;
 
     while (true)
     {
-        if (GetKeyState(VK_F9))
-        {
-            need_patch = true;
-        }
+        SHORT key_state = GetAsyncKeyState(VK_F9);
+        bool key_down = (key_state & 0x8000) && (key_state & 0x0001);
 
-        if (need_patch && key_released)
+        if (key_down)
         {
             try
             {
@@ -53,19 +49,8 @@ int main(int argc, char **argv)
             catch(std::exception &e)
             {
                 std::cout << "patch error" << std::endl;
-                /* std::cout << e.what() << std::endl; */
+                std::cout << e.what() << std::endl;
             }
-
-            need_patch = false;
-        }
-
-        if (GetKeyState(VK_F9))
-        {
-            key_released = false;
-        }
-        else
-        {
-            key_released = true;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -73,3 +58,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
