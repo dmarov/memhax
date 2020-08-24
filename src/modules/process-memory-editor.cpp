@@ -6,15 +6,15 @@
 
 void ProcessMemoryEditor::setFloat(MultiLvlPtr ptr, float value)
 {
-    this->writeAtMultiLvlPointer(ptr, &value, sizeof(value));
+    this->write(ptr, &value, sizeof(value));
 }
 
 void ProcessMemoryEditor::getFloat(MultiLvlPtr ptr, float* value)
 {
-    this->readAtMultiLvlPointer(ptr, value, sizeof(float));
+    this->read(ptr, value, sizeof(float));
 }
 
-void ProcessMemoryEditor::readAtMultiLvlPointer(MultiLvlPtr ptr, void* value, size_t n_bytes)
+void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
 
@@ -26,7 +26,7 @@ void ProcessMemoryEditor::readAtMultiLvlPointer(MultiLvlPtr ptr, void* value, si
     this->read(ptr_reg, value, n_bytes);
 }
 
-void ProcessMemoryEditor::writeAtMultiLvlPointer(MultiLvlPtr ptr, void* value, size_t n_bytes)
+void ProcessMemoryEditor::write(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
 
@@ -66,7 +66,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     return result;
 }
 
-void ProcessMemoryEditor::readAtSignature(SignatureConfig sig, size_t n_bytes)
+uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
 {
     std::string values = sig.getValues();
     std::string mask = sig.getMask();
@@ -88,9 +88,30 @@ void ProcessMemoryEditor::readAtSignature(SignatureConfig sig, size_t n_bytes)
 
         }
     }
+
+
 }
 
-void ProcessMemoryEditor::writeAtSignature(SignatureConfig sig, void* value, size_t n_bytes)
+void ProcessMemoryEditor::read(SignatureConfig sig, void* value, size_t n_bytes)
 {
+    uintptr_t ptr_reg = this->getRegularPointer(sig);
 
+    if (ptr_reg == NULL)
+    {
+        throw new std::exception("invalid regular pointer");
+    }
+
+    this->read(ptr_reg, value, n_bytes);
+}
+
+void ProcessMemoryEditor::write(SignatureConfig sig, void* value, size_t n_bytes)
+{
+    uintptr_t ptr_reg = this->getRegularPointer(sig);
+
+    if (ptr_reg == NULL)
+    {
+        throw new std::exception("invalid regular pointer");
+    }
+
+    this->write(ptr_reg, value, n_bytes);
 }
