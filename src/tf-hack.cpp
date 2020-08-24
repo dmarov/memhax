@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     MultiLvlPtr max_turret_speed(base, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x30, 0x18 }, p_size);
     MultiLvlPtr       turn_speed(base, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x14 }, p_size);
     MultiLvlPtr   max_turn_speed(base, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x18 }, p_size);
-    MultiLvlPtr     current_ammo(base, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x20, 0x18, 0x14 }, p_size);
+    /* MultiLvlPtr     current_ammo(base, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x20, 0x18, 0x14 }, p_size); */
 
     std::cout << "press F9 to apply memory patch" << std::endl;
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
                 mem.setFloat(max_turret_speed, 1000);
                 mem.setFloat(turn_speed, 50);
                 mem.setFloat(max_turn_speed, 50);
-                mem.setFloat(current_ammo, 1000);
+                /* mem.setFloat(current_ammo, 1000); */
                 std::cout << "patch applied successfully" << std::endl;
             }
             catch(std::exception &e)
