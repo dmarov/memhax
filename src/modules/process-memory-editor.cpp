@@ -1,5 +1,5 @@
 #include "process-memory-editor.h"
-#include "cached-signature.h"
+#include "signature-config.h"
 #include <exception>
 #include <iostream>
 #include <windows.h>
@@ -66,7 +66,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     return result;
 }
 
-void ProcessMemoryEditor::readAtSignature(CachedSignature &sig, uintptr_t scan_start, size_t scan_len, size_t n_bytes)
+void ProcessMemoryEditor::readAtSignature(SignatureConfig sig, size_t n_bytes)
 {
     std::string values = sig.getValues();
     std::string mask = sig.getMask();
@@ -74,16 +74,23 @@ void ProcessMemoryEditor::readAtSignature(CachedSignature &sig, uintptr_t scan_s
     const char* mask_cstr = mask.c_str();
     const char* values_cstr = values.c_str();
     unsigned sig_len = values.length();
+    uintptr_t scan_start = sig.getScanStartAddr();
+    size_t scan_len = sig.getScanLen();
 
     uintptr_t scan_end = scan_start + scan_len - sig_len;
 
+    char mem[4096];
+
     for (uintptr_t i = scan_start; i != scan_end; ++i)
     {
+        for (unsigned j = 0; j < sig_len; ++j)
+        {
 
+        }
     }
 }
 
-void ProcessMemoryEditor::writeAtSignature(CachedSignature &sig, uintptr_t start, uintptr_t end, void* value, size_t n_bytes)
+void ProcessMemoryEditor::writeAtSignature(SignatureConfig sig, void* value, size_t n_bytes)
 {
 
 }
