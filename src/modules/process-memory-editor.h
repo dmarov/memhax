@@ -19,7 +19,15 @@ public:
     uintptr_t getRegularPointer(MultiLvlPtr ptr);
     uintptr_t getRegularPointer(SignatureConfig ptr);
 
-    void set(MultiLvlPtr ptr, float value);
+    template <typename T>
+    /* void set(MultiLvlPtr ptr, T value); */
+    void set(MultiLvlPtr ptr, T value) {
+        this->write(ptr, &value, sizeof(T));
+    }
 
-    void get(MultiLvlPtr ptr, float* value);
+    template <typename T>
+    /* void get(MultiLvlPtr ptr, T* value); */
+    void get(MultiLvlPtr ptr, T* value) {
+        this->read(ptr, value, sizeof(T));
+    }
 };

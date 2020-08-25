@@ -4,15 +4,17 @@
 #include <iostream>
 #include <windows.h>
 
-void ProcessMemoryEditor::set(MultiLvlPtr ptr, float value)
-{
-    this->write(ptr, &value, sizeof(float));
-}
+/* template <typename T> */
+/* void ProcessMemoryEditor::set(MultiLvlPtr ptr, T value) */
+/* { */
+/*     this->write(ptr, &value, sizeof(T)); */
+/* } */
 
-void ProcessMemoryEditor::get(MultiLvlPtr ptr, float* value)
-{
-    this->read(ptr, value, sizeof(float));
-}
+/* template <typename T> */
+/* void ProcessMemoryEditor::get(MultiLvlPtr ptr, T* value) */
+/* { */
+/*     this->read(ptr, value, sizeof(T)); */
+/* } */
 
 void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
