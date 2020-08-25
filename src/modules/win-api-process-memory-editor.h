@@ -17,8 +17,8 @@ public:
     void write(uintptr_t address, void* value, size_t n_bytes);
 
     uintptr_t getModuleBaseAddr(std::wstring module);
-    unsigned short getPointerSize();
     unsigned getVirtualMemoryPageSize();
+    unsigned short getPointerSize();
 
     ~WinApiProcessMemoryEditor();
 };

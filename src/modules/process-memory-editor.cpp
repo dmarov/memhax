@@ -36,12 +36,13 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     auto offsets = ptr.getOffsets();
 
     auto it = offsets.begin();
+    auto p_size = this->getPointerSize();
 
     do
     {
         uintptr_t new_value = NULL;
         result = base_addr + *it;
-        this->read(result, &new_value, ptr.getPointerSize());
+        this->read(result, &new_value, p_size);
 
         if (new_value == NULL)
         {
