@@ -6,7 +6,7 @@
 
 void ProcessMemoryEditor::set(MultiLvlPtr ptr, float value)
 {
-    this->write(ptr, &value, sizeof(value));
+    this->write(ptr, &value, sizeof(float));
 }
 
 void ProcessMemoryEditor::get(MultiLvlPtr ptr, float* value)

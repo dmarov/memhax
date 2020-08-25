@@ -16,19 +16,20 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(entry);
 
-    while (Process32Next(proc_handle, &entry))
+    if (Process32First(proc_handle, &entry))
     {
-        std::string name(entry.szExeFile);
-        std::wstring wname(name.begin(), name.end());
+        do {
+            std::string name(entry.szExeFile);
+            std::wstring wname(name.begin(), name.end());
 
-        if (!exe_name.compare(wname))
-        {
-            CloseHandle(proc_handle);
-            this->process_id = entry.th32ProcessID;
-            break;
-        }
+            if (!exe_name.compare(wname))
+            {
+                CloseHandle(proc_handle);
+                this->process_id = entry.th32ProcessID;
+                break;
+            }
+        } while (Process32Next(proc_handle, &entry));
     }
-
 
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
 

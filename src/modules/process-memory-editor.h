@@ -20,5 +20,6 @@ public:
     uintptr_t getRegularPointer(SignatureConfig ptr);
 
     void set(MultiLvlPtr ptr, float value);
+
     void get(MultiLvlPtr ptr, float* value);
 };
