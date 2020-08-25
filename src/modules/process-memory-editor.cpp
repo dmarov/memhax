@@ -4,18 +4,6 @@
 #include <iostream>
 #include <windows.h>
 
-/* template <typename T> */
-/* void ProcessMemoryEditor::set(MultiLvlPtr ptr, T value) */
-/* { */
-/*     this->write(ptr, &value, sizeof(T)); */
-/* } */
-
-/* template <typename T> */
-/* void ProcessMemoryEditor::get(MultiLvlPtr ptr, T* value) */
-/* { */
-/*     this->read(ptr, value, sizeof(T)); */
-/* } */
-
 void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);

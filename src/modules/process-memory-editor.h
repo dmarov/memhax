@@ -20,14 +20,21 @@ public:
     uintptr_t getRegularPointer(SignatureConfig ptr);
 
     template <typename T>
-    /* void set(MultiLvlPtr ptr, T value); */
-    void set(MultiLvlPtr ptr, T value) {
-        this->write(ptr, &value, sizeof(T));
-    }
+    void set(MultiLvlPtr ptr, T value);
 
     template <typename T>
-    /* void get(MultiLvlPtr ptr, T* value); */
-    void get(MultiLvlPtr ptr, T* value) {
-        this->read(ptr, value, sizeof(T));
-    }
+    void get(MultiLvlPtr ptr, T* value);
 };
+
+template <typename T>
+void ProcessMemoryEditor::set(MultiLvlPtr ptr, T value)
+{
+    this->write(ptr, &value, sizeof(T));
+}
+
+template <typename T>
+void ProcessMemoryEditor::get(MultiLvlPtr ptr, T* value)
+{
+    this->read(ptr, value, sizeof(T));
+}
+
