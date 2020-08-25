@@ -1,6 +1,6 @@
 # MemHax
 
-.\csgo-esp.exe --config config.yml
+.\sigmaker.exe --config config.yml
 
 ## Build
 
@@ -12,4 +12,5 @@ git clone https://github.com/microsoft/vcpkg
 mkdir build
 cd build
 ..\setup\build-ninja-msvc-x64-static.bat
+cmake --build .
 ```

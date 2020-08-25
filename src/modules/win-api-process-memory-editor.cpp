@@ -1,5 +1,6 @@
 #include "multi-lvl-ptr.h"
 #include "win-api-process-memory-editor.h"
+#include <exception>
 #include <string>
 #include <windows.h>
 #include <psapi.h>
@@ -10,7 +11,26 @@
 
 WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
 {
-    this->process_id = this->getProcessIdByName(exe_name);
+
+    HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    PROCESSENTRY32 entry;
+    entry.dwSize = sizeof(entry);
+
+    do
+    {
+
+        std::string name(entry.szExeFile);
+        std::wstring wname(name.begin(), name.end());
+
+        if (!exe_name.compare(wname))
+        {
+            CloseHandle(proc_handle);
+            this->process_id = entry.th32ProcessID;
+            break;
+        }
+
+    } while (Process32Next(proc_handle, &entry));
+
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
 
     if (this->handle == NULL)
@@ -74,14 +94,27 @@ std::wstring WinApiProcessMemoryEditor::getProcessNameById(DWORD pid)
 
 void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes)
 {
-    ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, NULL);
+    size_t bytes_read;
+    ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
+    if (bytes_read < n_bytes)
+    {
+        std::string msg = "failed to read memory: ";
+        msg += GetLastError();
+        throw std::exception(msg.c_str());
+    }
 }
 
 void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes)
 {
-    WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, NULL);
+    size_t bytes_written;
+    WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
+    if (bytes_written < n_bytes)
+    {
+        std::string msg = "failed to write memory: ";
+        msg += GetLastError();
+        throw std::exception(msg.c_str());
+    }
 }
-
 
 uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
 {
@@ -120,6 +153,13 @@ unsigned short WinApiProcessMemoryEditor::getPointerSize()
     BOOL is_32_bit = false;
     is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;
     return is_32_bit ? 4 : 8;
+}
+
+unsigned WinApiProcessMemoryEditor::getVirtualMemoryPageSize()
+{
+    SYSTEM_INFO si;
+	GetSystemInfo(&si);
+    return si.dwPageSize;
 }
 
 WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()

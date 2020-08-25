@@ -8,6 +8,7 @@ class ProcessMemoryEditor {
 public:
     virtual void read(uintptr_t address, void* value, size_t n_bytes)=0;
     virtual void write(uintptr_t address, void* value, size_t n_bytes)=0;
+    virtual unsigned getVirtualMemoryPageSize()=0;
 
     void read(MultiLvlPtr, void* value, size_t n_bytes);
     void write(MultiLvlPtr, void* value, size_t n_bytes);

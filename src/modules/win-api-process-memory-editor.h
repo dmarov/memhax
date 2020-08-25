@@ -18,6 +18,7 @@ public:
 
     uintptr_t getModuleBaseAddr(std::wstring module);
     unsigned short getPointerSize();
+    unsigned getVirtualMemoryPageSize();
 
     ~WinApiProcessMemoryEditor();
 
