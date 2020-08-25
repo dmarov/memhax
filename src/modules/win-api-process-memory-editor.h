@@ -21,8 +21,4 @@ public:
     unsigned getVirtualMemoryPageSize();
 
     ~WinApiProcessMemoryEditor();
-
-private:
-    DWORD getProcessIdByName(std::wstring exe_name);
-    std::wstring getProcessNameById(DWORD pid);
 };
