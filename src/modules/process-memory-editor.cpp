@@ -4,12 +4,12 @@
 #include <iostream>
 #include <windows.h>
 
-void ProcessMemoryEditor::setFloat(MultiLvlPtr ptr, float value)
+void ProcessMemoryEditor::set(MultiLvlPtr ptr, float value)
 {
     this->write(ptr, &value, sizeof(value));
 }
 
-void ProcessMemoryEditor::getFloat(MultiLvlPtr ptr, float* value)
+void ProcessMemoryEditor::get(MultiLvlPtr ptr, float* value)
 {
     this->read(ptr, value, sizeof(float));
 }

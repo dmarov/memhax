@@ -36,14 +36,14 @@ int main(int argc, char **argv)
         {
             try
             {
-                mem.setFloat(health, 1000000);
-                mem.setFloat(max_health, 1000000);
-                mem.setFloat(max_speed, 1000);
-                mem.setFloat(turret_speed, 1000);
-                mem.setFloat(max_turret_speed, 1000);
-                mem.setFloat(turn_speed, 50);
-                mem.setFloat(max_turn_speed, 50);
-                /* mem.setFloat(current_ammo, 1000); */
+                mem.set(health, 1000000);
+                mem.set(max_health, 1000000);
+                mem.set(max_speed, 1000);
+                mem.set(turret_speed, 1000);
+                mem.set(max_turret_speed, 1000);
+                mem.set(turn_speed, 50);
+                mem.set(max_turn_speed, 50);
+                /* mem.set(current_ammo, 1000); */
                 std::cout << "patch applied successfully" << std::endl;
             }
             catch(std::exception &e)
