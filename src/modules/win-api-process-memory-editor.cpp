@@ -65,9 +65,10 @@ void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_b
     }
 }
 
-uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
+std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstring module_name)
 {
-    uintptr_t modBaseAddr = 0;
+    uintptr_t mod_base_addr = 0;
+    size_t mod_size = 0;
 
     HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, this->process_id);
 
@@ -84,7 +85,7 @@ uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
                 std::wstring wbuf(buf.begin(), buf.end());
                 if (!module_name.compare(wbuf))
                 {
-                    modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
+                    mod_base_addr = (uintptr_t)modEntry.modBaseAddr;
                     break;
                 }
 
@@ -94,7 +95,7 @@ uintptr_t WinApiProcessMemoryEditor::getModuleBaseAddr(std::wstring module_name)
 
     CloseHandle(hSnap);
 
-    return modBaseAddr;
+    return std::make_tuple(mod_base_addr, mod_size);
 }
 
 unsigned short WinApiProcessMemoryEditor::getPointerSize()
@@ -102,13 +103,6 @@ unsigned short WinApiProcessMemoryEditor::getPointerSize()
     BOOL is_32_bit = false;
     is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;
     return is_32_bit ? 4 : 8;
-}
-
-unsigned WinApiProcessMemoryEditor::getVirtualMemoryPageSize()
-{
-    SYSTEM_INFO si;
-	GetSystemInfo(&si);
-    return si.dwPageSize;
 }
 
 WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()

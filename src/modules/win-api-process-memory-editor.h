@@ -15,9 +15,8 @@ public:
 
     void read(uintptr_t address, void* value, size_t n_bytes);
     void write(uintptr_t address, void* value, size_t n_bytes);
+    std::tuple<uintptr_t, size_t> getModuleInfo(std::wstring module_name);
 
-    uintptr_t getModuleBaseAddr(std::wstring module);
-    unsigned getVirtualMemoryPageSize();
     unsigned short getPointerSize();
 
     ~WinApiProcessMemoryEditor();

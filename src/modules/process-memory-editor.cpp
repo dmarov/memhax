@@ -64,24 +64,26 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
 
     const char* mask_cstr = mask.c_str();
     const char* values_cstr = values.c_str();
+
     unsigned sig_len = values.length();
     uintptr_t scan_start = sig.getScanStartAddr();
     size_t scan_len = sig.getScanLen();
     uintptr_t res = NULL;
-    unsigned page_size = this->getVirtualMemoryPageSize();
+    unsigned chunk_size = 4096 * 8;
 
     uintptr_t scan_end = scan_start + scan_len - sig_len;
     size_t carret = scan_start;
 
-    while (carret < scan_end)
-    {
+    char* mem_buf = new char[chunk_size];
+
+    this->read(carret, mem_buf, scan_start + scan_len);
+    /* while (carret < scan_end) */
+    /* { */
+
+    /*     size_t len = 10; */
+    /* } */
 
 
-    }
-
-    char* mem_buf = new char[page_size];
-
-    this->read(scan_start, mem_buf, sizeof(mem_buf));
 
     /* for (uintptr_t i = scan_start; i != scan_end; ++i) */
     /* { */
