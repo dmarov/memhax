@@ -68,33 +68,35 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
     unsigned sig_len = values.length();
     uintptr_t scan_start = sig.getScanStartAddr();
     size_t scan_len = sig.getScanLen();
-    uintptr_t res = NULL;
-    unsigned chunk_size = 4096 * 8;
+    uintptr_t match_start = NULL;
 
     uintptr_t scan_end = scan_start + scan_len - sig_len;
-    size_t carret = scan_start;
 
-    char* mem_buf = new char[chunk_size];
+    char* mem_buf = new char[scan_len];
+    bool matched;
 
-    this->read(carret, mem_buf, scan_start + scan_len);
-    /* while (carret < scan_end) */
-    /* { */
+    this->read(scan_start, mem_buf, scan_len);
 
-    /*     size_t len = 10; */
-    /* } */
+    for (uintptr_t i = scan_start; i != scan_end; ++i)
+    {
+        matched = true;
 
+        for (unsigned j = 0; j < sig_len; ++j)
+        {
+            if (!(mask_cstr[j] == '?' || mem_buf[i + j] == values_cstr[j]))
+            {
+                matched = false;
+                break;
+            }
+        }
 
+        if (matched)
+        {
+            match_start = scan_start + i;
+        }
+    }
 
-    /* for (uintptr_t i = scan_start; i != scan_end; ++i) */
-    /* { */
-
-    /*     for (unsigned j = 0; j < sig_len; ++j) */
-    /*     { */
-
-    /*     } */
-    /* } */
-
-    return res;
+    return match_start + sig.getOffset();
 }
 
 void ProcessMemoryEditor::read(SignatureConfig sig, void* value, size_t n_bytes)

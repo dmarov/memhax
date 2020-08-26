@@ -86,6 +86,7 @@ std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstr
                 if (!module_name.compare(wbuf))
                 {
                     mod_base_addr = (uintptr_t)modEntry.modBaseAddr;
+                    mod_size = (size_t)modEntry.modBaseSize;
                     break;
                 }
 
