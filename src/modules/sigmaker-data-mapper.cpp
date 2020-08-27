@@ -1,4 +1,4 @@
-#include "data-mapper.h"
+#include "sigmaker-data-mapper.h"
 #include "config.h"
 #include <iostream>
 #include <stdlib.h>
@@ -6,7 +6,7 @@
 #include <sqlite3.h>
 #include <vector>
 
-DataMapper::DataMapper() throw(std::exception)
+SigmakerDataMapper::SigmakerDataMapper()
 {
     const char* home_dir_str = getenv("USERPROFILE");
     std::filesystem::path file_path(home_dir_str);
@@ -40,7 +40,7 @@ DataMapper::DataMapper() throw(std::exception)
     }
 }
 
-void DataMapper::appendSample(std::string file_hash, std::byte* bytes, unsigned len, int offset, unsigned size) throw(std::exception)
+void SigmakerDataMapper::appendSample(std::string file_hash, std::byte* bytes, unsigned len, int offset, unsigned size)
 {
     int rc;
     sqlite3_stmt* statement = NULL;
@@ -74,7 +74,7 @@ void DataMapper::appendSample(std::string file_hash, std::byte* bytes, unsigned 
     sqlite3_finalize(statement);
 }
 
-std::vector<std::byte*> DataMapper::selectSamples(std::string file_hash, unsigned len)
+std::vector<std::byte*> SigmakerDataMapper::selectSamples(std::string file_hash, unsigned len)
 {
     std::vector<std::byte*> res;
     int rc;
@@ -108,7 +108,7 @@ std::vector<std::byte*> DataMapper::selectSamples(std::string file_hash, unsigne
     return res;
 }
 
-DataMapper::~DataMapper()
+SigmakerDataMapper::~SigmakerDataMapper()
 {
     sqlite3_close(this->handle);
 }

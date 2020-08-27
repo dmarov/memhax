@@ -16,6 +16,9 @@ int main(int argc, char **argv)
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
+        std::cout << std::hex << mod_start << std::endl;
+        std::cout << mod_size << std::endl;
+
         SignatureConfig cfg("\0x01\0x02\0x03\0x04", "x?xxx", 2, mod_start, mod_size);
 
         uintptr_t addr = mem.getRegularPointer(cfg);

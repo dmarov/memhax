@@ -81,7 +81,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
     {
         matched = true;
 
-        for (unsigned j = 0; j < sig_len; ++j)
+        for (size_t j = 0; j < sig_len; ++j)
         {
             if (!(mask_cstr[j] == '?' || mem_buf[i + j] == values_cstr[j]))
             {
@@ -95,6 +95,8 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
             match_start = scan_start + i;
         }
     }
+
+    delete[] mem_buf;
 
     return match_start + sig.getOffset();
 }
