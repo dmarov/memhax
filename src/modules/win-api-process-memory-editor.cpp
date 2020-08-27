@@ -11,7 +11,6 @@
 
 WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
 {
-
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(entry);

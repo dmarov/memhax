@@ -1,5 +1,5 @@
 module: witcher.exe
-window: The Witcher (1.4.5.1304)
+executable: witcher.exe
 offsets:
   - 00DC09E4
   - 29C

@@ -52,6 +52,7 @@ int main(int argc, char **argv)
         if (command.compare("append") == 0)
         {
             SigMaker::appendSample(config);
+            std::cout << "appended new sample" << std::endl;
             return 0;
         }
 

@@ -1,5 +1,4 @@
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#pragma once
 
 #include <string>
 #include <vector>
@@ -10,9 +9,9 @@ class SigmakerConfig {
 public:
     SigmakerConfig(std::string path_to_file);
 
-    std::string getWindowName();
+    std::wstring getExecutableName();
     std::string getSessionId();
-    std::string getModuleName();
+    std::wstring getModuleName();
     std::vector<DWORD_PTR> getOffsets();
     unsigned getSize();
     int getOffset();
@@ -20,12 +19,10 @@ public:
 
 private:
     std::string session_id;
-    std::string window_name;
-    std::string module_name;
-    std::vector<DWORD_PTR> offsets;
+    std::wstring executable_name;
+    std::wstring module_name;
+    std::vector<size_t> offsets;
     unsigned size;
     int offset;
     unsigned len;
 };
-
-#endif

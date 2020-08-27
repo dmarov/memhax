@@ -1,6 +1,7 @@
 #include "sigmaker.h"
 #include "sigmaker-config.h"
-#include "sigmaker-scanner.h"
+#include "win-api-process-memory-editor.h"
+#include "multi-lvl-ptr.h"
 #include "sigmaker-data-mapper.h"
 #include <sstream>
 #include <iomanip>
@@ -10,20 +11,21 @@
 void SigMaker::appendSample(std::string path_to_config)
 {
     SigmakerConfig config(path_to_config);
-    SigmakerScanner scanner(config.getWindowName());
+    WinApiProcessMemoryEditor mem(config.getExecutableName());
+
+    auto [module_start_addr, module_len] = mem.getModuleInfo(config.getModuleName());
+
+    MultiLvlPtr mptr(module_start_addr, config.getOffsets());
+    auto ptr = mem.getRegularPointer(mptr);
+    ptr += config.getOffset();
 
     auto len = config.getLength();
-    auto offset = config.getOffset();
+    std::byte* bytes = new std::byte[len];
 
-    std::byte* bytes = scanner.readMemory(
-        config.getModuleName(),
-        config.getOffsets(),
-        offset,
-        len
-    );
+    mem.read(ptr, &bytes, len);
 
     SigmakerDataMapper mapper;
-    mapper.appendSample(config.getSessionId(), bytes, len, offset, config.getSize());
+    mapper.appendSample(config.getSessionId(), bytes, len, config.getOffset(), config.getSize());
 }
 
 std::string SigMaker::generateSignature(std::string path_to_config)

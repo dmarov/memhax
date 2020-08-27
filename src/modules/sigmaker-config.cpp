@@ -1,6 +1,7 @@
 #include "sigmaker-config.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <windows.h>
 #include <yaml-cpp/yaml.h>
 #include <boost/uuid/detail/md5.hpp>
@@ -12,13 +13,16 @@ SigmakerConfig::SigmakerConfig(std::string path_to_file)
 {
     try
     {
-
         YAML::Node config = YAML::LoadFile(path_to_file);
-        this->module_name = config["module"].as<std::string>();
-        this->window_name = config["window"].as<std::string>();
+        std::string module_name = config["module"].as<std::string>();
+        std::wstring wmodule_name(module_name.begin(), module_name.end());
+        this->module_name = wmodule_name;
+        std::string executable_name = config["executable"].as<std::string>();
+        std::wstring wexecutable_name(executable_name.begin(), executable_name.end());
+        this->executable_name = wexecutable_name;
         this->size = config["size"].as<unsigned int>();
         auto offsets = config["offsets"].as<std::vector<std::string>>();
-        this->offsets = std::vector<DWORD_PTR>();
+        this->offsets = std::vector<size_t>();
         this->offset = -50;
         this->len = 100;
 
@@ -69,9 +73,9 @@ SigmakerConfig::SigmakerConfig(std::string path_to_file)
 }
 
 
-std::string SigmakerConfig::getWindowName()
+std::wstring SigmakerConfig::getExecutableName()
 {
-    return this->window_name;
+    return this->executable_name;
 }
 
 std::string SigmakerConfig::getSessionId()
@@ -79,7 +83,7 @@ std::string SigmakerConfig::getSessionId()
     return this->session_id;
 }
 
-std::string SigmakerConfig::getModuleName()
+std::wstring SigmakerConfig::getModuleName()
 {
     return this->module_name;
 }
