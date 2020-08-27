@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "sigmaker-scanner.h"
 #include <iostream>
 #include <vector>
 #include <windows.h>
@@ -6,7 +6,7 @@
 #include <tchar.h>
 #include <psapi.h>
 
-Scanner::Scanner(std::string window_name)
+SigmakerScanner::SigmakerScanner(std::string window_name)
 {
     this->window_name = window_name;
     this->window = FindWindowA(NULL, window_name.c_str());
@@ -18,7 +18,7 @@ Scanner::Scanner(std::string window_name)
     }
 }
 
-std::byte* Scanner::readMemory(std::string module_name, std::vector<DWORD_PTR> offsets, int offset, unsigned int len)
+std::byte* SigmakerScanner::readMemory(std::string module_name, std::vector<DWORD_PTR> offsets, int offset, unsigned int len)
 {
     std::byte* res = new std::byte[len];
 
@@ -35,7 +35,7 @@ std::byte* Scanner::readMemory(std::string module_name, std::vector<DWORD_PTR> o
     return res;
 }
 
-DWORD_PTR Scanner::getModuleBaseAddr(TCHAR* module_name)
+DWORD_PTR SigmakerScanner::getModuleBaseAddr(TCHAR* module_name)
 {
     DWORD_PTR module_base_addr = NULL;
     DWORD bytes_required;
@@ -70,7 +70,7 @@ DWORD_PTR Scanner::getModuleBaseAddr(TCHAR* module_name)
     return module_base_addr;
 }
 
-DWORD_PTR Scanner::getPointerAddr(DWORD_PTR base_addr, std::vector<DWORD_PTR> offsets)
+DWORD_PTR SigmakerScanner::getPointerAddr(DWORD_PTR base_addr, std::vector<DWORD_PTR> offsets)
 {
 
     std::size_t pointer_size = sizeof(DWORD_PTR);
@@ -97,7 +97,7 @@ DWORD_PTR Scanner::getPointerAddr(DWORD_PTR base_addr, std::vector<DWORD_PTR> of
     return result;
 }
 
-bool Scanner::is32BitPointer()
+bool SigmakerScanner::is32BitPointer()
 {
     BOOL is_32_bit = false;
     return IsWow64Process(this->handle, &is_32_bit) && is_32_bit;

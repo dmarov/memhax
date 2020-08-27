@@ -5,7 +5,7 @@
 #include <vector>
 #include <windows.h>
 
-class Scanner {
+class SigmakerScanner {
 
 private:
     std::string window_name;
@@ -14,7 +14,7 @@ private:
     HANDLE handle;
 
 public:
-    Scanner(std::string window_name);
+    SigmakerScanner(std::string window_name);
 
     std::byte* readMemory(std::string module_name, std::vector<DWORD_PTR> offsets, int offset, unsigned int len);
 

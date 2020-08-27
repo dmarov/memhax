@@ -1,5 +1,5 @@
 #include "sigmaker-data-mapper.h"
-#include "config.h"
+#include "sigmaker-config.h"
 #include <iostream>
 #include <stdlib.h>
 #include <filesystem>

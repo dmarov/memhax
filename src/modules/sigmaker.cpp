@@ -1,6 +1,6 @@
 #include "sigmaker.h"
-#include "config.h"
-#include "scanner.h"
+#include "sigmaker-config.h"
+#include "sigmaker-scanner.h"
 #include "sigmaker-data-mapper.h"
 #include <sstream>
 #include <iomanip>
@@ -9,8 +9,8 @@
 
 void SigMaker::appendSample(std::string path_to_config)
 {
-    Config config(path_to_config);
-    Scanner scanner(config.getWindowName());
+    SigmakerConfig config(path_to_config);
+    SigmakerScanner scanner(config.getWindowName());
 
     auto len = config.getLength();
     auto offset = config.getOffset();
@@ -28,7 +28,7 @@ void SigMaker::appendSample(std::string path_to_config)
 
 std::string SigMaker::generateSignature(std::string path_to_config)
 {
-    Config config(path_to_config);
+    SigmakerConfig config(path_to_config);
 
     SigmakerDataMapper mapper;
     auto samples = mapper.selectSamples(config.getSessionId(), config.getLength());

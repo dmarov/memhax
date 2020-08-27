@@ -1,4 +1,4 @@
-#include "config.h"
+#include "sigmaker-config.h"
 #include <iostream>
 #include <fstream>
 #include <windows.h>
@@ -8,7 +8,7 @@
 
 using boost::uuids::detail::md5;
 
-Config::Config(std::string path_to_file)
+SigmakerConfig::SigmakerConfig(std::string path_to_file)
 {
     try
     {
@@ -69,37 +69,37 @@ Config::Config(std::string path_to_file)
 }
 
 
-std::string Config::getWindowName()
+std::string SigmakerConfig::getWindowName()
 {
     return this->window_name;
 }
 
-std::string Config::getSessionId()
+std::string SigmakerConfig::getSessionId()
 {
     return this->session_id;
 }
 
-std::string Config::getModuleName()
+std::string SigmakerConfig::getModuleName()
 {
     return this->module_name;
 }
 
-std::vector<DWORD_PTR> Config::getOffsets()
+std::vector<DWORD_PTR> SigmakerConfig::getOffsets()
 {
     return this->offsets;
 }
 
-unsigned int Config::getSize()
+unsigned int SigmakerConfig::getSize()
 {
     return this->size;
 }
 
-int Config::getOffset()
+int SigmakerConfig::getOffset()
 {
     return this->offset;
 }
 
-unsigned int Config::getLength()
+unsigned int SigmakerConfig::getLength()
 {
     return this->len;
 }

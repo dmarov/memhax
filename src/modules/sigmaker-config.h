@@ -5,10 +5,10 @@
 #include <vector>
 #include <windows.h>
 
-class Config {
+class SigmakerConfig {
 
 public:
-    Config(std::string path_to_file);
+    SigmakerConfig(std::string path_to_file);
 
     std::string getWindowName();
     std::string getSessionId();
