@@ -47,9 +47,9 @@ void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_by
 
     if (bytes_read != n_bytes)
     {
-        std::string msg = "failed to read memory: ";
-        msg += GetLastError();
-        throw std::exception(msg.c_str());
+        std::stringstream ss;
+        ss << "failed to read memory [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
     }
 }
 
@@ -59,9 +59,9 @@ void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_b
     WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
     if (bytes_written != n_bytes)
     {
-        std::string msg = "failed to write memory: ";
-        msg += GetLastError();
-        throw std::exception(msg.c_str());
+        std::stringstream ss;
+        ss << "failed to write memory [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
     }
 }
 

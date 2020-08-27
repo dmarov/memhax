@@ -1,7 +1,4 @@
 #include "process-memory-editor.h"
-#include "signature-config.h"
-#include <exception>
-#include <iostream>
 #include <windows.h>
 
 void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)

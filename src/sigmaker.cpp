@@ -64,8 +64,7 @@ int main(int argc, char **argv)
     }
     catch(std::exception &e)
     {
-        std::cout << "error occured" << std::endl;
-        std::cout << e.what() << std::endl;
+        std::cout << "[Error] " << e.what() << std::endl;
     }
 
     return 0;
