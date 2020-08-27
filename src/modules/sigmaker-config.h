@@ -6,6 +6,15 @@
 
 class SigmakerConfig {
 
+private:
+    std::string session_id;
+    std::wstring executable_name;
+    std::wstring module_name;
+    std::vector<size_t> offsets;
+    unsigned size;
+    int offset;
+    unsigned len;
+
 public:
     SigmakerConfig(std::string path_to_file);
 
@@ -16,13 +25,4 @@ public:
     unsigned getSize();
     int getOffset();
     unsigned getLength();
-
-private:
-    std::string session_id;
-    std::wstring executable_name;
-    std::wstring module_name;
-    std::vector<size_t> offsets;
-    unsigned size;
-    int offset;
-    unsigned len;
 };

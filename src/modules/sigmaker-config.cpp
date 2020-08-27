@@ -93,7 +93,7 @@ std::vector<DWORD_PTR> SigmakerConfig::getOffsets()
     return this->offsets;
 }
 
-unsigned int SigmakerConfig::getSize()
+unsigned SigmakerConfig::getSize()
 {
     return this->size;
 }
@@ -103,7 +103,7 @@ int SigmakerConfig::getOffset()
     return this->offset;
 }
 
-unsigned int SigmakerConfig::getLength()
+unsigned SigmakerConfig::getLength()
 {
     return this->len;
 }

@@ -16,16 +16,18 @@ void SigMaker::appendSample(std::string path_to_config)
     auto [module_start_addr, module_len] = mem.getModuleInfo(config.getModuleName());
 
     MultiLvlPtr mptr(module_start_addr, config.getOffsets());
-    auto ptr = mem.getRegularPointer(mptr);
+    uintptr_t ptr = mem.getRegularPointer(mptr);
     ptr += config.getOffset();
 
-    auto len = config.getLength();
-    std::byte* bytes = new std::byte[len];
+    unsigned len = config.getLength();
+    char* bytes = new char[len];
 
-    mem.read(ptr, &bytes, len);
+    mem.read(ptr, bytes, len);
 
     SigmakerDataMapper mapper;
-    mapper.appendSample(config.getSessionId(), bytes, len, config.getOffset(), config.getSize());
+    mapper.appendSample(config.getSessionId(), (std::byte*)bytes, len, config.getOffset(), config.getSize());
+
+    delete[] bytes;
 }
 
 std::string SigMaker::generateSignature(std::string path_to_config)
