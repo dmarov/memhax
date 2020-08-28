@@ -22,8 +22,7 @@ int main(int argc, char **argv)
         desc.add_options()
             ("help", "produce help message")
             ("version,v", "print version")
-            ("config", po::value<std::string>(), "specify config")
-            ("command", po::value<std::string>(), "specify command");
+            ("config", po::value<std::string>(), "specify config");
 
         po::variables_map vm;
         po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -46,25 +45,43 @@ int main(int argc, char **argv)
 
         auto config = vm["config"].as<std::string>();
 
-        if (!vm.count("command"))
-        {
-            std::cout << "specify command via --command option" << std::endl;
-            return 1;
-        }
+        std::cout << "press F9 to start monitor" << std::endl;
 
-        auto command = vm["command"].as<std::string>();
-
-        if (command.compare("append") == 0)
+        while (true)
         {
-            SigMaker::appendSample(config);
-            std::cout << "appended new sample" << std::endl;
-            return 0;
-        }
+            SHORT key_state = GetAsyncKeyState(VK_F9);
+            bool key_down = (key_state & 0x8000) && (key_state & 0x0001);
 
-        if (command.compare("generate") == 0)
-        {
-            std::cout << SigMaker::generateSignature(config) << std::endl;
-            return 0;
+            if (key_down)
+            {
+                is_monitoring = !is_monitoring;
+
+                if (is_monitoring)
+                {
+                    std::cout << "monitoring enabled" << std::endl;
+                }
+                else
+                {
+                    std::cout << "monitoring disabled" << std::endl;
+                }
+            }
+
+            if (is_monitoring)
+            {
+                try
+                {
+                    SigMaker::appendSample(config);
+                }
+                catch(std::exception &e)
+                {
+                    std::cout << "[Error] " << e.what() << std::endl;
+                }
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            } else {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            }
+
         }
     }
     catch(std::exception &e)
