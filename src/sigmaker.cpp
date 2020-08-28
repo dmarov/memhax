@@ -63,7 +63,11 @@ int main(int argc, char **argv)
 
         if (command.compare("generate") == 0)
         {
-            std::cout << SigMaker::generateSignature(config) << std::endl;
+            auto [values, mask, offset] = SigMaker::generateSignature(config);
+
+            std::cout << "values: " << values << std::endl;
+            std::cout << "mask: " << mask << std::endl;
+            std::cout << "offset: " << offset << std::endl;
             return 0;
         }
     }

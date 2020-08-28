@@ -33,3 +33,16 @@ size_t SignatureConfig::getScanLen()
 {
     return this->scan_len;
 }
+
+SignatureConfig SignatureConfig::operator+(long long scan_offset)
+{
+    auto values = this->getValues();
+    auto mask = this->getMask();
+    auto offset = this->getOffset();
+    auto scan_len = this->getScanLen();
+    auto scan_start = this->getScanStartAddr() + scan_offset;
+
+    SignatureConfig res(values, mask, offset, scan_start, scan_len);
+
+    return res;
+}

@@ -71,17 +71,16 @@ int main(int argc, char **argv)
                 try
                 {
                     SigMaker::appendSample(config);
+                    std::cout << "sample added" << std::endl;
                 }
                 catch(std::exception &e)
                 {
                     std::cout << "[Error] " << e.what() << std::endl;
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
 
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
     }
     catch(std::exception &e)

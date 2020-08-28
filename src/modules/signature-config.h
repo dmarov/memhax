@@ -18,5 +18,7 @@ public:
     std::string getMask();
     unsigned getOffset();
     uintptr_t getScanStartAddr();
-    uintptr_t getScanLen();
+    size_t getScanLen();
+
+    SignatureConfig operator+(const long long int offset);
 };

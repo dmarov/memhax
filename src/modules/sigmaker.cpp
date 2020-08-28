@@ -30,10 +30,8 @@ void SigMaker::appendSample(std::string path_to_config)
     delete[] bytes;
 }
 
-std::string SigMaker::generateSignature(std::string path_to_config)
+std::tuple<std::string, std::string, unsigned> SigMaker::calculateSignature(SigmakerConfig config)
 {
-    SigmakerConfig config(path_to_config);
-
     SigmakerDataMapper mapper;
     auto samples = mapper.selectSamples(config.getSessionId(), config.getLength());
     auto len = config.getLength();
@@ -49,26 +47,9 @@ std::string SigMaker::generateSignature(std::string path_to_config)
 
     std::vector<std::byte*>::iterator it = samples.begin();
 
-
     if (it == samples.end())
     {
-        std::string result;
-
-        for (unsigned i = 0; i < len; ++i)
-        {
-            if (i >= -offset && i < -offset + size)
-            {
-                result += "?? ";
-            }
-            else
-            {
-                result += "?? ";
-            }
-        }
-
-        boost::trim_right(result);
-
-        return result;
+        throw new std::exception("not enough samples to generate signature");
     }
 
     std::byte* ptr = *it;
@@ -86,33 +67,33 @@ std::string SigMaker::generateSignature(std::string path_to_config)
         ++it;
     }
 
+    std::stringstream result_values;
+    std::stringstream result_mask;
 
-    std::stringstream ss;
-    ss << std::hex << std::uppercase;
+    result_values << std::hex << std::uppercase;
 
     for (unsigned i = 0; i < len; ++i)
     {
         if (result_bytes[i] == (std::byte)0x00)
         {
-            ss << std::setw(2) << std::setfill('0') << (unsigned)ptr[i] << " ";
+            result_values << "\\0x" << std::setw(2) << std::setfill('0') << (unsigned)ptr[i];
+            result_mask << "x";
         }
         else
         {
-            if (i >= -offset && i < -offset + size)
-            {
-                ss << "?? ";
-            }
-            else
-            {
-                ss << "?? ";
-            }
+            result_values << "\\0x00";
+            result_mask << "?";
         }
     }
 
-    std::string result = ss.str();
-    boost::trim_right(result);
+    return std::tuple<std::string, std::string, unsigned>(result_values.str(), result_mask.str(), -offset);
+}
 
-    return result;
+std::tuple<std::string, std::string, unsigned> SigMaker::generateSignature(SigmakerConfig config)
+{
+    auto [values, mask, offset] = SigMaker::calculateSignature(config);
+
+
 }
 
 int SigMaker::resetSignature(std::string path_to_config)

@@ -20,6 +20,7 @@ public:
     uintptr_t getRegularPointer(MultiLvlPtr ptr);
     uintptr_t getRegularPointer(SignatureConfig ptr);
 
+    bool test(SignatureConfig ptr);
 
     template <typename T>
     void set(MultiLvlPtr ptr, T value);
