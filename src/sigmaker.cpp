@@ -14,43 +14,37 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-    bool is_monitoring = false;
+    po::options_description desc("Supported options");
 
-    try {
+    desc.add_options()
+        ("help", "produce help message")
+        ("version,v", "print version")
+        ("config", po::value<std::string>(), "specify config")
+        ("command", po::value<std::string>(), "specify command");
 
-        po::options_description desc("Supported options");
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
 
-        desc.add_options()
-            ("help", "produce help message")
-            ("version,v", "print version")
-            ("config", po::value<std::string>(), "specify config")
-            ("command", po::value<std::string>(), "specify command");
+    if (vm.count("version")) {
+        std::cout << "v" << memhax_VERSION_MAJOR << "." << memhax_VERSION_MINOR << "." << memhax_VERSION_PATCH << std::endl;
+        return 0;
+    }
 
-        po::variables_map vm;
-        po::store(po::parse_command_line(argc, argv, desc), vm);
-        po::notify(vm);
+    if (vm.count("help")) {
+        std::cout << desc << std::endl;
+        return 0;
+    }
 
-        if (vm.count("version")) {
-            std::cout << "v" << memhax_VERSION_MAJOR << "." << memhax_VERSION_MINOR << "." << memhax_VERSION_PATCH << std::endl;
-            return 0;
-        }
+    if (!vm.count("config")) {
+        std::cout << "specify config via --config option" << std::endl;
+        return 1;
+    }
 
-        if (vm.count("help")) {
-            std::cout << desc << std::endl;
-            return 0;
-        }
+    auto path_to_config = vm["config"].as<std::string>();
 
-        if (!vm.count("config")) {
-            std::cout << "specify config via --config option" << std::endl;
-            return 1;
-        }
-
-
-        auto path_to_config = vm["config"].as<std::string>();
-        SigmakerConfig cfg(path_to_config);
-        ProcessMemoryEditor* mem = new WinApiProcessMemoryEditor(cfg.getExecutableName());
-        SigMaker s(cfg, mem);
-
+    try
+    {
         if (!vm.count("command"))
         {
             std::cout << "specify command via --command option" << std::endl;
@@ -58,6 +52,10 @@ int main(int argc, char **argv)
         }
 
         auto command = vm["command"].as<std::string>();
+
+        SigmakerConfig cfg(path_to_config);
+        ProcessMemoryEditor* mem = new WinApiProcessMemoryEditor(cfg.getExecutableName());
+        SigMaker s(cfg, mem);
 
         if (command.compare("append") == 0)
         {
@@ -73,7 +71,7 @@ int main(int argc, char **argv)
             return 0;
         }
     }
-    catch(std::exception &e)
+    catch(std::exception e)
     {
         std::cout << "[Error] " << e.what() << std::endl;
     }

@@ -1,21 +1,20 @@
 #include "aob-sig.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 AobSig::AobSig() {}
 
-AobSig::AobSig(std::string values, std::string mask, unsigned offset)
+AobSig::AobSig(const std::byte* values, std::string mask, unsigned offset)
 {
-    if (values.length() != mask.length())
-    {
-        throw new std::exception("failed to construct signature");
-    }
-
-    this->values = values;
+    this->len = mask.length();
+    this->values = new std::byte[len];
     this->mask = mask;
+    std::memcpy(this->values, values, len);
     this->offset = offset;
 }
 
-std::string AobSig::getValues() const
+const std::byte* AobSig::getValues() const
 {
     return this->values;
 }
@@ -25,6 +24,11 @@ std::string AobSig::getMask() const
     return this->mask;
 }
 
+size_t AobSig::getLength()
+{
+    return this->len;
+}
+
 unsigned AobSig::getOffset() const
 {
     return this->offset;
@@ -32,10 +36,20 @@ unsigned AobSig::getOffset() const
 
 std::ostream& operator<<(std::ostream &os, const AobSig& sig)
 {
+    std::stringstream svalues;
+
+    svalues << std::hex << std::uppercase;
+    auto values = sig.getValues();
+
+    for (unsigned i = 0; i < sig.len; ++i)
+    {
+        svalues << "\\0x" << std::setw(2) << std::setfill('0') << (unsigned)sig.values[i];
+    }
+
     os << "{" <<
-        "  \"values\": " << "\"" << sig.getValues() << "\"" << std::endl <<
-        "  \"mask\": "<< sig.getMask() << "\"" << std::endl <<
-        "  \"offset\": " << sig.getOffset() << "\"" << std::endl <<
+        "  \"values\": " << "\"" << svalues.str() << "\"" << std::endl <<
+        "  \"mask\":   " << "\"" << sig.mask << "\"" << std::endl <<
+        "  \"offset\": " << sig.offset << std::endl <<
         "}";
 
     return os;
@@ -44,7 +58,6 @@ std::ostream& operator<<(std::ostream &os, const AobSig& sig)
 AobSig AobSig::shrink(unsigned before, unsigned after)
 {
     unsigned sig_start = 0, sig_end = 0;
-    unsigned len = this->mask.length();
 
     for (int i = this->offset; i >= 0; --i)
     {
@@ -60,7 +73,7 @@ AobSig AobSig::shrink(unsigned before, unsigned after)
         }
     }
 
-    for (int i = this->offset; i < len; ++i)
+    for (int i = this->offset; i < this->len; ++i)
     {
         if (mask[i] != '?')
         {
@@ -80,12 +93,15 @@ AobSig AobSig::shrink(unsigned before, unsigned after)
     }
 
     unsigned sig_len = sig_end - sig_start;
-
-    std::string sig_mask = this->mask.substr(offset, sig_len);
-    std::string sig_values = this->values.substr(offset, sig_len);
     unsigned sig_offset = this->offset - sig_start;
+    std::string sig_mask = this->mask.substr(sig_start, sig_len);
 
-    AobSig sig(sig_values, sig_mask, sig_offset);
+    AobSig sig(this->values + sig_start, this->mask, sig_offset);
 
     return sig;
+}
+
+AobSig::~AobSig()
+{
+    delete[] this->values;
 }

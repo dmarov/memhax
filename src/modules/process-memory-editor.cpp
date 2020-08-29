@@ -58,13 +58,13 @@ std::vector<uintptr_t> ProcessMemoryEditor::getRegularPointers(AobSigCfg cfg, un
 {
     auto sig = cfg.getSignature();
 
-    std::string values = sig.getValues();
+    const std::byte* values = sig.getValues();
+
     std::string mask = sig.getMask();
-
     const char* mask_cstr = mask.c_str();
-    const char* values_cstr = values.c_str();
 
-    unsigned sig_len = values.length();
+    size_t sig_len = sig.getLength();
+
     uintptr_t scan_start = cfg.getScanStartAddr();
     size_t scan_len = cfg.getScanLen();
     auto offset = sig.getOffset();
@@ -72,7 +72,7 @@ std::vector<uintptr_t> ProcessMemoryEditor::getRegularPointers(AobSigCfg cfg, un
 
     uintptr_t scan_end = scan_start + scan_len - sig_len;
 
-    char* mem_buf = new char[scan_len];
+    std::byte* mem_buf = new std::byte[scan_len];
     bool matched;
 
     this->read(scan_start, mem_buf, scan_len);
@@ -85,7 +85,7 @@ std::vector<uintptr_t> ProcessMemoryEditor::getRegularPointers(AobSigCfg cfg, un
 
         for (size_t j = 0; j < sig_len; ++j)
         {
-            if (!(mask_cstr[j] == '?' || mem_buf[i + j] == values_cstr[j]))
+            if (!(mask_cstr[j] == '?' || mem_buf[i + j] == values[j]))
             {
                 matched = false;
                 break;

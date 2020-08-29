@@ -9,9 +9,11 @@
 int main(int argc, char **argv)
 {
     try {
-        const wchar_t* exe = L"TankForce.exe";
-        const wchar_t* module = L"mono-2.0-bdwgc.dll";
+        /* const wchar_t* exe = L"TankForce.exe"; */
+        /* const wchar_t* module = L"mono-2.0-bdwgc.dll"; */
 
+        const wchar_t* exe = L"witcher.exe";
+        const wchar_t* module = L"witcher.exe";
         WinApiProcessMemoryEditor mem(exe);
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);

@@ -73,26 +73,30 @@ AobSig SigMaker::generateSignature()
         ++it;
     }
 
-    std::stringstream result_values;
     std::stringstream result_mask;
-
-    result_values << std::hex << std::uppercase;
 
     for (unsigned i = 0; i < len; ++i)
     {
         if (result_bytes[i] == (std::byte)0x00)
         {
-            result_values << "\\0x" << std::setw(2) << std::setfill('0') << (unsigned)ptr[i];
-            result_mask << "x";
+            result_bytes[i] = ptr[i];
+            result_mask << 'x';
         }
         else
         {
-            result_values << "\\0x00";
-            result_mask << "?";
+            result_bytes[i] = (std::byte)0x00;
+            result_mask << '?';
         }
     }
 
-    AobSig res(result_values.str(), result_mask.str(), -offset);
+    AobSig res(result_bytes, result_mask.str(), -offset);
+
+    delete[] result_bytes;
+
+    for (auto sample : samples)
+    {
+        delete[] sample;
+    }
 
     return res;
 }
