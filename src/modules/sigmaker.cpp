@@ -92,7 +92,7 @@ std::tuple<std::string, std::string, unsigned> SigMaker::calculateSignature(Sigm
 std::tuple<std::string, std::string, unsigned> SigMaker::generateSignature(SigmakerConfig config)
 {
     auto [values, mask, offset] = SigMaker::calculateSignature(config);
-
+    SignatureConfig sig_cfg(values, mask, offset, scan_start, scan_len);
 
 }
 

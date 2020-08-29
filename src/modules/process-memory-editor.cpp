@@ -125,20 +125,20 @@ void ProcessMemoryEditor::write(SignatureConfig sig, void* value, size_t n_bytes
 bool ProcessMemoryEditor::test(SignatureConfig ptr)
 {
     unsigned cnt = 0;
-    SignatureConfig buf = ptr;
-    uintptr_t reg_ptr = this->getRegularPointer(buf);
+    uintptr_t reg_ptr = NULL;
 
-    while (reg_ptr != NULL) {
+    do {
 
-        buf = buf + (reg_ptr - buf.getScanStartAddr());
-        uintptr_t reg_ptr = this->getRegularPointer(buf);
-        ++cnt;
-
-        if (cnt > 0)
+        if (cnt > 1)
         {
             break;
         }
-    }
+
+        reg_ptr = this->getRegularPointer(ptr);
+        ptr = ptr + (reg_ptr - ptr.getScanStartAddr());
+        ++cnt;
+
+    } while (reg_ptr != NULL);
 
     return cnt == 1;
 }

@@ -18,9 +18,10 @@ public:
     void write(SignatureConfig sig, void* value, size_t n_bytes);
 
     uintptr_t getRegularPointer(MultiLvlPtr ptr);
-    uintptr_t getRegularPointer(SignatureConfig ptr);
+    uintptr_t getRegularPointer(SignatureConfig cfg);
+    std::vector<uintptr_t> getMultiplePointers(SignatureConfig cfg);
 
-    bool test(SignatureConfig ptr);
+    bool test(SignatureConfig cfg);
 
     template <typename T>
     void set(MultiLvlPtr ptr, T value);
