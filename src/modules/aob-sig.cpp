@@ -1,6 +1,8 @@
 #include "aob-sig.h"
 #include <iostream>
 
+AobSig::AobSig() {}
+
 AobSig::AobSig(std::string values, std::string mask, unsigned offset)
 {
     if (values.length() != mask.length())
@@ -13,27 +15,27 @@ AobSig::AobSig(std::string values, std::string mask, unsigned offset)
     this->offset = offset;
 }
 
-std::string AobSig::getValues()
+std::string AobSig::getValues() const
 {
     return this->values;
 }
 
-std::string AobSig::getMask()
+std::string AobSig::getMask() const
 {
     return this->mask;
 }
 
-unsigned AobSig::getOffset()
+unsigned AobSig::getOffset() const
 {
     return this->offset;
 }
 
-std::ostream& AobSig::operator<<(std::ostream &os)
+std::ostream& operator<<(std::ostream &os, const AobSig& sig)
 {
     os << "{" <<
-        "  \"values\": " << "\"" << this->values << "\"" << std::endl <<
-        "  \"mask\": "<< this->mask << "\"" << std::endl <<
-        "  \"offset\": " << this->offset << "\"" << std::endl <<
+        "  \"values\": " << "\"" << sig.getValues() << "\"" << std::endl <<
+        "  \"mask\": "<< sig.getMask() << "\"" << std::endl <<
+        "  \"offset\": " << sig.getOffset() << "\"" << std::endl <<
         "}";
 
     return os;

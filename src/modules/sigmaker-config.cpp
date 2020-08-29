@@ -72,6 +72,7 @@ SigmakerConfig::SigmakerConfig(std::string path_to_file)
     }
 }
 
+SigmakerConfig::SigmakerConfig() {}
 
 std::wstring SigmakerConfig::getExecutableName()
 {

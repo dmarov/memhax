@@ -13,10 +13,10 @@ private:
 public:
     AobSig(std::string values, std::string mask, unsigned offset);
     AobSig();
-    std::string getValues();
-    std::string getMask();
-    unsigned getOffset();
+    std::string getValues() const;
+    std::string getMask() const;
+    unsigned getOffset() const;
     AobSig shrink(unsigned before, unsigned after);
 
-    std::ostream& operator<<(std::ostream &os);
+    friend std::ostream& operator<<(std::ostream &os, const AobSig& sig);
 };
