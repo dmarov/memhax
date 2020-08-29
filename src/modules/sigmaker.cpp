@@ -89,7 +89,7 @@ AobSig SigMaker::generateSignature()
         }
     }
 
-    AobSig res(result_bytes, result_mask.str(), -offset);
+    AobSig* res = new AobSig(result_bytes, result_mask.str(), -offset);
 
     delete[] result_bytes;
 
@@ -98,7 +98,8 @@ AobSig SigMaker::generateSignature()
         delete[] sample;
     }
 
-    return res;
+    std:: cout << res << std::endl;
+    return *res;
 }
 
 AobSig SigMaker::generateOptimalSignature()
