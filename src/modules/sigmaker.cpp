@@ -8,29 +8,31 @@
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 
-void SigMaker::appendSample(std::string path_to_config)
+SigMaker::SigMaker(ProcessMemoryEditor* mem)
 {
-    SigmakerConfig config(path_to_config);
-    WinApiProcessMemoryEditor mem(config.getExecutableName());
+    this->mem = mem;
+}
 
-    auto [module_start_addr, module_len] = mem.getModuleInfo(config.getModuleName());
+void SigMaker::appendSample(SigmakerConfig cfg)
+{
+    auto [module_start_addr, module_len] = mem->getModuleInfo(cfg.getModuleName());
 
-    MultiLvlPtr mptr(module_start_addr, config.getOffsets());
-    uintptr_t ptr = mem.getRegularPointer(mptr);
-    ptr += config.getOffset();
+    MultiLvlPtr mptr(module_start_addr, cfg.getOffsets());
+    uintptr_t ptr = mem->getRegularPointer(mptr);
+    ptr += cfg.getOffset();
 
-    unsigned len = config.getLength();
+    unsigned len = cfg.getLength();
     char* bytes = new char[len];
 
-    mem.read(ptr, bytes, len);
+    mem->read(ptr, bytes, len);
 
     SigmakerDataMapper mapper;
-    mapper.appendSample(config.getSessionId(), (std::byte*)bytes, len, config.getOffset(), config.getSize());
+    mapper.appendSample(cfg.getSessionId(), (std::byte*)bytes, len, cfg.getOffset(), cfg.getSize());
 
     delete[] bytes;
 }
 
-std::tuple<std::string, std::string, unsigned> SigMaker::calculateSignature(SigmakerConfig config)
+AobSig SigMaker::generateSignature(SigmakerConfig config)
 {
     SigmakerDataMapper mapper;
     auto samples = mapper.selectSamples(config.getSessionId(), config.getLength());
@@ -86,18 +88,17 @@ std::tuple<std::string, std::string, unsigned> SigMaker::calculateSignature(Sigm
         }
     }
 
-    return std::tuple<std::string, std::string, unsigned>(result_values.str(), result_mask.str(), -offset);
+    AobSig res(result_values.str(), result_mask.str(), -offset);
+
+    return res;
 }
 
-std::tuple<std::string, std::string, unsigned> SigMaker::generateSignature(SigmakerConfig config)
+AobSig SigMaker::generateOptimalSignature(SigmakerConfig cfg)
 {
-    auto [values, mask, offset] = SigMaker::calculateSignature(config);
-    SignatureConfig sig_cfg(values, mask, offset, scan_start, scan_len);
+    auto sig = this->generateSignature(cfg);
 
+    /* auto [values, mask, offset] = SigMaker::calculateSignature(config); */
+    /* SignatureConfig sig_cfg(values, mask, offset, scan_start, scan_len); */
+
+    return sig;
 }
-
-int SigMaker::resetSignature(std::string path_to_config)
-{
-    return 0;
-}
-

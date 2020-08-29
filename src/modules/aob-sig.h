@@ -16,6 +16,7 @@ public:
     std::string getValues();
     std::string getMask();
     unsigned getOffset();
+    AobSig shrink(AobSig, unsigned before, unsigned after);
 
     std::ostream& operator<<(std::ostream &os);
 };
