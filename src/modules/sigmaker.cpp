@@ -37,13 +37,11 @@ void SigMaker::appendSample()
 
 AobSig SigMaker::generateSignature()
 {
-    SigmakerDataMapper mapper;
     auto cfg = this->cfg;
+    SigmakerDataMapper mapper;
     auto samples = mapper.selectSamples(cfg.getSessionId(), cfg.getLength());
-    auto len = cfg.getLength();
-    auto offset = cfg.getOffset();
-    auto size = cfg.getSize();
 
+    auto len = cfg.getLength();
     std::byte* result_bytes = new std::byte[len];
 
     for (unsigned i = 0; i < len; ++i)
@@ -89,7 +87,9 @@ AobSig SigMaker::generateSignature()
         }
     }
 
-    AobSig* res = new AobSig(result_bytes, result_mask.str(), -offset);
+    auto offset = cfg.getOffset();
+
+    AobSig res(result_bytes, result_mask.str(), -offset);
 
     delete[] result_bytes;
 
@@ -98,34 +98,34 @@ AobSig SigMaker::generateSignature()
         delete[] sample;
     }
 
-    std:: cout << res << std::endl;
-    return *res;
+    return res;
 }
 
 AobSig SigMaker::generateOptimalSignature()
 {
     auto cfg = this->cfg;
     auto sig = this->generateSignature();
-    unsigned before = 2, after = 2;
-    auto sig_buf = sig.shrink(before, after);
-    std::wstring module_name = cfg.getModuleName();
-    auto [module_start, module_size] = this->mem->getModuleInfo(module_name);
+    /* unsigned before = 2, after = 2; */
+    /* auto sig_buf = sig.shrink(before, after); */
+    /* std::wstring module_name = cfg.getModuleName(); */
+    /* auto [module_start, module_size] = this->mem->getModuleInfo(module_name); */
 
-    AobSigCfg sig_cfg(sig_buf, module_start, module_size);
+    /* AobSigCfg sig_cfg(sig_buf, module_start, module_size); */
 
-    unsigned cnt;
-    while ((cnt = this->mem->getRegularPointers(sig_cfg, 2).size()) > 1)
-    {
-        ++before;
-        ++after;
-        sig_buf = sig.shrink(before, after);
-        AobSigCfg sig_cfg(sig_buf, module_start, module_size);
-    }
+    /* unsigned cnt; */
+    /* while ((cnt = this->mem->getRegularPointers(sig_cfg, 2).size()) > 1) */
+    /* { */
+    /*     ++before; */
+    /*     ++after; */
+    /*     sig_buf = sig.shrink(before, after); */
+    /*     AobSigCfg sig_cfg(sig_buf, module_start, module_size); */
+    /* } */
 
-    if (cnt < 1)
-    {
-        throw new std::exception("failed to generate optimal signature");
-    }
+    /* if (cnt < 1) */
+    /* { */
+    /*     throw new std::exception("failed to generate optimal signature"); */
+    /* } */
 
-    return sig_buf;
+    /* return sig_buf; */
+    return sig;
 }

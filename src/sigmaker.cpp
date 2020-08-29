@@ -67,8 +67,7 @@ int main(int argc, char **argv)
 
         if (command.compare("generate") == 0)
         {
-            auto sig = s.generateSignature();
-            /* s.generateSignature(); */
+            auto sig = s.generateOptimalSignature();
             std::cout << sig << std::endl;
             return 0;
         }

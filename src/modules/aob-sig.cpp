@@ -5,10 +5,18 @@
 
 AobSig::AobSig() {}
 
+AobSig::AobSig(const AobSig& sig) {
+
+    this->len = sig.len;
+    this->values = new std::byte[this->len];
+    this->mask = sig.mask;
+    std::memcpy(this->values, sig.values, this->len);
+    this->offset = sig.offset;
+}
+
 AobSig::AobSig(const std::byte* values, std::string mask, unsigned offset)
 {
     this->len = mask.length();
-    std::cout << this->len << std::endl;
     this->values = new std::byte[this->len];
     this->mask = mask;
     std::memcpy(this->values, values, this->len);
@@ -25,7 +33,7 @@ std::string AobSig::getMask() const
     return this->mask;
 }
 
-size_t AobSig::getLength()
+size_t AobSig::getLength() const
 {
     return this->len;
 }

@@ -18,5 +18,5 @@ public:
     uintptr_t getScanStartAddr();
     size_t getScanLen();
 
-    AobSigCfg operator+(const long long int offset);
+    AobSigCfg operator+(const long long offset);
 };
