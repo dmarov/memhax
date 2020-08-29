@@ -8,9 +8,10 @@ AobSig::AobSig() {}
 AobSig::AobSig(const std::byte* values, std::string mask, unsigned offset)
 {
     this->len = mask.length();
-    this->values = new std::byte[len];
+    std::cout << this->len << std::endl;
+    this->values = new std::byte[this->len];
     this->mask = mask;
-    std::memcpy(this->values, values, len);
+    std::memcpy(this->values, values, this->len);
     this->offset = offset;
 }
 

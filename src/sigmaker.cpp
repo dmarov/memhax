@@ -8,6 +8,7 @@
 #include <chrono>
 #include <thread>
 #include <windows.h>
+#include "modules/aob-sig.h"
 
 namespace po = boost::program_options;
 
@@ -54,8 +55,8 @@ int main(int argc, char **argv)
         auto command = vm["command"].as<std::string>();
 
         SigmakerConfig cfg(path_to_config);
-        ProcessMemoryEditor* mem = new WinApiProcessMemoryEditor(cfg.getExecutableName());
-        SigMaker s(cfg, mem);
+        WinApiProcessMemoryEditor mem(cfg.getExecutableName());
+        SigMaker s(cfg, &mem);
 
         if (command.compare("append") == 0)
         {

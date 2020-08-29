@@ -21,7 +21,7 @@ SigmakerDataMapper::SigmakerDataMapper()
     std::replace(uri.begin(), uri.end(), '\\', '/');
     sqlite3_open(uri.c_str(), &this->handle);
 
-    char* sql = "CREATE TABLE IF NOT EXISTS samples("  \
+    std::string sql = "CREATE TABLE IF NOT EXISTS samples("  \
           "id         INTEGER PRIMARY KEY AUTOINCREMENT," \
           "file_hash  CHARACTER(32) NOT NULL," \
           "bytes      BLOB NOT NULL," \
@@ -32,7 +32,7 @@ SigmakerDataMapper::SigmakerDataMapper()
     ");";
 
     int rc;
-    rc = sqlite3_exec(this->handle, sql, NULL, 0, NULL);
+    rc = sqlite3_exec(this->handle, sql.c_str(), NULL, 0, NULL);
 
     if (rc != SQLITE_OK)
     {

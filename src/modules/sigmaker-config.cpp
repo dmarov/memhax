@@ -89,7 +89,7 @@ std::wstring SigmakerConfig::getModuleName()
     return this->module_name;
 }
 
-std::vector<DWORD_PTR> SigmakerConfig::getOffsets()
+std::vector<size_t> SigmakerConfig::getOffsets()
 {
     return this->offsets;
 }

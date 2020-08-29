@@ -22,7 +22,7 @@ public:
     std::wstring getExecutableName();
     std::string getSessionId();
     std::wstring getModuleName();
-    std::vector<DWORD_PTR> getOffsets();
+    std::vector<size_t> getOffsets();
     unsigned getSize();
     int getOffset();
     unsigned getLength();
