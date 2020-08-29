@@ -3,19 +3,22 @@
 #include "win-api-process-memory-editor.h"
 #include "multi-lvl-ptr.h"
 #include "sigmaker-data-mapper.h"
+#include <exception>
 #include <sstream>
 #include <iomanip>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 
-SigMaker::SigMaker(ProcessMemoryEditor* mem)
+SigMaker::SigMaker(SigmakerConfig cfg, ProcessMemoryEditor* mem)
 {
     this->mem = mem;
+    this->cfg = cfg;
 }
 
-void SigMaker::appendSample(SigmakerConfig cfg)
+void SigMaker::appendSample()
 {
-    auto [module_start_addr, module_len] = mem->getModuleInfo(cfg.getModuleName());
+    auto cfg = this->cfg;
+    auto [module_start_addr, module_len] = this->mem->getModuleInfo(cfg.getModuleName());
 
     MultiLvlPtr mptr(module_start_addr, cfg.getOffsets());
     uintptr_t ptr = mem->getRegularPointer(mptr);
@@ -32,13 +35,14 @@ void SigMaker::appendSample(SigmakerConfig cfg)
     delete[] bytes;
 }
 
-AobSig SigMaker::generateSignature(SigmakerConfig config)
+AobSig SigMaker::generateSignature()
 {
     SigmakerDataMapper mapper;
-    auto samples = mapper.selectSamples(config.getSessionId(), config.getLength());
-    auto len = config.getLength();
-    auto offset = config.getOffset();
-    auto size = config.getSize();
+    auto cfg = this->cfg;
+    auto samples = mapper.selectSamples(cfg.getSessionId(), cfg.getLength());
+    auto len = cfg.getLength();
+    auto offset = cfg.getOffset();
+    auto size = cfg.getSize();
 
     std::byte* result_bytes = new std::byte[len];
 
@@ -93,12 +97,30 @@ AobSig SigMaker::generateSignature(SigmakerConfig config)
     return res;
 }
 
-AobSig SigMaker::generateOptimalSignature(SigmakerConfig cfg)
+AobSig SigMaker::generateOptimalSignature()
 {
-    auto sig = this->generateSignature(cfg);
+    auto cfg = this->cfg;
+    auto sig = this->generateSignature();
+    unsigned before = 2, after = 2;
+    auto sig_buf = sig.shrink(before, after);
+    std::wstring module_name = cfg.getModuleName();
+    auto [module_start, module_size] = this->mem->getModuleInfo(module_name);
 
-    /* auto [values, mask, offset] = SigMaker::calculateSignature(config); */
-    /* SignatureConfig sig_cfg(values, mask, offset, scan_start, scan_len); */
+    AobSigCfg sig_cfg(sig_buf, module_start, module_size);
 
-    return sig;
+    unsigned cnt;
+    while ((cnt = this->mem->getRegularPointers(sig_cfg, 2).size()) > 1)
+    {
+        ++before;
+        ++after;
+        sig_buf = sig.shrink(before, after);
+        AobSigCfg sig_cfg(sig_buf, module_start, module_size);
+    }
+
+    if (cnt < 1)
+    {
+        throw new std::exception("failed to generate optimal signature");
+    }
+
+    return sig_buf;
 }

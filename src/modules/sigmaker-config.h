@@ -17,6 +17,7 @@ private:
 
 public:
     SigmakerConfig(std::string path_to_file);
+    SigmakerConfig();
 
     std::wstring getExecutableName();
     std::string getSessionId();

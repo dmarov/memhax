@@ -1,6 +1,7 @@
 #include <locale>
 #include <sqlite3.h>
 #include "modules/sigmaker.h"
+#include "modules/win-api-process-memory-editor.h"
 #include "memhax.h"
 #include <iostream>
 #include <boost/program_options.hpp>
@@ -9,7 +10,6 @@
 #include <windows.h>
 
 namespace po = boost::program_options;
-
 
 int main(int argc, char **argv)
 {
@@ -43,7 +43,10 @@ int main(int argc, char **argv)
             return 1;
         }
 
-        auto config = vm["config"].as<std::string>();
+        auto path_to_config = vm["config"].as<std::string>();
+        SigmakerConfig cfg(path_to_config);
+        ProcessMemoryEditor* mem = new WinApiProcessMemoryEditor(cfg.getExecutableName());
+        SigMaker s(cfg, mem);
 
         std::cout << "press F9 to start monitor" << std::endl;
 
@@ -70,7 +73,7 @@ int main(int argc, char **argv)
             {
                 try
                 {
-                    SigMaker::appendSample(config);
+                    s.appendSample();
                     std::cout << "sample added" << std::endl;
                 }
                 catch(std::exception &e)

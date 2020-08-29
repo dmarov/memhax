@@ -39,7 +39,7 @@ std::ostream& AobSig::operator<<(std::ostream &os)
     return os;
 }
 
-AobSig AobSig::shrink(AobSig, unsigned before, unsigned after)
+AobSig AobSig::shrink(unsigned before, unsigned after)
 {
     unsigned sig_start = 0, sig_end = 0;
     unsigned len = this->mask.length();
@@ -77,7 +77,7 @@ AobSig AobSig::shrink(AobSig, unsigned before, unsigned after)
         throw new std::exception("failed to shrink signature");
     }
 
-    unsigned sig_len = sig_end = sig_start;
+    unsigned sig_len = sig_end - sig_start;
 
     std::string sig_mask = this->mask.substr(offset, sig_len);
     std::string sig_values = this->values.substr(offset, sig_len);

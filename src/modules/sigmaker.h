@@ -9,10 +9,11 @@ class SigMaker {
 
 private:
     ProcessMemoryEditor* mem;
+    SigmakerConfig cfg;
 
 public:
-    SigMaker(ProcessMemoryEditor* mem);
-    void appendSample(SigmakerConfig cfg);
-    AobSig generateSignature(SigmakerConfig cfg);
-    AobSig generateOptimalSignature(SigmakerConfig cfg);
+    SigMaker(SigmakerConfig cfg, ProcessMemoryEditor* mem);
+    void appendSample();
+    AobSig generateSignature();
+    AobSig generateOptimalSignature();
 };

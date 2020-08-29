@@ -1,6 +1,7 @@
 #include <locale>
 #include <sqlite3.h>
 #include "modules/sigmaker.h"
+#include "modules/win-api-process-memory-editor.h"
 #include "memhax.h"
 #include <iostream>
 #include <boost/program_options.hpp>
@@ -44,7 +45,11 @@ int main(int argc, char **argv)
             return 1;
         }
 
-        auto config = vm["config"].as<std::string>();
+
+        auto path_to_config = vm["config"].as<std::string>();
+        SigmakerConfig cfg(path_to_config);
+        ProcessMemoryEditor* mem = new WinApiProcessMemoryEditor(cfg.getExecutableName());
+        SigMaker s(cfg, mem);
 
         if (!vm.count("command"))
         {
@@ -56,18 +61,15 @@ int main(int argc, char **argv)
 
         if (command.compare("append") == 0)
         {
-            SigMaker::appendSample(config);
+            s.appendSample();
             std::cout << "appended new sample" << std::endl;
             return 0;
         }
 
         if (command.compare("generate") == 0)
         {
-            auto [values, mask, offset] = SigMaker::generateSignature(config);
-
-            std::cout << "values: " << values << std::endl;
-            std::cout << "mask: " << mask << std::endl;
-            std::cout << "offset: " << offset << std::endl;
+            auto sig = s.generateSignature();
+            std::cout << sig << std::endl;
             return 0;
         }
     }
