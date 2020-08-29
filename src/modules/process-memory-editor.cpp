@@ -54,8 +54,10 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     return result;
 }
 
-uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
+std::vector<uintptr_t> ProcessMemoryEditor::getRegularPointers(AobSigCfg cfg, unsigned limit)
 {
+    auto sig = cfg.getSignature();
+
     std::string values = sig.getValues();
     std::string mask = sig.getMask();
 
@@ -63,8 +65,9 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
     const char* values_cstr = values.c_str();
 
     unsigned sig_len = values.length();
-    uintptr_t scan_start = sig.getScanStartAddr();
-    size_t scan_len = sig.getScanLen();
+    uintptr_t scan_start = cfg.getScanStartAddr();
+    size_t scan_len = cfg.getScanLen();
+    auto offset = sig.getOffset();
     uintptr_t match_start = NULL;
 
     uintptr_t scan_end = scan_start + scan_len - sig_len;
@@ -73,6 +76,8 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
     bool matched;
 
     this->read(scan_start, mem_buf, scan_len);
+
+    std::vector<uintptr_t> res;
 
     for (uintptr_t i = scan_start; i != scan_end; ++i)
     {
@@ -89,16 +94,36 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(SignatureConfig sig)
 
         if (matched)
         {
-            match_start = scan_start + i;
+            res.push_back(scan_start + i + offset);
+            --limit;
+        }
+
+        if (limit == 0)
+        {
+            break;
         }
     }
 
     delete[] mem_buf;
 
-    return match_start + sig.getOffset();
+    return res;
 }
 
-void ProcessMemoryEditor::read(SignatureConfig sig, void* value, size_t n_bytes)
+uintptr_t ProcessMemoryEditor::getRegularPointer(AobSigCfg cfg)
+{
+    auto pointers = this->getRegularPointers(cfg, 1);
+
+    if (pointers.size() > 0)
+    {
+        return pointers[0];
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+void ProcessMemoryEditor::read(AobSigCfg sig, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(sig);
 
@@ -110,7 +135,7 @@ void ProcessMemoryEditor::read(SignatureConfig sig, void* value, size_t n_bytes)
     this->read(ptr_reg, value, n_bytes);
 }
 
-void ProcessMemoryEditor::write(SignatureConfig sig, void* value, size_t n_bytes)
+void ProcessMemoryEditor::write(AobSigCfg sig, void* value, size_t n_bytes)
 {
     uintptr_t ptr_reg = this->getRegularPointer(sig);
 
@@ -122,23 +147,16 @@ void ProcessMemoryEditor::write(SignatureConfig sig, void* value, size_t n_bytes
     this->write(ptr_reg, value, n_bytes);
 }
 
-bool ProcessMemoryEditor::test(SignatureConfig ptr)
+bool ProcessMemoryEditor::test(AobSigCfg cfg)
 {
-    unsigned cnt = 0;
-    uintptr_t reg_ptr = NULL;
+    auto pointers = this->getRegularPointers(cfg, 2);
 
-    do {
-
-        if (cnt > 1)
-        {
-            break;
-        }
-
-        reg_ptr = this->getRegularPointer(ptr);
-        ptr = ptr + (reg_ptr - ptr.getScanStartAddr());
-        ++cnt;
-
-    } while (reg_ptr != NULL);
-
-    return cnt == 1;
+    if (pointers.size() != 1)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }

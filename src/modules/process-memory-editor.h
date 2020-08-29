@@ -1,7 +1,7 @@
 #pragma once
 
 #include "multi-lvl-ptr.h"
-#include "signature-config.h"
+#include "aob-sig-cfg.h"
 
 class ProcessMemoryEditor {
 
@@ -14,14 +14,14 @@ public:
     void read(MultiLvlPtr, void* value, size_t n_bytes);
     void write(MultiLvlPtr, void* value, size_t n_bytes);
 
-    void read(SignatureConfig sig, void* value, size_t n_bytes);
-    void write(SignatureConfig sig, void* value, size_t n_bytes);
+    void read(AobSigCfg cfg, void* value, size_t n_bytes);
+    void write(AobSigCfg cfg, void* value, size_t n_bytes);
 
     uintptr_t getRegularPointer(MultiLvlPtr ptr);
-    uintptr_t getRegularPointer(SignatureConfig cfg);
-    std::vector<uintptr_t> getMultiplePointers(SignatureConfig cfg);
+    uintptr_t getRegularPointer(AobSigCfg cfg);
+    std::vector<uintptr_t> getRegularPointers(AobSigCfg cfg, unsigned limit);
 
-    bool test(SignatureConfig cfg);
+    bool test(AobSigCfg cfg);
 
     template <typename T>
     void set(MultiLvlPtr ptr, T value);
@@ -30,10 +30,10 @@ public:
     void get(MultiLvlPtr ptr, T* value);
 
     template <typename T>
-    void set(SignatureConfig ptr, T value);
+    void set(AobSigCfg cfg, T value);
 
     template <typename T>
-    void get(SignatureConfig ptr, T* value);
+    void get(AobSigCfg cfg, T* value);
 };
 
 template <typename T>
@@ -49,13 +49,13 @@ void ProcessMemoryEditor::get(MultiLvlPtr ptr, T* value)
 }
 
 template <typename T>
-void ProcessMemoryEditor::set(SignatureConfig cfg, T value)
+void ProcessMemoryEditor::set(AobSigCfg cfg, T value)
 {
     this->write(cfg, &value, sizeof(T));
 }
 
 template <typename T>
-void ProcessMemoryEditor::get(SignatureConfig cfg, T* value)
+void ProcessMemoryEditor::get(AobSigCfg cfg, T* value)
 {
     this->read(cfg, value, sizeof(T));
 }
