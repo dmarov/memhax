@@ -1,4 +1,5 @@
 #include <chrono>
+#include <exception>
 #include <iostream>
 #include <thread>
 #include "modules/multi-lvl-ptr.h"
@@ -24,15 +25,36 @@ int main(int argc, char **argv)
         MultiLvlPtr       turn_speed(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x14 });
         MultiLvlPtr   max_turn_speed(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x18 });
         MultiLvlPtr     current_ammo(mod_start, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x20, 0x18, 0x14 });
+        MultiLvlPtr  reload_progress(mod_start, { 0x00491DE8, 0x90,  0xDF8, 0x68,  0x40, 0x54 });
 
+        std::cout << "press F8 to enable no cooldown mode" << std::endl;
         std::cout << "press F9 to apply memory patch" << std::endl;
+
+        bool no_cooldown_enabled = false;
 
         while (true)
         {
-            SHORT key_state = GetAsyncKeyState(VK_F9);
-            bool key_down = (key_state & 0x8000) && (key_state & 0x0001);
+            SHORT f9_key_state = GetAsyncKeyState(VK_F9);
+            bool f9_key_down = (f9_key_state & 0x8000) && (f9_key_state & 0x0001);
 
-            if (key_down)
+            SHORT f8_key_state = GetAsyncKeyState(VK_F8);
+            bool f8_key_down = (f8_key_state & 0x8000) && (f8_key_state & 0x0001);
+
+            if (f8_key_down)
+            {
+                no_cooldown_enabled = !no_cooldown_enabled;
+
+                if (no_cooldown_enabled)
+                {
+                    std::cout << "no cooldown mode enabled" << std::endl;
+                }
+                else
+                {
+                    std::cout << "no cooldown mode disabled" << std::endl;
+                }
+            }
+
+            if (f9_key_down)
             {
                 try
                 {
@@ -51,6 +73,18 @@ int main(int argc, char **argv)
                 {
                     std::cout << "patch error" << std::endl;
                     std::cout << e.what() << std::endl;
+                }
+            }
+
+            if (no_cooldown_enabled)
+            {
+                try
+                {
+                    mem.set(reload_progress, 2.0f);
+                }
+                catch(std::exception &e)
+                {
+
                 }
             }
 
