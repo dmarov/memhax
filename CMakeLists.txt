@@ -15,4 +15,4 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_subdirectory(src/executables/tf-hack tf-hack)
 add_subdirectory(src/executables/sigmaker sigmaker)
-# add_subdirectory(src/executables/sigmaker-monitor sigmaker-monitor)
+add_subdirectory(src/executables/sigmaker-monitor sigmaker-monitor)

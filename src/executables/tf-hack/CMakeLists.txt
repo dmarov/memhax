@@ -2,7 +2,7 @@ add_executable(tf-hack main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)
 
-target_include_directories(tf-hack PUBLIC "../..")
+target_include_directories(tf-hack PUBLIC "../.." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 set_property(TARGET tf-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
