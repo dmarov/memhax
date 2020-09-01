@@ -3,3 +3,4 @@ build
 vcpkg
 .clangd
 compile_commands.json
+bin
