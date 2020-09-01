@@ -2,7 +2,7 @@
 #include <sqlite3.h>
 #include "modules/sigmaker.h"
 #include "modules/win-api-process-memory-editor.h"
-#include "memhax.h"
+#include "main.h"
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <chrono>

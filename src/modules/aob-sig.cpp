@@ -55,11 +55,9 @@ std::ostream& operator<<(std::ostream &os, const AobSig& sig)
         svalues << "\\0x" << std::setw(2) << std::setfill('0') << (unsigned)sig.values[i];
     }
 
-    os << "{" <<
-        "  \"values\": " << "\"" << svalues.str() << "\"" << std::endl <<
-        "  \"mask\":   " << "\"" << sig.mask << "\"" << std::endl <<
-        "  \"offset\": " << sig.offset << std::endl <<
-        "}";
+    os << "{ \"values\": " << "\"" << svalues.str() << "\", " <<
+            "\"mask\":   " << "\"" << sig.mask << "\", " <<
+            "\"offset\": " << sig.offset << "}";
 
     return os;
 }

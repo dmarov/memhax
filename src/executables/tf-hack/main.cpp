@@ -26,6 +26,10 @@ int main(int argc, char **argv)
         MultiLvlPtr   max_turn_speed(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x40, 0x18 });
         MultiLvlPtr     current_ammo(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40, 0x20, 0x18, 0x14 });
         MultiLvlPtr  reload_progress(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40, 0x54 });
+        /* MultiLvlPtr  is_auto_aim(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40, 0x30, 0x154 }); */
+        /* MultiLvlPtr  tank_controller(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40 }); */
+        /* MultiLvlPtr  engine_state(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40, 0x37C }); */
+        /* MultiLvlPtr  tank_controller_data(mod_start, { 0x00491DE0, 0x88,  0x160, 0x68,  0x40, 0x28 }); */
 
         std::cout << "press F8 to enable no cooldown mode" << std::endl;
         std::cout << "press F9 to apply memory patch" << std::endl;
