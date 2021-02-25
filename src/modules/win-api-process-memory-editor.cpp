@@ -44,7 +44,17 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, bool
 void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes)
 {
     size_t bytes_read;
+    unsigned long oldProtection;
+
+    if (this->bypassVirtualProtect) {
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection);
+    }
+
     ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
+
+    if (this->bypassVirtualProtect) {
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
+    }
 
     if (bytes_read != n_bytes)
     {

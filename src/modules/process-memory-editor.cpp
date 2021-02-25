@@ -161,8 +161,29 @@ bool ProcessMemoryEditor::test(AobSigCfg cfg)
     }
 }
 
-uintptr_t ProcessMemoryEditor::findAddressByAOBPattern(char* sig, char* pattern, uintptr_t start, size_t size)
+uintptr_t ProcessMemoryEditor::findAddressByAOBPattern(char* sig, char* mask, uintptr_t start, size_t size)
 {
+    char* mem = new char[size];
+    this->read(start, mem, size);
+
+    const size_t sigLength = strlen(sig);
+    const size_t scanLength = size - sigLength;
+
+    for (size_t i = 0; i < scanLength; ++i) {
+
+        bool found = true;
+
+        for (uintptr_t j = 0; j < sigLength; ++j) {
+            found &= mask[j] == '?' || sig[j] == mem[start + i + j];
+        }
+
+        if (found) {
+            delete[] mem;
+            return start + i;
+        }
+    }
+
+    delete[] mem;
 
     return NULL;
 }
