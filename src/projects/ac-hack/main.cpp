@@ -28,12 +28,14 @@ int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
-    const char* sig = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
-    const char* mask = "xx????xx????xxx";
+    char sig[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
+    char mask[] = "xx????xx????xxx";
 
-    WinApiProcessMemoryEditor mem(exe);
+    WinApiProcessMemoryEditor mem(exe, true);
 
     auto [mod_start, mod_size] = mem.getModuleInfo(module);
+
+    auto base = mem.findAddressByAOBPattern(sig, mask, mod_start, mod_size);
 
     return 0;
 }

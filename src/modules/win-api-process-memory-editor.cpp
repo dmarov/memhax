@@ -9,8 +9,9 @@
 #include <iostream>
 #include <TlHelp32.h>
 
-WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name)
+WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)
 {
+    this->bypassVirtualProtect = bypassVirtualProtect;
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(entry);
@@ -56,7 +57,18 @@ void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_by
 void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes)
 {
     size_t bytes_written;
+    unsigned long oldProtection;
+
+    if (this->bypassVirtualProtect) {
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection);
+    }
+
     WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
+
+    if (this->bypassVirtualProtect) {
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
+    }
+
     if (bytes_written != n_bytes)
     {
         std::stringstream ss;

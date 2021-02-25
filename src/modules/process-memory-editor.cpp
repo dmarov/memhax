@@ -160,3 +160,9 @@ bool ProcessMemoryEditor::test(AobSigCfg cfg)
         return true;
     }
 }
+
+uintptr_t ProcessMemoryEditor::findAddressByAOBPattern(char* sig, char* pattern, uintptr_t start, size_t size)
+{
+
+    return NULL;
+}

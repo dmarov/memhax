@@ -34,6 +34,8 @@ public:
 
     template <typename T>
     void get(AobSigCfg cfg, T* value);
+
+    uintptr_t findAddressByAOBPattern(char* sig, char* pattern, uintptr_t start, size_t size);
 };
 
 template <typename T>

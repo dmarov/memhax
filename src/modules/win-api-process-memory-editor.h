@@ -8,9 +8,10 @@ class WinApiProcessMemoryEditor : public ProcessMemoryEditor {
 private:
     HANDLE handle;
     DWORD process_id;
+    bool bypassVirtualProtect;
 
 public:
-    WinApiProcessMemoryEditor(std::wstring exe_name);
+    WinApiProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect);
 
     void read(uintptr_t address, void* value, size_t n_bytes);
     void write(uintptr_t address, void* value, size_t n_bytes);
