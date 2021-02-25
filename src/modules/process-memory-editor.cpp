@@ -1,5 +1,6 @@
 #include "process-memory-editor.h"
 #include <windows.h>
+#include <iostream>
 
 void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
 {
@@ -161,29 +162,40 @@ bool ProcessMemoryEditor::test(AobSigCfg cfg)
     }
 }
 
-uintptr_t ProcessMemoryEditor::findAddressByAOBPattern(char* sig, char* mask, uintptr_t start, size_t size)
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(char* sig, char* mask, uintptr_t start, size_t size)
 {
-    char* mem = new char[size];
-    this->read(start, mem, size);
+    uintptr_t currentOffset = start;
+    const size_t chunk_size = 4096;
+    char mem[chunk_size];
+    const size_t sigLength = strlen(mask);
 
-    const size_t sigLength = strlen(sig);
-    const size_t scanLength = size - sigLength;
+    while (currentOffset < start + size) {
 
-    for (size_t i = 0; i < scanLength; ++i) {
+        const size_t bytesToRead = min(chunk_size, start + size - currentOffset);
+        this->read(currentOffset, &mem, bytesToRead);
 
-        bool found = true;
+        const size_t scanLength = chunk_size - sigLength;
 
-        for (uintptr_t j = 0; j < sigLength; ++j) {
-            found &= mask[j] == '?' || sig[j] == mem[start + i + j];
+        for (size_t i = 0; i < scanLength; ++i) {
+
+            bool found = true;
+
+            for (uintptr_t j = 0; j < sigLength; ++j) {
+
+                found &= (mask[j] == '?') || (sig[j] == mem[i + j]);
+
+                if (!found) {
+                    continue;
+                }
+            }
+
+            if (found) {
+                return currentOffset + i;
+            }
         }
 
-        if (found) {
-            delete[] mem;
-            return start + i;
-        }
+        currentOffset += bytesToRead;
     }
-
-    delete[] mem;
 
     return NULL;
 }
