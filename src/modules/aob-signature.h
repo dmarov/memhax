@@ -13,6 +13,7 @@ private:
 
 public:
     AOBSignature(const std::byte* values, std::string mask);
+    AOBSignature(std::string signature);
     AOBSignature();
     AOBSignature(const AOBSignature& sig);
 

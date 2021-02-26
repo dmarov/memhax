@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <regex>
 
 AOBSignature::AOBSignature() {}
 
@@ -16,12 +17,51 @@ AOBSignature::AOBSignature(const std::byte* values, std::string mask)
     const auto len = mask.length();
     if (len > this->max_len)
     {
-        throw new std::exception("Failed to construct signature. Mask too large");
+        throw new std::exception("Failed to construct signature. Signature too large");
     }
 
     this->len = len;
     std::memcpy(this->values, values, this->len);
     this->mask = mask;
+}
+
+
+AOBSignature::AOBSignature(std::string signature) {
+
+    std::regex reg("^[0-9A-B]\\s[0-9A-B]{2}*)$");
+    if (!regex_match(signature, reg)) {
+        throw new std::exception("Failed to construct signature. Invalid argument.");
+    }
+
+    std::string::iterator end_pos = std::remove(signature.begin(), signature.end(), ' ');
+    signature.erase(end_pos, signature.end());
+
+    auto len = signature.length();
+    auto sig_len = len / 2;
+
+    if (sig_len > this->max_len)
+    {
+        throw new std::exception("Failed to construct signature. Signature too large");
+    }
+
+    this->len = sig_len;
+
+    std::stringstream ss;
+
+    for (size_t i = 0; i < sig_len; i ++) {
+        auto hex_str = signature.substr(2 * i, 2);
+        if (hex_str.compare("??") == 0) {
+            ss << hex_str;
+            char hex_char;
+            ss >> std::hex >>hex_char;
+            ss.clear();
+            this->values[i] = (std::byte)hex_char;
+            this->mask[i] = 'x';
+        } else {
+            this->values[i] = (std::byte)'\x00';
+            this->mask[i] = '?';
+        }
+    }
 }
 
 const std::byte* AOBSignature::getValues() const

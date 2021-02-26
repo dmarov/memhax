@@ -32,7 +32,8 @@ int main(int argc, char **argv)
     const char health_values_1[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
     const char health_mask_1[] = "xx????xx????xxx";
 
-    AOBSignature health_signature_1((std::byte*)health_values_1, health_mask_1);
+    /* AOBSignature health_signature_1((std::byte*)health_values_1, health_mask_1); */
+    AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
 
     try {
         WinApiProcessMemoryEditor mem(exe, true);
