@@ -29,11 +29,10 @@ int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
-    const char values[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
-    const char mask[] = "xx????xx????xxx";
-    const char nops[] = "\x90\x90\x90\x90\x90\x90";
+    const char health_values_1[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
+    const char health_mask_1[] = "xx????xx????xxx";
 
-    AOBSignature signature((std::byte*)values, mask);
+    AOBSignature signature((std::byte*)health_values_1, health_mask_1);
 
     try {
         WinApiProcessMemoryEditor mem(exe, true);
@@ -42,7 +41,8 @@ int main(int argc, char **argv)
 
         auto base = mem.findFirstAddressByAOBPattern(signature, mod_start, mod_size);
 
-        mem.nop(base + 6, 6);
+        std::cout << mem.testAOBSignature(signature, mod_start, mod_size) << std::endl;
+        /* mem.nop(base + 6, 6); */
     }
     catch(std::exception &e)
     {

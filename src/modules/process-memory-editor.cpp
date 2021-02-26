@@ -213,3 +213,19 @@ void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
     delete[] nops;
 }
 
+bool ProcessMemoryEditor::testAOBSignature(AOBSignature signature, uintptr_t begin, size_t size) {
+
+    auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
+
+    if (res == NULL) {
+        return false;
+    }
+
+    res = this->findFirstAddressByAOBPattern(signature, res + 1, size - (res - begin) - 1);
+
+    if (res != NULL) {
+        return false;
+    }
+
+    return true;
+}
