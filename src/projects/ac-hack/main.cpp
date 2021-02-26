@@ -32,22 +32,26 @@ int main(int argc, char **argv)
     const char health_values_1[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
     const char health_mask_1[] = "xx????xx????xxx";
 
-    AOBSignature signature((std::byte*)health_values_1, health_mask_1);
+    AOBSignature health_signature_1((std::byte*)health_values_1, health_mask_1);
 
     try {
         WinApiProcessMemoryEditor mem(exe, true);
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
-        auto base = mem.findFirstAddressByAOBPattern(signature, mod_start, mod_size);
-
-        std::cout << mem.testAOBSignature(signature, mod_start, mod_size) << std::endl;
-        /* mem.nop(base + 6, 6); */
+        if (mem.testAOBSignature(health_signature_1, mod_start, mod_size))
+        {
+            auto base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
+            mem.nop(base + 6, 6);
+        }
+        else
+        {
+            throw std::exception("bad signature");
+        }
     }
     catch(std::exception &e)
     {
-        std::cout << "error occured" << std::endl;
-        std::cout << e.what() << std::endl;
+        std::cout << "error occured: " << e.what() << std::endl;
     }
 
     return 0;
