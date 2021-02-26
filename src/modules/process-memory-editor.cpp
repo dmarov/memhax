@@ -205,3 +205,11 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signatu
 {
     return this->findFirstAddressByAOBPattern((char*)signature.getValues(), signature.getMask().c_str(), start, size);
 }
+
+void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
+    char* nops = new char[len];
+    std::memset(nops, '\x90', len);
+    this->write(begin, nops, len);
+    delete[] nops;
+}
+

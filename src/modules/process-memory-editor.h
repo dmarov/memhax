@@ -29,6 +29,8 @@ public:
     template <typename T>
     void get(MultiLvlPtr ptr, T* value);
 
+    void nop(uintptr_t begin, size_t len);
+
     /* template <typename T> */
     /* void set(AobSigCfg cfg, T value); */
 

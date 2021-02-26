@@ -29,9 +29,9 @@ int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
-    char values[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
-    char mask[] = "xx????xx????xxx";
-    char nops[] = "\x90\x90\x90\x90\x90\x90";
+    const char values[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
+    const char mask[] = "xx????xx????xxx";
+    const char nops[] = "\x90\x90\x90\x90\x90\x90";
 
     AOBSignature signature((std::byte*)values, mask);
 
@@ -40,19 +40,16 @@ int main(int argc, char **argv)
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
-        auto base = mem.findFirstAddressByAOBPattern(values, mask, mod_start, mod_size);
-        auto base2 = mem.findFirstAddressByAOBPattern(signature, mod_start, mod_size);
+        auto base = mem.findFirstAddressByAOBPattern(signature, mod_start, mod_size);
 
-        auto value_addr = base + 6;
-
-        std::cout << (uintptr_t*)value_addr << std::endl;
-        mem.write(value_addr, nops, 6);
+        mem.nop(base + 6, 6);
     }
     catch(std::exception &e)
     {
         std::cout << "error occured" << std::endl;
         std::cout << e.what() << std::endl;
     }
+
     return 0;
 }
 
