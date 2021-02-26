@@ -1,22 +1,22 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include "aob-sig.h"
+/* #include <string> */
+/* #include <vector> */
+/* #include "aob-sig.h" */
 
-class AobSigCfg {
+/* class AobSigCfg { */
 
-private:
-    AobSig sig;
-    uintptr_t scan_start_addr;
-    size_t scan_len;
+/* private: */
+/*     AobSig sig; */
+/*     uintptr_t scan_start_addr; */
+/*     size_t scan_len; */
 
-public:
-    AobSigCfg(AobSig sig, uintptr_t scan_start_addr, size_t scan_len);
+/* public: */
+/*     AobSigCfg(AobSig sig, uintptr_t scan_start_addr, size_t scan_len); */
 
-    AobSig getSignature();
-    uintptr_t getScanStartAddr();
-    size_t getScanLen();
+/*     AobSig getSignature(); */
+/*     uintptr_t getScanStartAddr(); */
+/*     size_t getScanLen(); */
 
-    AobSigCfg operator+(const long long offset);
-};
+/*     AobSigCfg operator+(const long long offset); */
+/* }; */

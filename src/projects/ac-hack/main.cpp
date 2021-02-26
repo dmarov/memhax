@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include "modules/multi-lvl-ptr.h"
+#include "modules/aob-signature.h"
 #include "modules/win-api-process-memory-editor.h"
 #include <winuser.h>
 #include <bitset>
@@ -28,16 +29,19 @@ int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
-    char sig[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
+    char values[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
     char mask[] = "xx????xx????xxx";
     char nops[] = "\x90\x90\x90\x90\x90\x90";
+
+    AOBSignature signature((std::byte*)values, mask);
 
     try {
         WinApiProcessMemoryEditor mem(exe, true);
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
-        auto base = mem.findFirstAddressByAOBPattern(sig, mask, mod_start, mod_size);
+        auto base = mem.findFirstAddressByAOBPattern(values, mask, mod_start, mod_size);
+        auto base2 = mem.findFirstAddressByAOBPattern(signature, mod_start, mod_size);
 
         auto value_addr = base + 6;
 

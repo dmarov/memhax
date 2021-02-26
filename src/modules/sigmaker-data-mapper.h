@@ -1,20 +1,20 @@
 #pragma once
 
-#include <string>
-#include <sqlite3.h>
-#include <vector>
+/* #include <string> */
+/* #include <sqlite3.h> */
+/* #include <vector> */
 
-class SigmakerDataMapper {
+/* class SigmakerDataMapper { */
 
-private:
-    sqlite3 *handle;
+/* private: */
+/*     sqlite3 *handle; */
 
-public:
-    SigmakerDataMapper();
+/* public: */
+/*     SigmakerDataMapper(); */
 
-    void appendSample(std::string id, std::byte* bytes, unsigned len, int offset, unsigned size);
-    std::vector<std::byte*> selectSamples(std::string session_id, unsigned len);
+/*     void appendSample(std::string id, std::byte* bytes, unsigned len, int offset, unsigned size); */
+/*     std::vector<std::byte*> selectSamples(std::string session_id, unsigned len); */
 
-    ~SigmakerDataMapper();
-private:
-};
+/*     ~SigmakerDataMapper(); */
+/* private: */
+/* }; */
