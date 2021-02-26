@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     const wchar_t* module = L"ac_client.exe";
     char sig[] = "\x89\x8A\x00\x00\x00\x00\x89\x82\x00\x00\x00\x00\x0F\x94\xC1";
     char mask[] = "xx????xx????xxx";
-    char nop = '\x90';
+    char nops[] = "\x90\x90\x90\x90\x90\x90";
 
     try {
         WinApiProcessMemoryEditor mem(exe, true);
@@ -39,7 +39,10 @@ int main(int argc, char **argv)
 
         auto base = mem.findFirstAddressByAOBPattern(sig, mask, mod_start, mod_size);
 
-        std::cout << (uintptr_t*)base << std::endl;
+        auto value_addr = base + 6;
+
+        std::cout << (uintptr_t*)value_addr << std::endl;
+        mem.write(value_addr, nops, 6);
     }
     catch(std::exception &e)
     {
