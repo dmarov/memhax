@@ -25,11 +25,24 @@
 // 8B 4C 24 ?? 83 7C 24 ?? ?? 8B 44 24 ?? 89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1
 //                                                          == == == == == ==
 
+// ammo
+// ac_client.exe+637E1 - 8B 56 18              - mov edx,[esi+18]
+// ac_client.exe+637E4 - 89 0A                 - mov [edx],ecx
+// ac_client.exe+637E6 - 8B 76 14              - mov esi,[esi+14]
+// ac_client.exe+637E9 - FF 0E                 - dec [esi]
+// ac_client.exe+637EB - 57                    - push edi
+// ac_client.exe+637EC - 8B 7C 24 14           - mov edi,[esp+14]
+// ac_client.exe+637F0 - 8D 74 24 28           - lea esi,[esp+28]
+// 8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24 ??
+//                         == ==
+
+
 int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
     AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
+    AOBSignature ammo_signature("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24");
     uintptr_t base = NULL;
 
     try {
@@ -38,36 +51,14 @@ int main(int argc, char **argv)
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
-        /* if (base == NULL) { */
-        if (mem.testAOBSignature(health_signature_1, mod_start, mod_size))
+        base = mem.findFirstAddressByAOBPattern(ammo_signature, mod_start, mod_size);
+
+        if (base == NULL)
         {
-            base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
-            std::cout << mem.testAddress(base, health_signature_1) << std::endl;
-            /* mem.nop(base + 6, 6); */
-        }
-        else
-        {
-            throw std::exception("bad signature");
+            throw std::exception("could not find pattern");
         }
 
-        /* } else { */
-
-        /*     if (mem.testAddress(base, health_signature_1)) { */
-        /*         mem.nop(base + 6, 6); */
-        /*     } */
-        /*     else */
-        /*     { */
-        /*         if (mem.testAOBSignature(health_signature_1, mod_start, mod_size)) */
-        /*         { */
-        /*             base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size); */
-        /*             mem.nop(base + 6, 6); */
-        /*         } */
-        /*         else */
-        /*         { */
-        /*             throw std::exception("bad signature"); */
-        /*         } */
-        /*     } */
-        /* } */
+        mem.nop(base + 8, 2);
     }
     catch(std::exception &e)
     {
