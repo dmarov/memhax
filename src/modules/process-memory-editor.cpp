@@ -186,7 +186,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const char* sig, con
                 found &= (mask[j] == '?') || (sig[j] == mem[i + j]);
 
                 if (!found) {
-                    continue;
+                    break;
                 }
             }
 
@@ -228,4 +228,27 @@ bool ProcessMemoryEditor::testAOBSignature(AOBSignature signature, uintptr_t beg
     }
 
     return true;
+}
+
+bool ProcessMemoryEditor::testAddress(uintptr_t address, AOBSignature signature)
+{
+    const auto len = signature.getLen();
+    const auto values = signature.getValues();
+    const auto mask = signature.getMask();
+    const auto mem = new std::byte[len];
+    this->read(address, mem, len);
+    bool matches = true;
+
+    for (uintptr_t i = 0; i < len; ++i) {
+
+        matches &= (mask[i] == '?') || (values[i] == mem[i]);
+
+        if (!matches) {
+            break;
+        }
+    }
+
+    delete[] mem;
+
+    return matches;
 }

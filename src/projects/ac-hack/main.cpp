@@ -29,23 +29,45 @@ int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
+    AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
+    uintptr_t base = NULL;
 
     try {
 
-        AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
         WinApiProcessMemoryEditor mem(exe, true);
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
+        /* if (base == NULL) { */
         if (mem.testAOBSignature(health_signature_1, mod_start, mod_size))
         {
-            auto base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
+            base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
+            std::cout << mem.testAddress(base, health_signature_1) << std::endl;
             mem.nop(base + 6, 6);
         }
         else
         {
             throw std::exception("bad signature");
         }
+
+        /* } else { */
+
+        /*     if (mem.testAddress(base, health_signature_1)) { */
+        /*         mem.nop(base + 6, 6); */
+        /*     } */
+        /*     else */
+        /*     { */
+        /*         if (mem.testAOBSignature(health_signature_1, mod_start, mod_size)) */
+        /*         { */
+        /*             base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size); */
+        /*             mem.nop(base + 6, 6); */
+        /*         } */
+        /*         else */
+        /*         { */
+        /*             throw std::exception("bad signature"); */
+        /*         } */
+        /*     } */
+        /* } */
     }
     catch(std::exception &e)
     {
