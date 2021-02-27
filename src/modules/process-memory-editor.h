@@ -5,6 +5,9 @@
 
 class ProcessMemoryEditor {
 
+private:
+    bool testMemory(void* address, const std::byte* values, const char* mask, size_t len);
+
 public:
     virtual void read(uintptr_t address, void* value, size_t n_bytes)=0;
     virtual void write(uintptr_t address, void* value, size_t n_bytes)=0;
@@ -41,8 +44,7 @@ public:
     uintptr_t findFirstAddressByAOBPattern(AOBSignature singature, uintptr_t start, size_t size);
 
     bool testAOBSignature(AOBSignature signature, uintptr_t begin, size_t size);
-    bool testAddress(uintptr_t address, AOBSignature signature);
-    bool testMemory(void* address, AOBSignature signature);
+    bool testAddress(uintptr_t address, const AOBSignature &signature);
 };
 
 template <typename T>

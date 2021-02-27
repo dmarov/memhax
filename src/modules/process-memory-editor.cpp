@@ -168,9 +168,10 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signatu
     uintptr_t currentOffset = start;
     const size_t chunk_size = 4096;
     auto mask = signature.getMask();
+    auto mask_c = mask.c_str();
     auto values = signature.getValues();
     std::byte mem[chunk_size];
-    const size_t sigLength = mask.length();
+    const size_t sigLength = signature.getLen();
 
     while (currentOffset < start + size) {
 
@@ -181,19 +182,8 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signatu
 
         for (size_t i = 0; i < scanLength; ++i) {
 
-            bool found = true;
-
-            for (uintptr_t j = 0; j < sigLength; ++j) {
-
-                found &= (mask[j] == '?') || (values[j] == mem[i + j]);
-
-                if (!found) {
-                    break;
-                }
-            }
-
-            /* bool found = this>testMemory(mem[i]) */
-            if (found) {
+            if (this->testMemory(&mem[i], values, mask_c, sigLength))
+            {
                 return currentOffset + i;
             }
         }
@@ -228,22 +218,21 @@ bool ProcessMemoryEditor::testAOBSignature(AOBSignature signature, uintptr_t beg
     return true;
 }
 
-bool ProcessMemoryEditor::testAddress(uintptr_t address, AOBSignature signature)
+bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &signature)
 {
     const auto len = signature.getLen();
     const auto mem = new std::byte[len];
+
     this->read(address, mem, len);
-    bool matches = this->testMemory(mem, signature);
+    bool matches = this->testMemory(mem, signature.getValues(), signature.getMask().c_str(), signature.getLen());
+
     delete[] mem;
 
     return matches;
 }
 
-bool ProcessMemoryEditor::testMemory(void* address, AOBSignature signature)
+bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, const char* mask, size_t len)
 {
-    const auto len = signature.getLen();
-    const auto values = signature.getValues();
-    const auto mask = signature.getMask();
     bool matches = true;
 
     for (uintptr_t i = 0; i < len; ++i) {
