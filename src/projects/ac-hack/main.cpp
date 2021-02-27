@@ -9,21 +9,18 @@
 #include <winuser.h>
 #include <bitset>
 
-// ammo
-// 8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24
-//                         == ==
- 
 //health
 // 2B F8 29 7B ?? 8B C7 5F 5E 8B E5
 //       == == ==
+
+// ammo
+// 8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24
+//                         == ==
 
 int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module = L"ac_client.exe";
-
-    const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, 3);
-    const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, 2);
 
     uintptr_t base = NULL;
 
@@ -33,6 +30,10 @@ int main(int argc, char **argv)
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 
+        const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, mod_start, mod_size);
+        const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, mod_start, mod_size);
+
+
         base = mem.findFirstAddressByAOBPattern(health_signature_ptr.getSignature(), mod_start, mod_size);
 
         if (base == NULL)
@@ -40,13 +41,14 @@ int main(int argc, char **argv)
             throw std::exception("could not find pattern");
         }
 
-        mem.nop(base + health_signature_ptr.getBegin(), health_signature_ptr.getLenth());
+        mem.nop(base + health_signature_ptr.getBegin(), 3);
+        mem.nop(base + ammo_signature_ptr.getBegin(), 2);
 
-        InstructionNopCheatHandler health_cheat(mem, module, health_signature_ptr);
-        /* HeapTrainerCheatHandler health_cheat(mem, module, health_signature_ptr); */
+        /* InstructionNopCheatHandler health_cheat(mem, health_signature_ptr); */
+        /* HeapTrainerCheatHandler health_cheat(mem, health_signature_ptr); */
 
-        health_cheat.enable();
-        health_cheat.disable();
+        /* health_cheat.enable(); */
+        /* health_cheat.disable(); */
 
     }
     catch(std::exception &e)

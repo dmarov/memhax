@@ -4,11 +4,12 @@
 #include <iomanip>
 #include <regex>
 
-AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, size_t length)
+AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, uintptr_t scan_begin, size_t scan_length)
 {
     this->signature = new AOBSignature(pattern);
     this->begin = begin;
-    this->length = length;
+    this->scan_begin = scan_begin;
+    this->scan_length = scan_length;
 }
 
 const AOBSignature& AOBSignaturePtr::getSignature() const
@@ -19,11 +20,6 @@ const AOBSignature& AOBSignaturePtr::getSignature() const
 uintptr_t AOBSignaturePtr::getBegin() const
 {
     return this->begin;
-}
-
-size_t AOBSignaturePtr::getLenth() const
-{
-    return this->length;
 }
 
 AOBSignaturePtr::~AOBSignaturePtr()

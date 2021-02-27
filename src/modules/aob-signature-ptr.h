@@ -9,14 +9,14 @@ class AOBSignaturePtr {
 private:
     const AOBSignature* signature;
     uintptr_t begin;
-    size_t length;
+    uintptr_t scan_begin;
+    size_t scan_length;
 
 public:
-    AOBSignaturePtr(std::string pattern, uintptr_t begin, size_t length);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, uintptr_t scan_begin, size_t scan_length);
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;
-    size_t getLenth() const;
 
     ~AOBSignaturePtr();
 };
