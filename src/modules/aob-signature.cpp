@@ -17,7 +17,7 @@ AOBSignature::AOBSignature(const std::byte* values, std::string mask)
     const auto len = mask.length();
     if (len > this->max_len)
     {
-        throw new std::exception("Failed to construct signature. Signature too large");
+        throw std::exception("Failed to construct signature. Signature too large");
     }
 
     this->len = len;
@@ -28,9 +28,10 @@ AOBSignature::AOBSignature(const std::byte* values, std::string mask)
 
 AOBSignature::AOBSignature(std::string signature) {
 
-    std::regex reg("^[0-9A-B]\\s[0-9A-B]{2}*)$");
+    std::regex reg("^(?:[0-9A-F]{2}|\\?{2})(?:\\s(?:[0-9A-F]{2}|\\?{2}))*$");
+
     if (!regex_match(signature, reg)) {
-        throw new std::exception("Failed to construct signature. Invalid argument.");
+        throw std::exception("Failed to construct signature. Invalid argument.");
     }
 
     std::string::iterator end_pos = std::remove(signature.begin(), signature.end(), ' ');

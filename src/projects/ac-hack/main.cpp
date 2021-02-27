@@ -33,26 +33,29 @@ int main(int argc, char **argv)
     const char health_mask_1[] = "xx????xx????xxx";
 
     /* AOBSignature health_signature_1((std::byte*)health_values_1, health_mask_1); */
-    AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
 
     try {
-        WinApiProcessMemoryEditor mem(exe, true);
 
-        auto [mod_start, mod_size] = mem.getModuleInfo(module);
+        AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
+        /* std::cout << health_signature_1 << std::endl; */
+        /* WinApiProcessMemoryEditor mem(exe, true); */
 
-        if (mem.testAOBSignature(health_signature_1, mod_start, mod_size))
-        {
-            auto base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
-            mem.nop(base + 6, 6);
-        }
-        else
-        {
-            throw std::exception("bad signature");
-        }
+        /* auto [mod_start, mod_size] = mem.getModuleInfo(module); */
+
+        /* if (mem.testAOBSignature(health_signature_1, mod_start, mod_size)) */
+        /* { */
+        /*     auto base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size); */
+        /*     mem.nop(base + 6, 6); */
+        /* } */
+        /* else */
+        /* { */
+        /*     throw std::exception("bad signature"); */
+        /* } */
     }
     catch(std::exception &e)
     {
-        std::cout << "error occured: " << e.what() << std::endl;
+        std::cerr << "error occured: " << e.what() << std::endl;
+        return -1;
     }
 
     return 0;
