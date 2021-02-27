@@ -42,6 +42,7 @@ public:
 
     bool testAOBSignature(AOBSignature signature, uintptr_t begin, size_t size);
     bool testAddress(uintptr_t address, AOBSignature signature);
+    bool testMemory(void* address, AOBSignature signature);
 };
 
 template <typename T>

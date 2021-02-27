@@ -163,12 +163,14 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
 /*     } */
 /* } */
 
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const char* sig, const char* mask, uintptr_t start, size_t size)
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signature, uintptr_t start, size_t size)
 {
     uintptr_t currentOffset = start;
     const size_t chunk_size = 4096;
-    char mem[chunk_size];
-    const size_t sigLength = strlen(mask);
+    auto mask = signature.getMask();
+    auto values = signature.getValues();
+    std::byte mem[chunk_size];
+    const size_t sigLength = mask.length();
 
     while (currentOffset < start + size) {
 
@@ -183,13 +185,14 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const char* sig, con
 
             for (uintptr_t j = 0; j < sigLength; ++j) {
 
-                found &= (mask[j] == '?') || (sig[j] == mem[i + j]);
+                found &= (mask[j] == '?') || (values[j] == mem[i + j]);
 
                 if (!found) {
                     break;
                 }
             }
 
+            /* bool found = this>testMemory(mem[i]) */
             if (found) {
                 return currentOffset + i;
             }
@@ -199,11 +202,6 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const char* sig, con
     }
 
     return NULL;
-}
-
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signature, uintptr_t start, size_t size)
-{
-    return this->findFirstAddressByAOBPattern((char*)signature.getValues(), signature.getMask().c_str(), start, size);
 }
 
 void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
@@ -233,22 +231,29 @@ bool ProcessMemoryEditor::testAOBSignature(AOBSignature signature, uintptr_t beg
 bool ProcessMemoryEditor::testAddress(uintptr_t address, AOBSignature signature)
 {
     const auto len = signature.getLen();
-    const auto values = signature.getValues();
-    const auto mask = signature.getMask();
     const auto mem = new std::byte[len];
     this->read(address, mem, len);
+    bool matches = this->testMemory(mem, signature);
+    delete[] mem;
+
+    return matches;
+}
+
+bool ProcessMemoryEditor::testMemory(void* address, AOBSignature signature)
+{
+    const auto len = signature.getLen();
+    const auto values = signature.getValues();
+    const auto mask = signature.getMask();
     bool matches = true;
 
     for (uintptr_t i = 0; i < len; ++i) {
 
-        matches &= (mask[i] == '?') || (values[i] == mem[i]);
+        matches &= (mask[i] == '?') || (values[i] == ((std::byte*)address)[i]);
 
         if (!matches) {
             break;
         }
     }
-
-    delete[] mem;
 
     return matches;
 }

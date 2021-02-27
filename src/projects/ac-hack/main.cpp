@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         {
             base = mem.findFirstAddressByAOBPattern(health_signature_1, mod_start, mod_size);
             std::cout << mem.testAddress(base, health_signature_1) << std::endl;
-            mem.nop(base + 6, 6);
+            /* mem.nop(base + 6, 6); */
         }
         else
         {
