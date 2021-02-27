@@ -11,6 +11,6 @@ private:
 
 public:
     MultiLvlPtr(uintptr_t base, std::vector<uintptr_t> offsets);
-    uintptr_t getBase();
-    std::vector<uintptr_t> getOffsets();
+    uintptr_t getBase() const;
+    std::vector<uintptr_t> getOffsets() const;
 };

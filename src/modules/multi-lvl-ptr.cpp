@@ -6,12 +6,12 @@ MultiLvlPtr::MultiLvlPtr(uintptr_t base, std::vector<uintptr_t> offsets)
     this->offsets = offsets;
 }
 
-uintptr_t MultiLvlPtr::getBase()
+uintptr_t MultiLvlPtr::getBase() const
 {
     return this->base;
 }
 
-std::vector<uintptr_t> MultiLvlPtr::getOffsets()
+std::vector<uintptr_t> MultiLvlPtr::getOffsets() const
 {
     return this->offsets;
 }

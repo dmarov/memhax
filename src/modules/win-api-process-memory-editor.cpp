@@ -41,7 +41,7 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, bool
     }
 }
 
-void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes)
+void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_read;
     unsigned long oldProtection;
@@ -64,7 +64,7 @@ void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_by
     }
 }
 
-void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes)
+void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_written;
     unsigned long oldProtection;
@@ -87,7 +87,7 @@ void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_b
     }
 }
 
-std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstring module_name)
+std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
 {
     uintptr_t mod_base_addr = 0;
     size_t mod_size = 0;
@@ -121,7 +121,7 @@ std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstr
     return std::make_tuple(mod_base_addr, mod_size);
 }
 
-unsigned short WinApiProcessMemoryEditor::getPointerSize()
+unsigned short WinApiProcessMemoryEditor::getPointerSize() const
 {
     BOOL is_32_bit = false;
     is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;

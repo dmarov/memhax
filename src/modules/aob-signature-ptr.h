@@ -17,6 +17,8 @@ public:
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;
+    uintptr_t getScanBegin() const;
+    uintptr_t getScanLength() const;
 
     ~AOBSignaturePtr();
 };

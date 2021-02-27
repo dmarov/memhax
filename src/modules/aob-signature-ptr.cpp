@@ -22,6 +22,16 @@ uintptr_t AOBSignaturePtr::getBegin() const
     return this->begin;
 }
 
+uintptr_t AOBSignaturePtr::getScanBegin() const
+{
+    return this->scan_begin;
+}
+
+uintptr_t AOBSignaturePtr::getScanLength() const
+{
+    return this->scan_length;
+}
+
 AOBSignaturePtr::~AOBSignaturePtr()
 {
     delete this->signature;

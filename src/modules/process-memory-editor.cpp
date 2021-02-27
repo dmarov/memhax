@@ -1,9 +1,9 @@
 #include "process-memory-editor.h"
-#include "aob-signature.h"
+#include "aob-signature-ptr.h"
 #include <windows.h>
 #include <iostream>
 
-void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
+void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
 
@@ -15,7 +15,7 @@ void ProcessMemoryEditor::read(MultiLvlPtr ptr, void* value, size_t n_bytes)
     this->read(ptr_reg, value, n_bytes);
 }
 
-void ProcessMemoryEditor::write(MultiLvlPtr ptr, void* value, size_t n_bytes)
+void ProcessMemoryEditor::write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
 
@@ -27,7 +27,31 @@ void ProcessMemoryEditor::write(MultiLvlPtr ptr, void* value, size_t n_bytes)
     this->write(ptr_reg, value , n_bytes);
 }
 
-uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
+void ProcessMemoryEditor::read(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const
+{
+    uintptr_t ptr_reg = this->getRegularPointer(ptr);
+
+    if (ptr_reg == NULL)
+    {
+        throw new std::exception("invalid regular pointer");
+    }
+
+    this->read(ptr_reg, value, n_bytes);
+}
+
+void ProcessMemoryEditor::write(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const
+{
+    uintptr_t ptr_reg = this->getRegularPointer(ptr);
+
+    if (ptr_reg == NULL)
+    {
+        throw new std::exception("invalid regular pointer");
+    }
+
+    this->write(ptr_reg, value , n_bytes);
+}
+
+uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 {
     uintptr_t result = NULL;
     uintptr_t base_addr = ptr.getBase();
@@ -54,6 +78,11 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
     } while (it != offsets.end());
 
     return result;
+}
+
+uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
+{
+    return this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanBegin(), ptr.getScanLength()) + ptr.getBegin();
 }
 
 /* std::vector<uintptr_t> ProcessMemoryEditor::getRegularPointers(AobSigCfg cfg, unsigned limit) */
@@ -163,7 +192,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
 /*     } */
 /* } */
 
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size)
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const
 {
     uintptr_t currentOffset = start;
     const size_t chunk_size = 4096;
@@ -201,8 +230,8 @@ void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
     delete[] nops;
 }
 
-bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintptr_t begin, size_t size) {
-
+bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintptr_t begin, size_t size) const
+{
     auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
 
     if (res == NULL) {
@@ -218,7 +247,7 @@ bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintpt
     return true;
 }
 
-bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &signature)
+bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &signature) const
 {
     const auto len = signature.getLen();
     const auto mem = new std::byte[len];
@@ -231,7 +260,7 @@ bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &sig
     return matches;
 }
 
-bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, const char* mask, size_t len)
+bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, const char* mask, size_t len) const
 {
     bool matches = true;
 
