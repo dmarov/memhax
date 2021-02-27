@@ -161,3 +161,8 @@ bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, con
 
     return matches;
 }
+
+ProcessMemoryEditor::~ProcessMemoryEditor()
+{
+
+}

@@ -40,6 +40,8 @@ public:
 
     bool testAOBSignature(const AOBSignature &signature, uintptr_t begin, size_t size) const;
     bool testAddress(uintptr_t address, const AOBSignature &signature) const;
+
+    virtual ~ProcessMemoryEditor() = 0;
 };
 
 template <typename T>
