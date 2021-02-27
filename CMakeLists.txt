@@ -13,7 +13,7 @@ find_package(yaml-cpp CONFIG REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
-# add_subdirectory(src/projects/tf-hack tf-hack)
+add_subdirectory(src/projects/tf-hack tf-hack)
 # add_subdirectory(src/projects/sigmaker sigmaker)
 # add_subdirectory(src/projects/sigmaker-monitor sigmaker-monitor)
 add_subdirectory(src/projects/ac-hack ac-hack)
