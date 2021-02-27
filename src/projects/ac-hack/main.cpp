@@ -42,11 +42,11 @@ int main(int argc, char **argv)
 
         mem.nop(base + health_signature_ptr.getBegin(), health_signature_ptr.getLenth());
 
-        /* InstructionNopCheatHandler health_cheat(mem, module, health_signature, 2, 3); */
-        /* HeapTrainerCheatHandler health_cheat(mem, module, health_signature); */
+        InstructionNopCheatHandler health_cheat(mem, module, health_signature_ptr);
+        /* HeapTrainerCheatHandler health_cheat(mem, module, health_signature_ptr); */
 
-        /* health_cheat.enable(); */
-        /* health_cheat.disable(); */
+        health_cheat.enable();
+        health_cheat.disable();
 
     }
     catch(std::exception &e)
