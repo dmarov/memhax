@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstring>
 #include <exception>
 #include <iostream>
 #include <thread>
@@ -39,7 +40,10 @@ int main(int argc, char **argv)
             throw std::exception("could not find pattern");
         }
 
-        mem.nop(addr, 3);
+        char* nops = new char[3];
+        std::memset(nops, '\x90', 3);
+        mem.write(addr + health_signature_ptr.getBegin(), nops, 3);
+        delete[] nops;
         /* mem.nop(base + ammo_signature_ptr.getBegin(), 2); */
 
         /* InstructionNopCheatHandler health_cheat(mem, health_signature_ptr); */

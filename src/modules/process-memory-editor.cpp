@@ -223,13 +223,6 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     return NULL;
 }
 
-void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
-    char* nops = new char[len];
-    std::memset(nops, '\x90', len);
-    this->write(begin, nops, len);
-    delete[] nops;
-}
-
 bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintptr_t begin, size_t size) const
 {
     auto res = this->findFirstAddressByAOBPattern(signature, begin, size);

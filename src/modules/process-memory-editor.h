@@ -42,8 +42,6 @@ public:
     template <typename T>
     void get(AOBSignaturePtr ptr, T* value);
 
-    void nop(uintptr_t begin, size_t len);
-
     /* template <typename T> */
     /* void set(AobSigCfg cfg, T value); */
 
