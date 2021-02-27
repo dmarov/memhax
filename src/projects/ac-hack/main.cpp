@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     try {
 
         AOBSignature health_signature_1("89 8A ?? ?? ?? ?? 89 82 ?? ?? ?? ?? 0F 94 C1");
-        /* std::cout << health_signature_1 << std::endl; */
+        std::cout << health_signature_1 << std::endl;
         /* WinApiProcessMemoryEditor mem(exe, true); */
 
         /* auto [mod_start, mod_size] = mem.getModuleInfo(module); */

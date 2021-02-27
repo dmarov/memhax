@@ -46,15 +46,16 @@ AOBSignature::AOBSignature(std::string signature) {
     }
 
     this->len = sig_len;
+    this->mask.resize(sig_len);
 
     std::stringstream ss;
 
     for (size_t i = 0; i < sig_len; i ++) {
         auto hex_str = signature.substr(2 * i, 2);
-        if (hex_str.compare("??") == 0) {
-            ss << hex_str;
-            char hex_char;
-            ss >> std::hex >>hex_char;
+        if (hex_str.compare("??") != 0) {
+            ss << std::hex << hex_str;
+            unsigned hex_char;
+            ss >> hex_char;
             ss.clear();
             this->values[i] = (std::byte)hex_char;
             this->mask[i] = 'x';
