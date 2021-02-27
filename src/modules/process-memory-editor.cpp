@@ -12,7 +12,7 @@ void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_byt
         throw new std::exception("invalid regular pointer");
     }
 
-    this->read(ptr_reg, value, n_bytes);
+    this->read_p(ptr_reg, value, n_bytes);
 }
 
 void ProcessMemoryEditor::write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
@@ -24,7 +24,7 @@ void ProcessMemoryEditor::write(const MultiLvlPtr& ptr, void* value, size_t n_by
         throw new std::exception("invalid regular pointer");
     }
 
-    this->write(ptr_reg, value , n_bytes);
+    this->write_p(ptr_reg, value , n_bytes);
 }
 
 void ProcessMemoryEditor::read(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const
@@ -36,7 +36,7 @@ void ProcessMemoryEditor::read(const AOBSignaturePtr& ptr, void* value, size_t n
         throw new std::exception("invalid regular pointer");
     }
 
-    this->read(ptr_reg, value, n_bytes);
+    this->read_p(ptr_reg, value, n_bytes);
 }
 
 void ProcessMemoryEditor::write(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const
@@ -48,7 +48,7 @@ void ProcessMemoryEditor::write(const AOBSignaturePtr& ptr, void* value, size_t 
         throw new std::exception("invalid regular pointer");
     }
 
-    this->write(ptr_reg, value , n_bytes);
+    this->write_p(ptr_reg, value , n_bytes);
 }
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
@@ -65,7 +65,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
     {
         uintptr_t new_value = NULL;
         result = base_addr + *it;
-        this->read(result, &new_value, p_size);
+        this->read_p(result, &new_value, p_size);
 
         if (new_value == NULL)
         {
@@ -98,7 +98,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     while (currentOffset < start + size) {
 
         const size_t bytesToRead = min(chunk_size, start + size - currentOffset);
-        this->read(currentOffset, &mem, bytesToRead);
+        this->read_p(currentOffset, &mem, bytesToRead);
 
         const size_t scanLength = chunk_size - sigLength;
 
@@ -138,7 +138,7 @@ bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &sig
     const auto len = signature.getLen();
     const auto mem = new std::byte[len];
 
-    this->read(address, mem, len);
+    this->read_p(address, mem, len);
     bool matches = this->testMemory(mem, signature.getValues(), signature.getMask().c_str(), signature.getLen());
 
     delete[] mem;

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         char* nops = new char[3];
         std::memset(nops, '\x90', 3);
         /* mem.write(addr + health_signature_ptr.getBegin(), nops, 3); */
-        /* mem.write(ammo_signature_ptr, nops, 2); */
+        mem.write(ammo_signature_ptr, nops, 2);
         delete[] nops;
         /* mem.nop(base + ammo_signature_ptr.getBegin(), 2); */
 

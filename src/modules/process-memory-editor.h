@@ -9,8 +9,8 @@ private:
     bool testMemory(void* address, const std::byte* values, const char* mask, size_t len) const;
 
 public:
-    virtual void read(uintptr_t address, void* value, size_t n_bytes) const = 0;
-    virtual void write(uintptr_t address, void* value, size_t n_bytes) const = 0;
+    virtual void read_p(uintptr_t address, void* value, size_t n_bytes) const = 0;
+    virtual void write_p(uintptr_t address, void* value, size_t n_bytes) const = 0;
     virtual unsigned short getPointerSize() const = 0;
     virtual std::tuple<uintptr_t, size_t> getModuleInfo(std::wstring module_name) const = 0;
 

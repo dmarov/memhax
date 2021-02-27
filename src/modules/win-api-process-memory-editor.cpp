@@ -41,7 +41,7 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, bool
     }
 }
 
-void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_read;
     unsigned long oldProtection;
@@ -64,7 +64,7 @@ void WinApiProcessMemoryEditor::read(uintptr_t address, void* value, size_t n_by
     }
 }
 
-void WinApiProcessMemoryEditor::write(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_written;
     unsigned long oldProtection;
