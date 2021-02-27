@@ -30,10 +30,31 @@ int main(int argc, char **argv)
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, mod_start, mod_size);
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, mod_start, mod_size);
 
-        InstructionNopCheatHandler ammo_cheat_handler(mem, ammo_signature_ptr, 3);
+        InstructionNopCheatHandler ammo_cheat_handler(mem, ammo_signature_ptr, 2);
 
-        ammo_cheat_handler.enable();
-        ammo_cheat_handler.disable();
+        bool enabled = false;
+
+        while (true)
+        {
+            SHORT f9_key_state = GetAsyncKeyState(VK_F9);
+            bool f9_key_down = (f9_key_state & 0x8000) && (f9_key_state & 0x0001);
+
+            if (f9_key_down)
+            {
+                if (enabled)
+                {
+                    ammo_cheat_handler.disable();
+                }
+                else
+                {
+                    ammo_cheat_handler.enable();
+                }
+
+                enabled = !enabled;
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     }
     catch(std::exception &e)
     {

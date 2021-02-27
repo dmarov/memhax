@@ -7,7 +7,7 @@ class InstructionNopCheatHandler {
 
 private:
     const ProcessMemoryEditor* editor;
-    const AOBSignaturePtr* ptr;
+    uintptr_t regular_pointer;
     const static short max_len = 100;
     short length;
 
