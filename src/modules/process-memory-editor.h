@@ -41,9 +41,9 @@ public:
     /* void get(AobSigCfg cfg, T* value); */
 
     uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, uintptr_t start, size_t size);
-    uintptr_t findFirstAddressByAOBPattern(AOBSignature singature, uintptr_t start, size_t size);
+    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, uintptr_t start, size_t size);
 
-    bool testAOBSignature(AOBSignature signature, uintptr_t begin, size_t size);
+    bool testAOBSignature(const AOBSignature &signature, uintptr_t begin, size_t size);
     bool testAddress(uintptr_t address, const AOBSignature &signature);
 };
 

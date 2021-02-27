@@ -163,7 +163,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(MultiLvlPtr ptr)
 /*     } */
 /* } */
 
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(AOBSignature signature, uintptr_t start, size_t size)
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size)
 {
     uintptr_t currentOffset = start;
     const size_t chunk_size = 4096;
@@ -201,7 +201,7 @@ void ProcessMemoryEditor::nop(uintptr_t begin, size_t len) {
     delete[] nops;
 }
 
-bool ProcessMemoryEditor::testAOBSignature(AOBSignature signature, uintptr_t begin, size_t size) {
+bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintptr_t begin, size_t size) {
 
     auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
 
