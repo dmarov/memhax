@@ -20,15 +20,8 @@ public:
     void read(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const;
     void write(const AOBSignaturePtr& ptr, void* value, size_t n_bytes) const;
 
-    /* void read(AobSigCfg cfg, void* value, size_t n_bytes); */
-    /* void write(AobSigCfg cfg, void* value, size_t n_bytes); */
-
     uintptr_t getRegularPointer(const MultiLvlPtr& ptr) const;
     uintptr_t getRegularPointer(const AOBSignaturePtr& ptr) const;
-    /* uintptr_t getRegularPointer(AobSigCfg cfg); */
-    /* std::vector<uintptr_t> getRegularPointers(AobSigCfg cfg, unsigned limit); */
-
-    /* bool test(AobSigCfg cfg); */
 
     template <typename T>
     void set(MultiLvlPtr ptr, T value);
@@ -41,12 +34,6 @@ public:
 
     template <typename T>
     void get(AOBSignaturePtr ptr, T* value);
-
-    /* template <typename T> */
-    /* void set(AobSigCfg cfg, T value); */
-
-    /* template <typename T> */
-    /* void get(AobSigCfg cfg, T* value); */
 
     uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, uintptr_t start, size_t size) const;
     uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, uintptr_t start, size_t size) const;
@@ -78,14 +65,3 @@ void ProcessMemoryEditor::get(AOBSignaturePtr ptr, T* value)
 {
     this->read(ptr, value, sizeof(T));
 }
-/* template <typename T> */
-/* void ProcessMemoryEditor::set(AobSigCfg cfg, T value) */
-/* { */
-/*     this->write(cfg, &value, sizeof(T)); */
-/* } */
-
-/* template <typename T> */
-/* void ProcessMemoryEditor::get(AobSigCfg cfg, T* value) */
-/* { */
-/*     this->read(cfg, value, sizeof(T)); */
-/* } */
