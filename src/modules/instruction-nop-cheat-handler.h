@@ -6,13 +6,21 @@
 class InstructionNopCheatHandler {
 
 private:
+    const ProcessMemoryEditor* editor;
+    const AOBSignaturePtr* ptr;
     const static short max_len = 100;
+    short length;
+
     char nops[max_len];
+    char saved_value[max_len];
+    bool initialized;
 
 public:
 
-    InstructionNopCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, size_t length);
+    InstructionNopCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length);
 
     void enable();
     void disable();
+
+    ~InstructionNopCheatHandler();
 };
