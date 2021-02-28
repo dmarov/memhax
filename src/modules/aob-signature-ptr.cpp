@@ -41,6 +41,11 @@ uintptr_t AOBSignaturePtr::getScanLength() const
     return this->scan_length;
 }
 
+const std::vector<ModuleInfo>& AOBSignaturePtr::getScanModules() const
+{
+    return this->scan_modules;
+}
+
 AOBSignaturePtr::~AOBSignaturePtr()
 {
     delete this->signature;

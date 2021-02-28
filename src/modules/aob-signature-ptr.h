@@ -22,6 +22,7 @@ public:
     uintptr_t getBegin() const;
     uintptr_t getScanBegin() const;
     uintptr_t getScanLength() const;
+    const std::vector<ModuleInfo>& getScanModules() const;
 
     ~AOBSignaturePtr();
 };

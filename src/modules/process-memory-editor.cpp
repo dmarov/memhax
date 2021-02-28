@@ -83,7 +83,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
 {
-    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanBegin(), ptr.getScanLength());
+    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanModules());
 
     if (sig_addr == NULL)
     {
@@ -163,6 +163,7 @@ unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signa
         {
             ++res;
             begin = addr + 1;
+            size = end - begin;
         }
         else
         {
