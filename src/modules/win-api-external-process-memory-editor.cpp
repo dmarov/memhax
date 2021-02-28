@@ -2,6 +2,7 @@
 #include "win-api-external-process-memory-editor.h"
 #include <exception>
 #include <string>
+#include <tuple>
 #include <windows.h>
 #include <psapi.h>
 #include <tchar.h>
@@ -87,10 +88,9 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     }
 }
 
-std::tuple<uintptr_t, size_t> WinApiExternalProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
+std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
 {
-    uintptr_t mod_base_addr = 0;
-    size_t mod_size = 0;
+    std::vector<ModuleInfo> res;
 
     HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, this->process_id);
 
@@ -105,12 +105,7 @@ std::tuple<uintptr_t, size_t> WinApiExternalProcessMemoryEditor::getModuleInfo(s
             {
                 std::string buf(modEntry.szModule);
                 std::wstring wbuf(buf.begin(), buf.end());
-                if (!module_name.compare(wbuf))
-                {
-                    mod_base_addr = (uintptr_t)modEntry.modBaseAddr;
-                    mod_size = (size_t)modEntry.modBaseSize;
-                    break;
-                }
+                res.push_back(std::make_tuple(wbuf, (uintptr_t)modEntry.modBaseAddr, (size_t)modEntry.modBaseSize));
 
             } while (Module32Next(hSnap, &modEntry));
         }
@@ -118,7 +113,7 @@ std::tuple<uintptr_t, size_t> WinApiExternalProcessMemoryEditor::getModuleInfo(s
 
     CloseHandle(hSnap);
 
-    return std::make_tuple(mod_base_addr, mod_size);
+    return res;
 }
 
 unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const

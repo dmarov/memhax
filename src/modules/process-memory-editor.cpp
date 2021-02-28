@@ -169,6 +169,21 @@ bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, con
     return matches;
 }
 
+ModuleInfo ProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
+{
+    auto modules = this->getModules();
+
+    for (auto [name, begin, size] : modules)
+    {
+        if (!module_name.compare(name))
+        {
+            return std::make_tuple(name, begin, size);
+        }
+    }
+
+    return std::make_tuple(L"", 0, 0);
+}
+
 ProcessMemoryEditor::~ProcessMemoryEditor()
 {
 

@@ -18,7 +18,7 @@
 // 1E6691B9D46 - 48 8D 65 00           - lea rsp,[rbp+00]
 // 1E6691B9D4A - 5D                    - pop rbp
 
-// F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ??
+// F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D
 //                         == == == == ==
 
 int main(int argc, char **argv)
@@ -30,9 +30,10 @@ int main(int argc, char **argv)
 
         WinApiExternalProcessMemoryEditor editor(exe, true);
 
-        auto [mod_start, mod_size] = editor.getModuleInfo(module);
+        auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module);
 
-        AOBSignaturePtr ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ??", 9, mod_start, mod_size);
+        AOBSignaturePtr ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D", 8, mod_start, mod_size);
+        std::cout << editor.getRegularPointer(ammo_ptr) << std::endl;
         InstructionNopCheatHandler handler(editor, ammo_ptr, 5);
 
         /* MultiLvlPtr           health(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x14 }); */

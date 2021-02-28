@@ -3,6 +3,8 @@
 #include "multi-lvl-ptr.h"
 #include "aob-signature-ptr.h"
 
+typedef std::tuple<std::wstring, uintptr_t, size_t> ModuleInfo;
+
 class ProcessMemoryEditor {
 
 private:
@@ -12,7 +14,9 @@ public:
     virtual void read_p(uintptr_t address, void* value, size_t n_bytes) const = 0;
     virtual void write_p(uintptr_t address, void* value, size_t n_bytes) const = 0;
     virtual unsigned short getPointerSize() const = 0;
-    virtual std::tuple<uintptr_t, size_t> getModuleInfo(std::wstring module_name) const = 0;
+    virtual std::vector<ModuleInfo> getModules() const = 0;
+
+    ModuleInfo getModuleInfo(std::wstring module_name) const;
 
     void read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
     void write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
