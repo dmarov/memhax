@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "aob-signature.h"
+#include "module-info.h"
 
 class AOBSignaturePtr {
 
@@ -11,9 +12,11 @@ private:
     uintptr_t begin;
     uintptr_t scan_begin;
     size_t scan_length;
+    std::vector<ModuleInfo> scan_modules;
 
 public:
     AOBSignaturePtr(std::string pattern, uintptr_t begin, uintptr_t scan_begin, size_t scan_length);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin);
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;

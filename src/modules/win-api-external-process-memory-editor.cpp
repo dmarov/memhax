@@ -1,13 +1,6 @@
-#include "multi-lvl-ptr.h"
 #include "win-api-external-process-memory-editor.h"
-#include <exception>
-#include <string>
-#include <tuple>
 #include <windows.h>
-#include <psapi.h>
-#include <tchar.h>
 #include <sstream>
-#include <iostream>
 #include <TlHelp32.h>
 
 WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)

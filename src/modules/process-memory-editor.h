@@ -2,6 +2,7 @@
 
 #include "multi-lvl-ptr.h"
 #include "aob-signature-ptr.h"
+#include "module-info.h"
 
 typedef std::tuple<std::wstring, uintptr_t, size_t> ModuleInfo;
 

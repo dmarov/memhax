@@ -1,7 +1,8 @@
 #pragma once
 
-#include "process-memory-editor.h"
 #include <windows.h>
+#include "process-memory-editor.h"
+#include "module-info.h"
 
 class WinApiExternalProcessMemoryEditor : public ProcessMemoryEditor {
 
