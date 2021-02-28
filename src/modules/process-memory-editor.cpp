@@ -82,7 +82,14 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
 {
-    return this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanBegin(), ptr.getScanLength()) + ptr.getBegin();
+    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanBegin(), ptr.getScanLength());
+
+    if (sig_addr == NULL)
+    {
+        throw std::exception("address not found");
+    }
+
+    return sig_addr + ptr.getBegin();
 }
 
 uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const

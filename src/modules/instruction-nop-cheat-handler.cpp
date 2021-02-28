@@ -2,6 +2,7 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 #include <exception>
+#include <iostream>
 
 InstructionNopCheatHandler::InstructionNopCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length)
 {
