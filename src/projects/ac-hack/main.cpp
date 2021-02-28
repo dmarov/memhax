@@ -1,14 +1,12 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "modules/multi-lvl-ptr.h"
 #include "modules/aob-signature-ptr.h"
 #include "modules/win-api-process-memory-editor.h"
-#include "modules/process-memory-editor.h"
 #include "modules/instruction-nop-cheat-handler.h"
 #include <winuser.h>
 
-//health
+// health
 // 2B F8 29 7B ?? 8B C7 5F 5E 8B E5
 //       == == ==
 
@@ -23,14 +21,14 @@ int main(int argc, char **argv)
 
     try {
 
-        WinApiProcessMemoryEditor mem(exe, true);
+        WinApiProcessMemoryEditor editor(exe, true);
 
-        auto [mod_start, mod_size] = mem.getModuleInfo(module);
+        auto [mod_start, mod_size] = editor.getModuleInfo(module);
 
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, mod_start, mod_size);
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, mod_start, mod_size);
 
-        InstructionNopCheatHandler ammo_cheat_handler(mem, ammo_signature_ptr, 2);
+        InstructionNopCheatHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
         bool enabled = false;
 

@@ -7,6 +7,16 @@
 #include <winuser.h>
 #include <bitset>
 
+// ammo
+// 1AF0AFB4AA9 - 83 38 00              - cmp dword ptr [rax],00
+// 1AF0AFB4AAC - F3 0F10 45 EC         - movss xmm0,[rbp-14]
+// 1AF0AFB4AB1 - F3 0F5A C0            - cvtss2sd xmm0,xmm0
+// 1AF0AFB4AB5 - F2 0F5A E8            - cvtsd2ss xmm5,xmm0
+// 1AF0AFB4AB9 - F3 0F11 68 14         - movss [rax+14],xmm5
+// 1AF0AFB4ABE - 48 8B 7D F0           - mov rdi,[rbp-10]
+// 1AF0AFB4AC2 - 4C 8B 7D F8           - mov r15,[rbp-08]
+// 1AF0AFB4AC6 - 48 8D 65 00           - lea rsp,[rbp+00]
+
 int main(int argc, char **argv)
 {
     try {
