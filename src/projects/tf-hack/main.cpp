@@ -3,7 +3,7 @@
 #include <iostream>
 #include <thread>
 #include "modules/multi-lvl-ptr.h"
-#include "modules/win-api-process-memory-editor.h"
+#include "modules/win-api-external-process-memory-editor.h"
 #include <winuser.h>
 #include <bitset>
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         const wchar_t* exe = L"TankForce.exe";
         const wchar_t* module = L"mono-2.0-bdwgc.dll";
 
-        WinApiProcessMemoryEditor mem(exe, false);
+        WinApiExternalProcessMemoryEditor mem(exe, false);
 
         auto [mod_start, mod_size] = mem.getModuleInfo(module);
 

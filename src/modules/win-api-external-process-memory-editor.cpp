@@ -1,5 +1,5 @@
 #include "multi-lvl-ptr.h"
-#include "win-api-process-memory-editor.h"
+#include "win-api-external-process-memory-editor.h"
 #include <exception>
 #include <string>
 #include <windows.h>
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <TlHelp32.h>
 
-WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)
+WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)
 {
     this->bypassVirtualProtect = bypassVirtualProtect;
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -41,13 +41,13 @@ WinApiProcessMemoryEditor::WinApiProcessMemoryEditor(std::wstring exe_name, bool
     }
 }
 
-void WinApiProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_read;
     unsigned long oldProtection;
 
     if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection);
     }
 
     ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
@@ -64,13 +64,13 @@ void WinApiProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_
     }
 }
 
-void WinApiProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_written;
     unsigned long oldProtection;
 
     if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection);
     }
 
     WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
@@ -87,7 +87,7 @@ void WinApiProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n
     }
 }
 
-std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
+std::tuple<uintptr_t, size_t> WinApiExternalProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
 {
     uintptr_t mod_base_addr = 0;
     size_t mod_size = 0;
@@ -121,14 +121,14 @@ std::tuple<uintptr_t, size_t> WinApiProcessMemoryEditor::getModuleInfo(std::wstr
     return std::make_tuple(mod_base_addr, mod_size);
 }
 
-unsigned short WinApiProcessMemoryEditor::getPointerSize() const
+unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
 {
     BOOL is_32_bit = false;
     is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;
     return is_32_bit ? 4 : 8;
 }
 
-WinApiProcessMemoryEditor::~WinApiProcessMemoryEditor()
+WinApiExternalProcessMemoryEditor::~WinApiExternalProcessMemoryEditor()
 {
     CloseHandle(this->handle);
 }

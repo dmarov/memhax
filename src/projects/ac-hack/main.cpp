@@ -2,7 +2,7 @@
 #include <iostream>
 #include <thread>
 #include "modules/aob-signature-ptr.h"
-#include "modules/win-api-process-memory-editor.h"
+#include "modules/win-api-external-process-memory-editor.h"
 #include "modules/instruction-nop-cheat-handler.h"
 #include <winuser.h>
 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     try {
 
-        WinApiProcessMemoryEditor editor(exe, true);
+        WinApiExternalProcessMemoryEditor editor(exe, true);
 
         auto [mod_start, mod_size] = editor.getModuleInfo(module);
 

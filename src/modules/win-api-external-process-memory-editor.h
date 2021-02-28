@@ -3,7 +3,7 @@
 #include "process-memory-editor.h"
 #include <windows.h>
 
-class WinApiProcessMemoryEditor : public ProcessMemoryEditor {
+class WinApiExternalProcessMemoryEditor : public ProcessMemoryEditor {
 
 private:
     HANDLE handle;
@@ -11,7 +11,7 @@ private:
     bool bypassVirtualProtect;
 
 public:
-    WinApiProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect);
+    WinApiExternalProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect);
 
     void read_p(uintptr_t address, void* value, size_t n_bytes) const;
     void write_p(uintptr_t address, void* value, size_t n_bytes) const;
@@ -19,5 +19,5 @@ public:
 
     unsigned short getPointerSize() const;
 
-    ~WinApiProcessMemoryEditor();
+    ~WinApiExternalProcessMemoryEditor();
 };
