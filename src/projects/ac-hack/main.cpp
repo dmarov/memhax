@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include "modules/aob-signature-ptr.h"
+#include "modules/aob-signature.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include "modules/instruction-nop-cheat-handler.h"
 #include <winuser.h>
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
         auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module);
 
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, mod_start, mod_size);
+        /* const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModules()); */
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, mod_start, mod_size);
 
         InstructionNopCheatHandler health_cheat_handler(editor, health_signature_ptr, 3);

@@ -30,11 +30,12 @@ int main(int argc, char **argv)
 
         WinApiExternalProcessMemoryEditor editor(exe, true);
 
-        auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module);
+        /* auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module); */
 
-        AOBSignaturePtr ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D", 8, mod_start, mod_size);
-        std::cout << editor.getRegularPointer(ammo_ptr) << std::endl;
-        InstructionNopCheatHandler handler(editor, ammo_ptr, 5);
+        AOBSignature ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D");
+        std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModules()) << std::endl;
+        /* std::cout << editor.getRegularPointer(ammo_ptr) << std::endl; */
+        /* InstructionNopCheatHandler handler(editor, ammo_ptr, 5); */
 
         /* MultiLvlPtr           health(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x14 }); */
         /* MultiLvlPtr       max_health(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x18 }); */
@@ -79,14 +80,14 @@ int main(int argc, char **argv)
 
             if (f9_key_down)
             {
-                if (enabled)
-                {
-                    handler.disable();
-                }
-                else
-                {
-                    handler.enable();
-                }
+                /* if (enabled) */
+                /* { */
+                /*     handler.disable(); */
+                /* } */
+                /* else */
+                /* { */
+                /*     handler.enable(); */
+                /* } */
 
                 enabled = !enabled;
 

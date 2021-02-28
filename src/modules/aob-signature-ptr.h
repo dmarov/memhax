@@ -16,7 +16,7 @@ private:
 
 public:
     AOBSignaturePtr(std::string pattern, uintptr_t begin, uintptr_t scan_begin, size_t scan_length);
-    AOBSignaturePtr(std::string pattern, uintptr_t begin);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, std::vector<ModuleInfo> modules);
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;

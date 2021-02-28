@@ -1,5 +1,6 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
+#include <vector>
 #include <windows.h>
 #include <iostream>
 
@@ -92,6 +93,21 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) con
     return sig_addr + ptr.getBegin();
 }
 
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const
+{
+    for (auto [name, begin, size] : modules)
+    {
+        auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
+
+        if (res != NULL)
+        {
+            return res;
+        }
+    }
+
+    return NULL;
+}
+
 uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const
 {
     uintptr_t currentOffset = start;
@@ -123,21 +139,38 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     return NULL;
 }
 
-bool ProcessMemoryEditor::testAOBSignature(const AOBSignature& signature, uintptr_t begin, size_t size) const
+unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const
 {
-    auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
+    unsigned matches = 0;
 
-    if (res == NULL) {
-        return false;
+    for (auto [name, begin, size] : modules)
+    {
+        matches += this->countAOBSignatureMatches(signature, begin, size);
     }
 
-    res = this->findFirstAddressByAOBPattern(signature, res + 1, size - (res - begin) - 1);
+    return matches;
+}
 
-    if (res != NULL) {
-        return false;
+unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, uintptr_t begin, size_t size) const
+{
+    unsigned res = 0;
+    uintptr_t end = begin + size;
+
+    while (begin < end)
+    {
+        auto addr = this->findFirstAddressByAOBPattern(signature, begin, size);
+        if (addr != NULL)
+        {
+            ++res;
+            begin = addr + 1;
+        }
+        else
+        {
+            break;
+        }
     }
 
-    return true;
+    return res;
 }
 
 bool ProcessMemoryEditor::testAddress(uintptr_t address, const AOBSignature &signature) const
@@ -157,8 +190,8 @@ bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, con
 {
     bool matches = true;
 
-    for (uintptr_t i = 0; i < len; ++i) {
-
+    for (uintptr_t i = 0; i < len; ++i)
+    {
         matches &= (mask[i] == '?') || (values[i] == ((std::byte*)address)[i]);
 
         if (!matches) {

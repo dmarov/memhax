@@ -42,8 +42,10 @@ public:
 
     uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, uintptr_t start, size_t size) const;
     uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, uintptr_t start, size_t size) const;
+    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, const std::vector<ModuleInfo>& modules) const;
 
-    bool testAOBSignature(const AOBSignature &signature, uintptr_t begin, size_t size) const;
+    unsigned countAOBSignatureMatches(const AOBSignature& signature, uintptr_t begin, size_t size) const;
+    unsigned countAOBSignatureMatches(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const;
     bool testAddress(uintptr_t address, const AOBSignature &signature) const;
 
     virtual ~ProcessMemoryEditor() = 0;
