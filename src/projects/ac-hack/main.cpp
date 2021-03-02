@@ -7,14 +7,6 @@
 #include "modules/instruction-nop-cheat-handler.h"
 #include <winuser.h>
 
-// health
-// 2B F8 29 7B ?? 8B C7 5F 5E 8B E5
-//       == == ==
-
-// ammo
-// 8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24
-//                         == ==
-
 int main(int argc, char **argv)
 {
     const wchar_t* exe = L"ac_client.exe";
