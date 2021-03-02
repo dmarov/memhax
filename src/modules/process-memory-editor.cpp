@@ -122,10 +122,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     while (currentOffset < start + size)
     {
         const size_t bytesToRead = min(chunk_size, start + size - currentOffset);
-        std::cout << std::hex << currentOffset << " " << std::hex << currentOffset + bytesToRead << std::endl;
-
         this->read_p(currentOffset, &mem, bytesToRead);
-
         const size_t scanLength = bytesToRead - sigLength;
 
         for (size_t i = 0; i < scanLength; ++i)
