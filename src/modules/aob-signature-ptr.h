@@ -10,14 +10,16 @@ class AOBSignaturePtr {
 private:
     const AOBSignature* signature;
     uintptr_t begin;
-    std::vector<ModuleInfo> scan_modules;
+    std::vector<std::wstring> scan_module_names;
 
 public:
-    AOBSignaturePtr(std::string pattern, uintptr_t begin, std::vector<ModuleInfo> modules);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, std::wstring module);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, const std::vector<std::wstring>& scan_module_names);
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;
-    const std::vector<ModuleInfo>& getScanModules() const;
+    const std::vector<std::wstring>& getScanModuleNames() const;
 
     ~AOBSignaturePtr();
 };

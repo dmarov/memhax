@@ -1,8 +1,12 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
+#include <iterator>
+#include <tuple>
 #include <vector>
 #include <windows.h>
 #include <iostream>
+#include <algorithm>
+#include <iterator>
 
 void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {
@@ -83,7 +87,19 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
 {
-    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanModules());
+    auto scan_module_names = ptr.getScanModuleNames();
+    std::vector<ModuleInfo> scan_modules;
+
+    if (!scan_module_names.size())
+    {
+        scan_modules = this->getModules();
+    }
+    else
+    {
+        scan_modules = this->getModulesByNames(scan_module_names);
+    }
+
+    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), scan_modules);
 
     if (sig_addr == NULL)
     {
@@ -216,6 +232,22 @@ ModuleInfo ProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
     }
 
     return std::make_tuple(L"", 0, 0);
+}
+
+std::vector<ModuleInfo> ProcessMemoryEditor::getModulesByNames(const std::vector<std::wstring>& module_names) const
+{
+    auto modules = this->getModules();
+    std::vector<ModuleInfo> res;
+
+    for (const auto & [name, begin, size] : modules)
+    {
+        if (std::find(module_names.begin(), module_names.end(), name) != module_names.end())
+        {
+            res.push_back(std::make_tuple(name, begin, size));
+        }
+    }
+
+    return res;
 }
 
 ProcessMemoryEditor::~ProcessMemoryEditor()

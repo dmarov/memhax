@@ -6,12 +6,20 @@
 #include "aob-signature-ptr.h"
 #include "module-info.h"
 
-AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, std::vector<ModuleInfo> modules)
+AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, const std::vector<std::wstring>& scan_module_names)
 {
     this->signature = new AOBSignature(pattern);
     this->begin = begin;
-    this->scan_modules = modules;
+    this->scan_module_names = scan_module_names;
 }
+
+AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, std::wstring module_name)
+    : AOBSignaturePtr(pattern, begin, std::vector {module_name})
+{ }
+
+AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin)
+    : AOBSignaturePtr(pattern, begin, std::vector<std::wstring> {})
+{ }
 
 const AOBSignature& AOBSignaturePtr::getSignature() const
 {
@@ -23,9 +31,9 @@ uintptr_t AOBSignaturePtr::getBegin() const
     return this->begin;
 }
 
-const std::vector<ModuleInfo>& AOBSignaturePtr::getScanModules() const
+const std::vector<std::wstring>& AOBSignaturePtr::getScanModuleNames() const
 {
-    return this->scan_modules;
+    return this->scan_module_names;
 }
 
 AOBSignaturePtr::~AOBSignaturePtr()

@@ -3,6 +3,7 @@
 #include "multi-lvl-ptr.h"
 #include "aob-signature-ptr.h"
 #include "module-info.h"
+#include <string>
 
 typedef std::tuple<std::wstring, uintptr_t, size_t> ModuleInfo;
 
@@ -18,6 +19,7 @@ public:
     virtual std::vector<ModuleInfo> getModules() const = 0;
 
     ModuleInfo getModuleInfo(std::wstring module_name) const;
+    std::vector<ModuleInfo> getModulesByNames(const std::vector<std::wstring>& module_names) const;
 
     void read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
     void write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
