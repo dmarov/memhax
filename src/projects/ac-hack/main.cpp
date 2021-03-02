@@ -27,14 +27,10 @@ int main(int argc, char **argv)
         auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module);
 
         auto modules = editor.getModules();
-        for (auto [name, begin, size] : modules)
-        {
-            std::wcout << name << " " << begin << " " << size << std::endl;
-        }
-
         auto [name, begin, size] = modules[0];
+        AOBSignature sig("2B F8 29 7B ?? 8B C7 5F 5E 8B E5");
 
-        std::cout << editor.countAOBSignatureMatches(AOBSignature("2B F8 29 7B ?? 8B C7 5F 5E 8B E5"), begin, size) << std::endl;
+        std::cout << editor.countAOBSignatureMatches(sig, begin, size) << std::endl;
 
         /* const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, mod_start, mod_size); */
         /* /1* const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModules()); *1/ */

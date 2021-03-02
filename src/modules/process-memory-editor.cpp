@@ -110,23 +110,26 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
 
 uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const
 {
-    uintptr_t currentOffset = start;
     const size_t chunk_size = 4096;
+    std::byte mem[chunk_size];
+
+    uintptr_t currentOffset = start;
     auto mask = signature.getMask();
     auto mask_c = mask.c_str();
     auto values = signature.getValues();
-    std::byte mem[chunk_size];
     const size_t sigLength = signature.getLen();
 
-    while (currentOffset < start + size) {
-
+    while (currentOffset < start + size)
+    {
         const size_t bytesToRead = min(chunk_size, start + size - currentOffset);
+        std::cout << std::hex << currentOffset << " " << std::hex << currentOffset + bytesToRead << std::endl;
+
         this->read_p(currentOffset, &mem, bytesToRead);
 
-        const size_t scanLength = chunk_size - sigLength;
+        const size_t scanLength = bytesToRead - sigLength;
 
-        for (size_t i = 0; i < scanLength; ++i) {
-
+        for (size_t i = 0; i < scanLength; ++i)
+        {
             if (this->testMemory(&mem[i], values, mask_c, sigLength))
             {
                 return currentOffset + i;

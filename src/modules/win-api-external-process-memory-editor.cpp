@@ -41,7 +41,8 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     unsigned long oldProtection;
 
     if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection);
+        // TODO: figure out why PAGE_EXECUTE_READ leads to crash of full module scan
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
     }
 
     ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
@@ -64,7 +65,7 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     unsigned long oldProtection;
 
     if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection);
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
     }
 
     WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
