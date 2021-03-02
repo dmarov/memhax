@@ -13,6 +13,8 @@ private:
     std::vector<std::wstring> scan_module_names;
 
 public:
+
+    // TODO: create container for search regions
     AOBSignaturePtr(std::string pattern, uintptr_t begin);
     AOBSignaturePtr(std::string pattern, uintptr_t begin, std::wstring module);
     AOBSignaturePtr(std::string pattern, uintptr_t begin, const std::vector<std::wstring>& scan_module_names);

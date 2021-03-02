@@ -126,6 +126,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
 
 uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const
 {
+    // TODO: figure out if need to check boundaries
     const size_t chunk_size = 4096;
     std::byte mem[chunk_size];
 

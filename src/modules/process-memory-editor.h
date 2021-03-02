@@ -44,6 +44,7 @@ public:
 
     uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, uintptr_t start, size_t size) const;
     uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, uintptr_t start, size_t size) const;
+    // TODO: create container for scan span
     uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, const std::vector<ModuleInfo>& modules) const;
 
     unsigned countAOBSignatureMatches(const AOBSignature& signature, uintptr_t begin, size_t size) const;

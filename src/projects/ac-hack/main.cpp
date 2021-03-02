@@ -23,8 +23,6 @@ int main(int argc, char **argv)
     bool enabled = false;
 
     try {
-
-
         while (true)
         {
             SHORT f9_key_state = GetAsyncKeyState(VK_F9);
