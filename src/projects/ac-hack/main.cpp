@@ -12,21 +12,18 @@ int main(int argc, char **argv)
     const wchar_t* exe = L"ac_client.exe";
     const wchar_t* module_name = L"ac_client.exe";
 
+    WinApiExternalProcessMemoryEditor editor(exe, true);
+
+    const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, module_name);
+    const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, module_name);
+
+    InstructionNopCheatHandler health_cheat_handler(editor, health_signature_ptr, 3);
+    InstructionNopCheatHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
+
+    bool enabled = false;
+
     try {
 
-        WinApiExternalProcessMemoryEditor editor(exe, true);
-
-        auto [mod_name, mod_start, mod_size] = editor.getModuleInfo(module_name);
-
-        auto modules = editor.getModules();
-
-        const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, module_name);
-        const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, module_name);
-
-        InstructionNopCheatHandler health_cheat_handler(editor, health_signature_ptr, 3);
-        InstructionNopCheatHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
-
-        bool enabled = false;
 
         while (true)
         {
