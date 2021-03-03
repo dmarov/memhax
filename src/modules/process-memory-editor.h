@@ -2,10 +2,9 @@
 
 #include "multi-lvl-ptr.h"
 #include "aob-signature-ptr.h"
+#include "memory-span.h"
 #include "module-info.h"
 #include <string>
-
-typedef std::tuple<std::wstring, uintptr_t, size_t> ModuleInfo;
 
 class ProcessMemoryEditor {
 
@@ -18,8 +17,7 @@ public:
     virtual unsigned short getPointerSize() const = 0;
     virtual std::vector<ModuleInfo> getModules() const = 0;
 
-    ModuleInfo getModuleInfo(std::wstring module_name) const;
-    std::vector<ModuleInfo> getModulesByNames(const std::vector<std::wstring>& module_names) const;
+    MemorySpan getModuleSpan(std::wstring module_name) const;
 
     void read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
     void write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
@@ -42,13 +40,10 @@ public:
     template <typename T>
     void get(const AOBSignaturePtr& ptr, T* value) const;
 
-    uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, uintptr_t start, size_t size) const;
-    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, uintptr_t start, size_t size) const;
-    // TODO: create container for scan span
-    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, const std::vector<ModuleInfo>& modules) const;
+    uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, MemorySpan scan_span) const;
+    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, MemorySpan scan_span) const;
 
-    unsigned countAOBSignatureMatches(const AOBSignature& signature, uintptr_t begin, size_t size) const;
-    unsigned countAOBSignatureMatches(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const;
+    unsigned countAOBSignatureMatches(const AOBSignature& signature, MemorySpan scan_span) const;
     bool testAddress(uintptr_t address, const AOBSignature &signature) const;
 
     virtual ~ProcessMemoryEditor() = 0;

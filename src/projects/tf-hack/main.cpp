@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
         AOBSignature ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C");
 
-        std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModules()) << std::endl;
+        std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModuleSpan(L"TankForce.exe")) << std::endl;
         /* const wchar_t* module = L"mono-2.0-bdwgc.dll"; */
 
 

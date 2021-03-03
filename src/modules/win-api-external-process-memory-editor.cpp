@@ -51,6 +51,7 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
     }
 
+    // TODO: figure out if this is good idea
     if (bytes_read != n_bytes)
     {
         std::stringstream ss;

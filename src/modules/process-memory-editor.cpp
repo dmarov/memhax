@@ -87,19 +87,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
 {
-    auto scan_module_names = ptr.getScanModuleNames();
-    std::vector<ModuleInfo> scan_modules;
-
-    if (!scan_module_names.size())
-    {
-        scan_modules = this->getModules();
-    }
-    else
-    {
-        scan_modules = this->getModulesByNames(scan_module_names);
-    }
-
-    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), scan_modules);
+    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanSpan());
 
     if (sig_addr == NULL)
     {
@@ -109,26 +97,12 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) con
     return sig_addr + ptr.getBegin();
 }
 
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const
-{
-    for (auto [name, begin, size] : modules)
-    {
-        auto res = this->findFirstAddressByAOBPattern(signature, begin, size);
-
-        if (res != NULL)
-        {
-            return res;
-        }
-    }
-
-    return NULL;
-}
-
-uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, uintptr_t start, size_t size) const
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, MemorySpan scan_span) const
 {
     // TODO: figure out if need to check boundaries
     const size_t chunk_size = 4096;
     std::byte mem[chunk_size];
+    auto [start, size] = scan_span;
 
     uintptr_t currentOffset = start;
     auto mask = signature.getMask();
@@ -156,26 +130,15 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     return NULL;
 }
 
-unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, const std::vector<ModuleInfo>& modules) const
-{
-    unsigned matches = 0;
-
-    for (auto [name, begin, size] : modules)
-    {
-        matches += this->countAOBSignatureMatches(signature, begin, size);
-    }
-
-    return matches;
-}
-
-unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, uintptr_t begin, size_t size) const
+unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, MemorySpan scan_span) const
 {
     unsigned res = 0;
+    auto [begin, size] = scan_span;
     uintptr_t end = begin + size;
 
     while (begin < end)
     {
-        auto addr = this->findFirstAddressByAOBPattern(signature, begin, size);
+        auto addr = this->findFirstAddressByAOBPattern(signature, std::make_tuple(begin, size));
         if (addr != NULL)
         {
             ++res;
@@ -220,7 +183,7 @@ bool ProcessMemoryEditor::testMemory(void* address, const std::byte* values, con
     return matches;
 }
 
-ModuleInfo ProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
+MemorySpan ProcessMemoryEditor::getModuleSpan(std::wstring module_name) const
 {
     auto modules = this->getModules();
 
@@ -228,27 +191,11 @@ ModuleInfo ProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
     {
         if (!module_name.compare(name))
         {
-            return std::make_tuple(name, begin, size);
+            return std::make_tuple(begin, size);
         }
     }
 
-    return std::make_tuple(L"", 0, 0);
-}
-
-std::vector<ModuleInfo> ProcessMemoryEditor::getModulesByNames(const std::vector<std::wstring>& module_names) const
-{
-    auto modules = this->getModules();
-    std::vector<ModuleInfo> res;
-
-    for (const auto & [name, begin, size] : modules)
-    {
-        if (std::find(module_names.begin(), module_names.end(), name) != module_names.end())
-        {
-            res.push_back(std::make_tuple(name, begin, size));
-        }
-    }
-
-    return res;
+    return std::make_tuple(0, 0);
 }
 
 ProcessMemoryEditor::~ProcessMemoryEditor()
