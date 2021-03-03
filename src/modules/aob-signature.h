@@ -5,9 +5,11 @@
 
 class AOBSignature {
 
+public:
+    const static size_t MAX_LEN = 100;
+
 private:
-    const static size_t max_len = 100;
-    std::byte values[max_len];
+    std::byte values[MAX_LEN];
     std::string mask;
     unsigned len;
 

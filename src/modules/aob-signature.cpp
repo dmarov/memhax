@@ -15,7 +15,7 @@ AOBSignature::AOBSignature(const AOBSignature& sig) {
 AOBSignature::AOBSignature(const std::byte* values, std::string mask)
 {
     const auto len = mask.length();
-    if (len > this->max_len)
+    if (len > this->MAX_LEN)
     {
         throw std::exception("Failed to construct signature. Signature too large");
     }
@@ -40,7 +40,7 @@ AOBSignature::AOBSignature(std::string signature) {
     auto len = signature.length();
     auto sig_len = len / 2;
 
-    if (sig_len > this->max_len)
+    if (sig_len > this->MAX_LEN)
     {
         throw new std::exception("Failed to construct signature. Signature too large");
     }
