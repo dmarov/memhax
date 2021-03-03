@@ -120,16 +120,16 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
         this->read_p(current_offset, scan_mem, bytes_to_read);
         const size_t scan_length = bytes_to_read - sig_length;
 
-        for (size_t i = 0; i < scan_length; ++i)
+        for (size_t i = 0; i < bytes_to_read; ++i)
         {
-            if (this->testMemory(&scan_mem[i], values, mask_c, sig_length))
+            if (this->testMemory(scan_mem + i - sig_length, values, mask_c, sig_length))
             {
-                return current_offset + i;
+                return current_offset + i - sig_length;
             }
         }
 
         current_offset += bytes_to_read;
-        /* std::memcpy(scan_mem - sig_length, scan_mem + bytes_to_read - sig_length, sig_length); */
+        std::memcpy(scan_mem - sig_length, scan_mem + scan_length, sig_length);
     }
 
     return NULL;
