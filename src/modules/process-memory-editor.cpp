@@ -103,7 +103,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     const size_t chunk_size = 4096;
     const size_t alloc_size = chunk_size + signature.MAX_LEN;
     std::byte mem[alloc_size];
-    std::byte* scan_mem = &mem[signature.MAX_LEN];
+    std::byte* scan_mem = mem + signature.MAX_LEN;
     std::memset(mem, 0x00, signature.MAX_LEN);
 
     auto [scan_begin, scan_size] = scan_span;
