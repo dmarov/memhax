@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         auto page_size = sysInfo.dwPageSize;
 
         const wchar_t* exe = L"TankForce.exe";
-        WinApiExternalProcessMemoryEditor editor(exe, true);
+        WinApiExternalProcessMemoryEditor editor(exe);
 
         auto modules = editor.getModules();
 

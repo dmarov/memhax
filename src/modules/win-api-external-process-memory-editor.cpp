@@ -4,9 +4,8 @@
 #include <TlHelp32.h>
 #include <memoryapi.h>
 
-WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)
+WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
 {
-    this->bypassVirtualProtect = bypassVirtualProtect;
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(entry);

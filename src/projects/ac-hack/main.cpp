@@ -13,7 +13,7 @@ int main(int argc, char **argv)
         const wchar_t* exe = L"ac_client.exe";
         const wchar_t* module_name = L"ac_client.exe";
 
-        WinApiExternalProcessMemoryEditor editor(exe, true);
+        WinApiExternalProcessMemoryEditor editor(exe);
 
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
