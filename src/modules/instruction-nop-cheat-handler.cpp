@@ -20,23 +20,30 @@ InstructionNopCheatHandler::InstructionNopCheatHandler(const ProcessMemoryEditor
     this->length = length;
     this->regular_pointer = this->editor->getRegularPointer(ptr);
     this->initialized = false;
+    this->enabled = false;
 }
 
 void InstructionNopCheatHandler::enable()
 {
-    if (!this->initialized) {
-        this->initialized = true;
-        this->editor->read_p(this->regular_pointer, this->saved_value, this->length);
-    }
+    if (!this->enabled)
+    {
+        if (!this->initialized) {
+            this->initialized = true;
+            this->editor->read_p(this->regular_pointer, this->saved_value, this->length);
+        }
 
-    this->editor->write_p(this->regular_pointer, this->nops, this->length);
-    this->enabled = true;
+        this->editor->write_p(this->regular_pointer, this->nops, this->length);
+        this->enabled = true;
+    }
 }
 
 void InstructionNopCheatHandler::disable()
 {
-    this->editor->write_p(this->regular_pointer, this->saved_value, this->length);
-    this->enabled = false;
+    if (this->enabled)
+    {
+        this->editor->write_p(this->regular_pointer, this->saved_value, this->length);
+        this->enabled = false;
+    }
 }
 
 InstructionNopCheatHandler::~InstructionNopCheatHandler()
