@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <sstream>
 #include <TlHelp32.h>
+#include <memoryapi.h>
 
 WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name, boolean bypassVirtualProtect)
 {
@@ -39,20 +40,33 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 {
     size_t bytes_read;
     unsigned long oldProtection;
+    MEMORY_BASIC_INFORMATION mbi = { 0 };
+    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
 
-    if (this->bypassVirtualProtect) {
-        // TODO: figure out why PAGE_EXECUTE_READ leads to crash of full module scan
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
+    if (q_success == 0)
+    {
+        std::stringstream ss;
+        ss << "failed to query memory info [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
     }
 
-    ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
+    if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
+    {
+        std::stringstream ss;
+        ss << "bad memory to read [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
+
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+
+    auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
 
     if (this->bypassVirtualProtect) {
         VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
     }
 
     // TODO: figure out if this is good idea
-    if (bytes_read != n_bytes)
+    if (success == 0 || bytes_read != n_bytes)
     {
         std::stringstream ss;
         ss << "failed to read memory [0x" << std::hex << GetLastError() << "]";
@@ -64,18 +78,34 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
 {
     size_t bytes_written;
     unsigned long oldProtection;
+    MEMORY_BASIC_INFORMATION mbi = { 0 };
+    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
 
-    if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PROCESS_ALL_ACCESS, &oldProtection);
+    if (q_success == 0)
+    {
+        std::stringstream ss;
+        ss << "failed to query memory info [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
     }
 
-    WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
+    if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
+    {
+        std::stringstream ss;
+        ss << "bad memory to read [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
+
+    if (this->bypassVirtualProtect) {
+        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+    }
+
+    auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
 
     if (this->bypassVirtualProtect) {
         VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
     }
 
-    if (bytes_written != n_bytes)
+    if (success == 0 || bytes_written != n_bytes)
     {
         std::stringstream ss;
         ss << "failed to write memory [0x" << std::hex << GetLastError() << "]";
