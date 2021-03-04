@@ -45,12 +45,12 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 
     if (q_success == 0)
     {
-        throw (BadMemoryAccress());
+        throw (BadMemoryAccess());
     }
 
     if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
     {
-        throw (BadMemoryAccress());
+        throw (BadMemoryAccess());
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
@@ -77,12 +77,12 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
 
     if (q_success == 0)
     {
-        throw (BadMemoryAccress());
+        throw (BadMemoryAccess());
     }
 
     if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
     {
-        throw (BadMemoryAccress());
+        throw (BadMemoryAccess());
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
+#include "exceptions/bad-memory-access.h"
 
 void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {
@@ -121,7 +122,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
         {
             this->read_p(current_offset, scan_mem, bytes_to_read);
         }
-        catch(std::exception &e)
+        catch(BadMemoryAccess &e)
         {
             continue;
         }
