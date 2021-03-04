@@ -14,6 +14,7 @@ private:
     char nops[max_len];
     char saved_value[max_len];
     bool initialized;
+    bool enabled;
 
 public:
 

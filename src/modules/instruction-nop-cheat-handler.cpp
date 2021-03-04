@@ -30,14 +30,19 @@ void InstructionNopCheatHandler::enable()
     }
 
     this->editor->write_p(this->regular_pointer, this->nops, this->length);
+    this->enabled = true;
 }
 
 void InstructionNopCheatHandler::disable()
 {
     this->editor->write_p(this->regular_pointer, this->saved_value, this->length);
+    this->enabled = false;
 }
 
 InstructionNopCheatHandler::~InstructionNopCheatHandler()
 {
-
+    if (this->enabled)
+    {
+        this->disable();
+    }
 }
