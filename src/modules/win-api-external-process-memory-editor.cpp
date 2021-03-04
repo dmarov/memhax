@@ -135,7 +135,7 @@ std::vector<MemorySpan> WinApiExternalProcessMemoryEditor::getRegions() const
     MEMORY_BASIC_INFORMATION info;
     std::vector<MemorySpan> res;
 
-    for (uintptr_t *p = nullptr; VirtualQueryEx(this->handle, p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
+    for (uintptr_t p = NULL; VirtualQueryEx(this->handle, (LPCVOID)p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
     {
         res.push_back(std::make_tuple((uintptr_t)info.BaseAddress, (size_t)info.RegionSize));
     }
