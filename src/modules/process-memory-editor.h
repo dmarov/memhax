@@ -16,6 +16,7 @@ public:
     virtual void write_p(uintptr_t address, void* value, size_t n_bytes) const = 0;
     virtual unsigned short getPointerSize() const = 0;
     virtual std::vector<ModuleInfo> getModules() const = 0;
+    virtual std::vector<MemorySpan> getRegions() const = 0;
 
     MemorySpan getModuleSpan(std::wstring module_name) const;
 

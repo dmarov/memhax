@@ -1,4 +1,6 @@
 #include "win-api-external-process-memory-editor.h"
+#include <tuple>
+#include <vector>
 #include <windows.h>
 #include <sstream>
 #include <TlHelp32.h>
@@ -123,6 +125,20 @@ std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
     }
 
     CloseHandle(hSnap);
+
+    return res;
+}
+
+
+std::vector<MemorySpan> WinApiExternalProcessMemoryEditor::getRegions() const
+{
+    MEMORY_BASIC_INFORMATION info;
+    std::vector<MemorySpan> res;
+
+    for (uintptr_t *p = nullptr; VirtualQueryEx(this->handle, p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
+    {
+        res.push_back(std::make_tuple((uintptr_t)info.BaseAddress, (size_t)info.RegionSize));
+    }
 
     return res;
 }

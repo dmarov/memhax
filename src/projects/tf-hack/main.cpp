@@ -5,6 +5,7 @@
 #include "modules/aob-signature-ptr.h"
 #include "modules/instruction-nop-cheat-handler.h"
 #include "modules/win-api-external-process-memory-editor.h"
+#include <tuple>
 #include <winuser.h>
 #include <bitset>
 
@@ -30,24 +31,26 @@ int main(int argc, char **argv)
 
     try {
         SYSTEM_INFO sysInfo;
-        GetSystemInfo(&sysInfo);
-        auto procMin = (uintptr_t)sysInfo.lpMinimumApplicationAddress;
-        auto procMax = (uintptr_t)sysInfo.lpMaximumApplicationAddress;
-        auto page_size = sysInfo.dwPageSize;
 
         const wchar_t* exe = L"TankForce.exe";
         WinApiExternalProcessMemoryEditor editor(exe);
 
         auto modules = editor.getModules();
+        auto regions = editor.getRegions();
 
-        for (auto [name, begin, size] : modules)
+        for (auto [begin, size] : regions)
         {
-            std::wcout << name << " " << std::hex << begin << " " << std::hex << begin + size << std::endl;
+            std::wcout << std::hex << begin << " " << std::hex << begin + size << std::endl;
         }
+/* 0 3e0000 */
+/* 1f00000 7ffe0000 */
+/* 3f2600000 596a000000 */
 
+/* 1ffe290f6a1 */
         AOBSignature ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C");
 
-        std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModuleSpan(L"TankForce.exe")) << std::endl;
+        /* std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModuleSpan(L"TankForce.exe")) << std::endl; */
+        std::cout << editor.countAOBSignatureMatches(ammo_ptr, std::make_tuple(0x1f00000, 0x7ffe0000)) << std::endl;
         /* const wchar_t* module = L"mono-2.0-bdwgc.dll"; */
 
 

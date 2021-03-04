@@ -124,6 +124,7 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
         }
         catch(BadMemoryAccess &e)
         {
+            current_offset += bytes_to_read;
             continue;
         }
 
