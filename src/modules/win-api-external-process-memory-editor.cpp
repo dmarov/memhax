@@ -3,6 +3,7 @@
 #include <sstream>
 #include <TlHelp32.h>
 #include <memoryapi.h>
+#include "exceptions/bad-memory-access.h"
 
 WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
 {
@@ -44,16 +45,12 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 
     if (q_success == 0)
     {
-        std::stringstream ss;
-        ss << "failed to query memory info [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        throw (BadMemoryAccress());
     }
 
     if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
     {
-        std::stringstream ss;
-        ss << "bad memory to read [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        throw (BadMemoryAccress());
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
@@ -80,16 +77,12 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
 
     if (q_success == 0)
     {
-        std::stringstream ss;
-        ss << "failed to query memory info [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        throw (BadMemoryAccress());
     }
 
     if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
     {
-        std::stringstream ss;
-        ss << "bad memory to read [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        throw (BadMemoryAccress());
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
