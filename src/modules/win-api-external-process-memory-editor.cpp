@@ -61,9 +61,7 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 
     auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
 
-    if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
-    }
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
 
     // TODO: figure out if this is good idea
     if (success == 0 || bytes_read != n_bytes)
@@ -95,15 +93,11 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw std::exception(ss.str().c_str());
     }
 
-    if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
-    }
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
 
     auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
 
-    if (this->bypassVirtualProtect) {
-        VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
-    }
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
 
     if (success == 0 || bytes_written != n_bytes)
     {
