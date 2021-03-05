@@ -6,6 +6,7 @@
 #include <TlHelp32.h>
 #include <memoryapi.h>
 #include "exceptions/bad-memory-access.h"
+#include <iostream>
 
 WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
 {
@@ -56,6 +57,7 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection); */
 
     auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
 
@@ -64,6 +66,8 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     // TODO: figure out if this is good idea
     if (success == 0 || bytes_read != n_bytes)
     {
+        std::cout << std::hex << mbi.Protect << std::endl;
+
         std::stringstream ss;
         ss << "failed to read memory [0x" << std::hex << GetLastError() << "]";
         throw std::exception(ss.str().c_str());
@@ -88,6 +92,7 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     }
 
     VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection); */
 
     auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
 
@@ -137,7 +142,27 @@ std::vector<MemorySpan> WinApiExternalProcessMemoryEditor::getRegions() const
 
     for (uintptr_t p = NULL; VirtualQueryEx(this->handle, (LPCVOID)p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
     {
-        res.push_back(std::make_tuple((uintptr_t)info.BaseAddress, (size_t)info.RegionSize));
+        if (info.State == MEM_COMMIT && info.Protect != PAGE_NOACCESS && !(info.Protect & PAGE_GUARD))
+        {
+            // TODO: rewrite it better
+            if (!res.empty())
+            {
+                auto [begin, size] = res.back();
+                if (begin + size == (uintptr_t)info.BaseAddress)
+                {
+                    res.pop_back();
+                    res.push_back(std::make_tuple(begin, size + info.RegionSize));
+                }
+                else
+                {
+                    res.push_back(std::make_tuple((uintptr_t)info.BaseAddress, (size_t)info.RegionSize));
+                }
+            }
+            else
+            {
+                res.push_back(std::make_tuple((uintptr_t)info.BaseAddress, (size_t)info.RegionSize));
+            }
+        }
     }
 
     return res;

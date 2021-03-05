@@ -27,10 +27,7 @@
 
 int main(int argc, char **argv)
 {
-    /* std::cout << editor.testAddress(0x221747FC2E1, ammo_ptr) << std::endl; */
-
     try {
-        SYSTEM_INFO sysInfo;
 
         const wchar_t* exe = L"TankForce.exe";
         WinApiExternalProcessMemoryEditor editor(exe);
@@ -38,24 +35,19 @@ int main(int argc, char **argv)
         auto modules = editor.getModules();
         auto regions = editor.getRegions();
 
-        for (auto [begin, size] : regions)
-        {
-            std::wcout << std::hex << begin << " " << std::hex << begin + size << std::endl;
-        }
-/*
-0
-3e0000
-1f00000
-7ffe0000
-3f2600000
-596a000000
+        /* for (auto [begin, size] : regions) */
+        /* { */
+        /*     std::wcout << std::hex << begin << " " << std::hex << begin + size << std::endl; */
+        /* } */
 
-1ffe290f6a1
-*/
         AOBSignature ammo_ptr("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C");
 
         /* std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModuleSpan(L"TankForce.exe")) << std::endl; */
-        std::cout << editor.countAOBSignatureMatches(ammo_ptr, std::make_tuple(0x2afaf600000, 0x7ff40e030000)) << std::endl;
+
+        for (auto spn : regions)
+        {
+            std::cout << editor.countAOBSignatureMatches(ammo_ptr, spn) << std::endl;
+        }
         /* const wchar_t* module = L"mono-2.0-bdwgc.dll"; */
 
 
