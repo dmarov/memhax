@@ -89,7 +89,7 @@ uintptr_t ProcessMemoryEditor::getRegularPointer(const MultiLvlPtr& ptr) const
 
 uintptr_t ProcessMemoryEditor::getRegularPointer(const AOBSignaturePtr& ptr) const
 {
-    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanSpan());
+    auto sig_addr = this->findFirstAddressByAOBPattern(ptr.getSignature(), ptr.getScanSpans());
 
     if (sig_addr == NULL)
     {
@@ -145,6 +145,24 @@ uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& 
     return NULL;
 }
 
+
+uintptr_t ProcessMemoryEditor::findFirstAddressByAOBPattern(const AOBSignature& signature, const std::vector<MemorySpan>& scan_spans) const
+{
+    uintptr_t res = NULL;
+
+    for (auto spn : scan_spans)
+    {
+        res = this->findFirstAddressByAOBPattern(signature, spn);
+
+        if (res != NULL)
+        {
+            return res;
+        }
+    }
+
+    return NULL;
+}
+
 unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, MemorySpan scan_span) const
 {
     unsigned res = 0;
@@ -164,6 +182,18 @@ unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signa
         {
             break;
         }
+    }
+
+    return res;
+}
+
+unsigned ProcessMemoryEditor::countAOBSignatureMatches(const AOBSignature& signature, const std::vector<MemorySpan>& scan_spans) const
+{
+    unsigned res = 0;
+
+    for (auto spn : scan_spans)
+    {
+        res += this->countAOBSignatureMatches(signature, spn);
     }
 
     return res;

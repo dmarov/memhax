@@ -44,10 +44,7 @@ int main(int argc, char **argv)
 
         /* std::cout << editor.countAOBSignatureMatches(ammo_ptr, editor.getModuleSpan(L"TankForce.exe")) << std::endl; */
 
-        for (auto spn : regions)
-        {
-            std::cout << editor.countAOBSignatureMatches(ammo_ptr, spn) << std::endl;
-        }
+        std::cout << editor.countAOBSignatureMatches(ammo_ptr, regions) << std::endl;
         /* const wchar_t* module = L"mono-2.0-bdwgc.dll"; */
 
 

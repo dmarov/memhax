@@ -43,8 +43,11 @@ public:
 
     uintptr_t findFirstAddressByAOBPattern(const char* sig, const char* pattern, MemorySpan scan_span) const;
     uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, MemorySpan scan_span) const;
+    uintptr_t findFirstAddressByAOBPattern(const AOBSignature& singature, const std::vector<MemorySpan>& scan_span) const;
 
     unsigned countAOBSignatureMatches(const AOBSignature& signature, MemorySpan scan_span) const;
+    unsigned countAOBSignatureMatches(const AOBSignature& signature, const std::vector<MemorySpan>& scan_span) const;
+
     bool testAddress(uintptr_t address, const AOBSignature &signature) const;
 
     virtual ~ProcessMemoryEditor() = 0;

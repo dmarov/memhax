@@ -10,15 +10,16 @@ class AOBSignaturePtr {
 private:
     const AOBSignature* signature;
     uintptr_t begin;
-    MemorySpan scan_span;
+    std::vector<MemorySpan> scan_spans;
 
 public:
 
-    AOBSignaturePtr(std::string pattern, uintptr_t begin, std::tuple<uintptr_t, size_t>);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, const std::vector<MemorySpan>& scan_spans);
+    AOBSignaturePtr(std::string pattern, uintptr_t begin, MemorySpan scan_span);
 
     const AOBSignature& getSignature() const;
     uintptr_t getBegin() const;
-    const MemorySpan getScanSpan() const;
+    const std::vector<MemorySpan>& getScanSpans() const;
 
     ~AOBSignaturePtr();
 };

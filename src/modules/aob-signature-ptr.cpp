@@ -10,7 +10,14 @@ AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, MemorySpa
 {
     this->signature = new AOBSignature(pattern);
     this->begin = begin;
-    this->scan_span = scan_span;
+    this->scan_spans.push_back(scan_span);
+}
+
+AOBSignaturePtr::AOBSignaturePtr(std::string pattern, uintptr_t begin, const std::vector<MemorySpan>& scan_spans)
+{
+    this->signature = new AOBSignature(pattern);
+    this->begin = begin;
+    this->scan_spans = scan_spans;
 }
 
 const AOBSignature& AOBSignaturePtr::getSignature() const
@@ -23,9 +30,9 @@ uintptr_t AOBSignaturePtr::getBegin() const
     return this->begin;
 }
 
-const MemorySpan AOBSignaturePtr::getScanSpan() const
+const std::vector<MemorySpan>& AOBSignaturePtr::getScanSpans() const
 {
-    return this->scan_span;
+    return this->scan_spans;
 }
 
 AOBSignaturePtr::~AOBSignaturePtr()
