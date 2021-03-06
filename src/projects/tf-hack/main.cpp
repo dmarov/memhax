@@ -37,6 +37,7 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 // 1F6917E8299 - 5D                    - pop rbp
 // 1F6917E829A - C3                    - ret 
 // 
+// F3 0F 5A C0 F3 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3
 // 
 // 
 // 
@@ -53,7 +54,7 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 // 1F6917CC0F5 - 45 85 FF              - test r15d,r15d
 // 1F6917CC0F8 - 0F8D 5D000000         - jnl 1F6917CC15B
 
-
+// F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D
 
 
 int main(int argc, char **argv)
@@ -66,24 +67,19 @@ int main(int argc, char **argv)
         auto modules = editor.getModules();
         auto regions = editor.getRegions();
 
-        AOBSignaturePtr ammo_ptr("F3 0F 11 68 ?? 48 8B 7D ?? 4C 8B 7D ?? 48 8D 65 ?? 5D C3", 0, regions);
- /* AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions); */
- /* AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions); */
+        AOBSignaturePtr ammo_ptr("E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C 8B 7D", 1, regions);
+        AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions);
+        AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions);
 
-// F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D
-//                         == == == == ==
-
-// F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D
-//                         == == == == ==
         InstructionNopCheatHandler ammo_handler(editor, ammo_ptr, 5);
+        InstructionNopCheatHandler health_handler_1(editor, health_ptr_1, 5);
+        InstructionNopCheatHandler health_handler_2(editor, health_ptr_2, 5);
+
 
         if (!SetConsoleCtrlHandler(consoleHandler, TRUE))
         {
             throw std::exception("failed to set console handler");
         }
-
-        /* InstructionNopCheatHandler health_handler_1(editor, health_ptr_1, 5); */
-        /* InstructionNopCheatHandler health_handler_2(editor, health_ptr_2, 5); */
 
         /* MultiLvlPtr           health(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x14 }); */
         /* MultiLvlPtr       max_health(mod_start, { 0x00663038, 0xB08, 0x1C0, 0x248, 0x48, 0x18, 0x10, 0x18 }); */
@@ -104,6 +100,7 @@ int main(int argc, char **argv)
 
         bool enabled = false;
 
+        std::cout << "started loop" << std::endl;
         while (true)
         {
             if (interupted)
@@ -140,14 +137,14 @@ int main(int argc, char **argv)
                 if (enabled)
                 {
                     ammo_handler.disable();
-                    /* health_handler_1.disable(); */
-                    /* health_handler_2.disable(); */
+                    health_handler_1.disable();
+                    health_handler_2.disable();
                 }
                 else
                 {
                     ammo_handler.enable();
-                    /* health_handler_1.enable(); */
-                    /* health_handler_2.enable(); */
+                    health_handler_1.enable();
+                    health_handler_2.enable();
                 }
 
                 enabled = !enabled;
