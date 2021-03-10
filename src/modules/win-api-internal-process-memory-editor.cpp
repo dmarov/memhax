@@ -1,4 +1,4 @@
-#include "win-api-external-process-memory-editor.h"
+#include "win-api-internal-process-memory-editor.h"
 #include <tuple>
 #include <vector>
 #include <windows.h>
@@ -8,26 +8,10 @@
 #include "exceptions/bad-memory-access.h"
 #include <iostream>
 
-WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
+WinApiInternalProcessMemoryEditor::WinApiInternalProcessMemoryEditor()
 {
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    PROCESSENTRY32 entry;
-    entry.dwSize = sizeof(entry);
-
-    if (Process32First(proc_handle, &entry))
-    {
-        do {
-            std::string name(entry.szExeFile);
-            std::wstring wname(name.begin(), name.end());
-
-            if (!exe_name.compare(wname))
-            {
-                CloseHandle(proc_handle);
-                this->process_id = entry.th32ProcessID;
-                break;
-            }
-        } while (Process32Next(proc_handle, &entry));
-    }
+    this->process_id = GetCurrentProcessId();
 
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
 
@@ -39,12 +23,12 @@ WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstrin
     }
 }
 
-void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_read;
     unsigned long oldProtection;
     MEMORY_BASIC_INFORMATION mbi = { 0 };
-    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQuery((LPCVOID)address, &mbi, sizeof(mbi));
 
     if (q_success == 0)
     {
@@ -56,28 +40,19 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
-    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection); */
+    VirtualProtect((LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
 
-    auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
+    std::memcpy(value, (void*)address, n_bytes);
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
-
-    // TODO: figure out if this is good idea
-    if (success == 0 || bytes_read != n_bytes)
-    {
-        std::stringstream ss;
-        ss << "failed to read memory [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
-    }
+    VirtualProtect((LPVOID)(address), n_bytes, oldProtection, NULL);
 }
 
-void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
+void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_written;
     unsigned long oldProtection;
     MEMORY_BASIC_INFORMATION mbi = { 0 };
-    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQuery((LPCVOID)address, &mbi, sizeof(mbi));
 
     if (q_success == 0)
     {
@@ -89,22 +64,14 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
-    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection); */
+    VirtualProtect((LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
 
-    auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
+    std::memcpy((void*)address, value, n_bytes);
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
-
-    if (success == 0 || bytes_written != n_bytes)
-    {
-        std::stringstream ss;
-        ss << "failed to write memory [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
-    }
+    VirtualProtect((LPVOID)(address), n_bytes, oldProtection, NULL);
 }
 
-std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
+std::vector<ModuleInfo> WinApiInternalProcessMemoryEditor::getModules() const
 {
     std::vector<ModuleInfo> res;
 
@@ -133,12 +100,12 @@ std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
 }
 
 
-std::vector<MemorySpan> WinApiExternalProcessMemoryEditor::getRegions() const
+std::vector<MemorySpan> WinApiInternalProcessMemoryEditor::getRegions() const
 {
     MEMORY_BASIC_INFORMATION info;
     std::vector<MemorySpan> res;
 
-    for (uintptr_t p = NULL; VirtualQueryEx(this->handle, (LPCVOID)p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
+    for (uintptr_t p = NULL; VirtualQuery((LPCVOID)p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
     {
         if (info.State == MEM_COMMIT && info.Protect != PAGE_NOACCESS && !(info.Protect & PAGE_GUARD))
         {
@@ -166,14 +133,14 @@ std::vector<MemorySpan> WinApiExternalProcessMemoryEditor::getRegions() const
     return res;
 }
 
-unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
+unsigned short WinApiInternalProcessMemoryEditor::getPointerSize() const
 {
     BOOL is_32_bit = false;
     is_32_bit = IsWow64Process(this->handle, &is_32_bit) && is_32_bit;
     return is_32_bit ? 4 : 8;
 }
 
-WinApiExternalProcessMemoryEditor::~WinApiExternalProcessMemoryEditor()
+WinApiInternalProcessMemoryEditor::~WinApiInternalProcessMemoryEditor()
 {
     CloseHandle(this->handle);
 }
