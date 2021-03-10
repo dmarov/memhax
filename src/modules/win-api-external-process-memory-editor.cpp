@@ -42,9 +42,7 @@ WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstrin
 void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_read;
-    unsigned long oldProtection;
-    MEMORY_BASIC_INFORMATION mbi = { 0 };
-    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &(this->mbi), sizeof(this->mbi));
 
     if (q_success == 0)
     {
@@ -56,12 +54,11 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
-    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &oldProtection); */
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
 
     auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, &bytes_read);
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, NULL);
 
     // TODO: figure out if this is good idea
     if (success == 0 || bytes_read != n_bytes)
@@ -75,9 +72,7 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
 {
     size_t bytes_written;
-    unsigned long oldProtection;
-    MEMORY_BASIC_INFORMATION mbi = { 0 };
-    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQueryEx(this->handle, (LPCVOID)address, &(this->mbi), sizeof(this->mbi));
 
     if (q_success == 0)
     {
@@ -89,12 +84,11 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
-    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &oldProtection); */
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
 
     auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, &bytes_written);
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, oldProtection, NULL);
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, NULL);
 
     if (success == 0 || bytes_written != n_bytes)
     {
