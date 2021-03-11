@@ -30,6 +30,8 @@ WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstrin
     }
 
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
+    this->mbi = { 0 };
+    this->oldProtection = 0;
 
     if (this->handle == NULL)
     {

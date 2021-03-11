@@ -9,6 +9,8 @@ class WinApiInternalProcessMemoryEditor : public ProcessMemoryEditor {
 private:
     HANDLE handle;
     DWORD process_id;
+    mutable unsigned long oldProtection;
+    mutable MEMORY_BASIC_INFORMATION mbi = { 0 };
 
 public:
     WinApiInternalProcessMemoryEditor();

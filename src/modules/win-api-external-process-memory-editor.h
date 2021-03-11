@@ -10,7 +10,7 @@ private:
     HANDLE handle;
     DWORD process_id;
     mutable unsigned long oldProtection;
-    mutable MEMORY_BASIC_INFORMATION mbi = { 0 };
+    mutable MEMORY_BASIC_INFORMATION mbi;
 
 public:
     WinApiExternalProcessMemoryEditor(std::wstring exe_name);

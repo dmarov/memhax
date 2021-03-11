@@ -25,8 +25,6 @@ WinApiInternalProcessMemoryEditor::WinApiInternalProcessMemoryEditor()
 
 void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
-    unsigned long oldProtection;
-    MEMORY_BASIC_INFORMATION mbi = { 0 };
     auto q_success = VirtualQuery((LPCVOID)address, &mbi, sizeof(mbi));
 
     if (q_success == 0)
