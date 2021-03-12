@@ -14,6 +14,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 # add_subdirectory(src/projects/tf-hack tf-hack)
+# add_subdirectory(src/projects/tf-internal-hack tf-internal-hack)
 add_subdirectory(src/projects/tf-internal-hack tf-internal-hack)
 add_subdirectory(src/projects/dll-injector dll-injector)
 # add_subdirectory(src/projects/sigmaker sigmaker)

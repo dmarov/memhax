@@ -8,11 +8,12 @@
 #include "exceptions/bad-memory-access.h"
 #include <iostream>
 
-WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
+unsigned WinApiExternalProcessMemoryEditor::getProcessId(std::wstring exe_name)
 {
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(entry);
+    unsigned pid = NULL;
 
     if (Process32First(proc_handle, &entry))
     {
@@ -23,12 +24,18 @@ WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstrin
             if (!exe_name.compare(wname))
             {
                 CloseHandle(proc_handle);
-                this->process_id = entry.th32ProcessID;
+                pid = entry.th32ProcessID;
                 break;
             }
         } while (Process32Next(proc_handle, &entry));
     }
 
+    return pid;
+}
+
+WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
+{
+    this->process_id = this->getProcessId(exe_name);
     this->handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->process_id);
     this->mbi = { 0 };
     this->oldProtection = 0;

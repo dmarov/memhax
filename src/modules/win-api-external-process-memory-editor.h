@@ -14,6 +14,7 @@ private:
 
 public:
     WinApiExternalProcessMemoryEditor(std::wstring exe_name);
+    static unsigned getProcessId(std::wstring exe_name);
 
     void read_p(uintptr_t address, void* value, size_t n_bytes) const;
     void write_p(uintptr_t address, void* value, size_t n_bytes) const;
