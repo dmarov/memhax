@@ -10,7 +10,6 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-
     po::options_description desc("Supported options");
 
     desc.add_options()
@@ -47,6 +46,7 @@ int main(int argc, char **argv)
     auto library_file = vm["lib"].as<std::string>();
     std::wstring target_name_str(target_name.begin(), target_name.end());
     auto lib_cstr = library_file.c_str();
+    std::cout << lib_cstr << std::endl;
 
     while (true)
     {
@@ -60,6 +60,7 @@ int main(int argc, char **argv)
             }
 
             LPVOID loadLibAddr = (LPVOID)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
+            Sleep(1000);
 
             if (!loadLibAddr)
             {
@@ -69,7 +70,8 @@ int main(int argc, char **argv)
             std::cout << "LoadLibraryA located at 0x" << std::hex << loadLibAddr << std::endl;
 
             HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-            LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_COMMIT, PAGE_READWRITE);
+            LPVOID pDllPath = VirtualAllocEx(handle, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+            Sleep(1000);
 
             if (!pDllPath)
             {
@@ -77,8 +79,14 @@ int main(int argc, char **argv)
             }
 
             bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, NULL);
+            Sleep(1000);
+            if (!success)
+            {
+                throw std::exception("could not write memory");
+            }
 
-            HANDLE th = CreateRemoteThread(handle, NULL, NULL, (LPTHREAD_START_ROUTINE)loadLibAddr, pDllPath, 0, NULL);
+            HANDLE th = CreateRemoteThread(handle, NULL, NULL, (LPTHREAD_START_ROUTINE)LoadLibraryA, pDllPath, 0, NULL);
+            Sleep(1000);
 
             if (!th)
             {
@@ -86,8 +94,7 @@ int main(int argc, char **argv)
             }
 
             WaitForSingleObject(th, INFINITE);
-
-            CloseHandle(th);
+            Sleep(1000);
 
             bool free_success = VirtualFreeEx(handle, pDllPath, 0, MEM_RELEASE);
 
@@ -96,6 +103,8 @@ int main(int argc, char **argv)
                 throw std::exception("failed to free memory");
             }
 
+            CloseHandle(th);
+            CloseHandle(handle);
             /*     std::stringstream ss; */
             /*     ss << "failed to get thread handle [0x" << std::hex << GetLastError() << "]"; */
             /*     throw std::exception(ss.str().c_str()); */
@@ -109,6 +118,8 @@ int main(int argc, char **argv)
 
         break;
     }
+
+    std::cout << "Injected successfully" << std::endl;
 
     return 0;
 }

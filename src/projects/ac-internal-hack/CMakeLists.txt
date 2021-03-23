@@ -1,4 +1,4 @@
-add_executable(ac-internal-hack main.cpp ${modules_src})
+add_library(ac-internal-hack SHARED main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)
 
