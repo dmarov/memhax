@@ -26,12 +26,12 @@ install dependencies
 
 ```
 .\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
-mkdir build
 ```
 
 setup environment
 
 ```
+mkdir build
 cd build
 ..\setup\build-ninja-msvc-x64-static.bat // (or ..\setup\build-ninja-msvc-x64-static-release.bat fro release build)
 ```
@@ -66,12 +66,12 @@ install dependencies
 
 ```
 .\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
-mkdir build
 ```
 
 setup environment
 
 ```
+mkdir build
 cd build
 ..\setup\build-msvc-x64-static.bat
 ```
