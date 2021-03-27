@@ -1,14 +1,13 @@
 # MemHax
 This repository is a collection of hacks and utils for reverse engineering program memory
 
-- tf-hack.exe - hack for TankForce game (works, F9 - toggle infinity health and ammo, F8 - freeze Z coordinate)
-- tf-inlernal-hack.dll - attempt to make internal hack (work in progress)
+- tf-hack.exe - hack for TankForce game (works, F9 - toggle infinity health and ammo, F8 - freeze Z coordinate, needs optimization)
+- tf-internal-hack.dll - attempt to make internal hack (work in progress)
 - dll-injector.exe - attempt to make dll injector (work in progress)
-- ac-hack.dll - hack for Assault Cube (works)
-- ac-inlernal-hack.dll - attempt to make internal hack for Assault Cube (work in progress)
-- sigmaker.exe - utility used to generate AOB signatures from multilevel pointers (doesnt't work, not wery useful, wil be deleted)
+- ac-hack.exe - hack for Assault Cube (works)
+- ac-internal-hack.dll - attempt to make internal hack for Assault Cube (work in progress)
+- sigmaker.exe - utility used to generate AOB signatures from multilevel pointers (doesnt't work, not wery useful, will be deleted)
 - sigmaker-monitor.exe - same as sigmaker.exe, but works in monitoring mode (doesn't work, will be deleted)
-
 
 ## How to work without IDE
 
