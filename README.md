@@ -39,7 +39,7 @@ configure environment
 ```
 mkdir build
 cd build
-..\configure\build-ninja-msvc-x64.bat // (or ..\configure\build-ninja-msvc-x64-release.bat for release build)
+..\configure\ninja-msvc-x64.bat // (or "..\configure\ninja-msvc-x64-release.bat Release" for release build)
 ```
 
 build projects
@@ -59,7 +59,6 @@ cmake --install . --prefix ..
 to install binaries into `.\bin` directory
 
 ## How to work using Visual Studio
-
 
 install package manager for C++
 
