@@ -83,3 +83,13 @@ cd build
 ```
 
 now build directory should contain Visual Studio solution
+
+## Backlog
+
+- improve project setup - separate for each project
+- optimize signature scan - scan for multiple signature in one scan (signature pool)
+- improve ac-hack - disable is for opponents
+- make dll-injector work
+- migrate external hacks to internal
+- figure out direct3d hooking
+- create UI
