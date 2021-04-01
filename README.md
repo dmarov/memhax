@@ -11,7 +11,7 @@ This repository is a collection of hacks and utils for reverse engineering progr
 
 Edit `CMakeLists.txt` in the root to enable or disable build of particular projects (will be improved).
 
-## How to work without IDE
+## How to work using any text editor
 
 install msvc 2019 enterprise or community
 
@@ -34,12 +34,12 @@ install dependencies
 .\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
 ```
 
-setup environment
+configure environment
 
 ```
 mkdir build
 cd build
-..\setup\build-ninja-msvc-x64.bat // (or ..\setup\build-ninja-msvc-x64-release.bat for release build)
+..\configure\build-ninja-msvc-x64.bat // (or ..\configure\build-ninja-msvc-x64-release.bat for release build)
 ```
 
 build projects
@@ -58,7 +58,7 @@ cmake --install . --prefix ..
 
 to install binaries into `.\bin` directory
 
-## How to work with Visual Studio
+## How to work using Visual Studio
 
 
 install package manager for C++
@@ -74,12 +74,12 @@ install dependencies
 .\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
 ```
 
-setup environment
+configure environment
 
 ```
 mkdir build
 cd build
-..\setup\build-msvc-x64.bat
+..\configure\build-msvc-x64.bat
 ```
 
 now build directory should contain Visual Studio solution
