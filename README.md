@@ -39,7 +39,7 @@ setup environment
 ```
 mkdir build
 cd build
-..\setup\build-ninja-msvc-x64-static.bat // (or ..\setup\build-ninja-msvc-x64-static-release.bat fro release build)
+..\setup\build-ninja-msvc-x64.bat // (or ..\setup\build-ninja-msvc-x64-release.bat for release build)
 ```
 
 build projects
@@ -79,7 +79,7 @@ setup environment
 ```
 mkdir build
 cd build
-..\setup\build-msvc-x64-static.bat
+..\setup\build-msvc-x64.bat
 ```
 
 now build directory should contain Visual Studio solution
