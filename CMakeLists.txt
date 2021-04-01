@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.18.0)
 project(memhax VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 file(GLOB modules_src
     "src/modules/*.cpp"
