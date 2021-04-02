@@ -1,29 +1,30 @@
 REM examples:
 REM cd build
-REM ..\configure\ninja-msvc-x64.bat
+REM ..\configure\ninja-msvc.bat
 REM or
-REM ..\configure\ninja-msvc-x64.bat Debug
+REM ..\configure\ninja-msvc.bat Debug
 REM or
-REM ..\configure\ninja-msvc-x64.bat Debug x86
+REM ..\configure\ninja-msvc.bat Debug x86
 REM or
-REM ..\configure\ninja-msvc-x64.bat Release
+REM ..\configure\ninja-msvc.bat Release
 
-
-set arch="x64"
-set vcvars="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"
-set build_type="Debug"
+set arch=x64
+set build_type=Debug
 
 if [%1]==[] goto nospec_build_type
 set build_type=%1
 :nospec_build_type
 
-if [%2]==["x86"] goto nospec_arch
-set arch=%2
-:nospec_arch
+if [%2]==[x86] set arch=%2
 
+set vcvars="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"
 set triplet="%arch%-windows-static"
-call %vcvars%
+set vars_arch=amd64
+
+if [%2]==[x86] set vars_arch=x86_amd64
+
+call %vcvars% %vars_arch%
 
 cmake -G "Ninja" ..^
  "-DCMAKE_TOOLCHAIN_FILE=%toolchain%"^
