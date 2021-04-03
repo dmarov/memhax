@@ -18,12 +18,11 @@ label(exit)
 
 newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
-cmp [ebx+E4],1
-je continue
-originalcode:
+cmp [ebx+F0],0
+je player
 sub [ebx+04],edi
 
-continue:
+player:
 mov eax,edi
 
 exit:

@@ -23,6 +23,14 @@ int main(int argc, char **argv)
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
 
+        unsigned char instructions[] = {
+            0x83, 0xBB, 0xE4, 0x00, 0x00, 0x00, 0x01, // 1: cmp dword ptr [ebx+000000E4],01
+            0x74, 0x07,                               // 2: je 5:
+            0x0F, 0x1F, 0x40, 0x00,                   // 3: nop dword ptr [eax+00]
+            0x29, 0x7B, 0x04,                         // 4: sub [ebx+04],edi
+            0x8B, 0xC7                                // 5: mov eax,edi
+            // jump back
+        };
         /* CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 3); */
         /* CodeInjectionHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
         InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3);

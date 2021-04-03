@@ -8,7 +8,6 @@
 CodeInjectionHandler::CodeInjectionHandler(
     const ProcessMemoryEditor& editor,
     const AOBSignaturePtr& ptr,
-    size_t ptr_instruction_size,
     const std::vector<std::byte>& instructions
 )
 {
@@ -17,7 +16,6 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->editor = &editor;
     this->ptr_size = this->editor->getPointerSize();
 
-    this->ptr_instruction_size = ptr_instruction_size;
     this->inj_instructions_size = instructions.size();
     this->alloc_size = this->inj_instructions_size + 1 + this->ptr_size;
     this->inj_instructions = new std::byte[this->inj_instructions_size];
@@ -32,7 +30,7 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->regular_pointer = this->editor->getRegularPointer(ptr);
     std::memcpy(
         this->inj_instructions + this->inj_instructions_size + 1,
-        (void*)this->regular_pointer,
+        (void*)(this->regular_pointer),
         this->editor->getPointerSize()
     );
 
@@ -80,7 +78,7 @@ CodeInjectionHandler::~CodeInjectionHandler()
 
     this->editor->free(this->jmp_addr, this->inj_instructions_size);
 
-    delete []this->inj_instructions;
-    delete []this->new_jmp_instruction;
-    delete []this->saved_value;
+    delete[] this->inj_instructions;
+    delete[] this->new_jmp_instruction;
+    delete[] this->saved_value;
 }

@@ -23,14 +23,12 @@ private:
     uintptr_t jmp_addr;
     size_t alloc_size;
     size_t replace_size;
-    size_t ptr_instruction_size;
 
 public:
 
     CodeInjectionHandler(
         const ProcessMemoryEditor& editor,
         const AOBSignaturePtr& ptr,
-        size_t ptr_instruction_size,
         const std::vector<std::byte>& instructions
     );
 
