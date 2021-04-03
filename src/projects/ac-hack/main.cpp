@@ -22,6 +22,10 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 
 int main(int argc, char **argv)
 {
+
+    std::cout << "Press F9 to toggle infinite health" << std::endl;
+    std::cout << "Press Ctrl+C to quit" << std::endl;
+
     try {
         const wchar_t* exe = L"ac_client.exe";
         const wchar_t* module_name = L"ac_client.exe";

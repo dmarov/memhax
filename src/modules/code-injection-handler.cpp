@@ -3,7 +3,6 @@
 #include "aob-signature-ptr.h"
 #include <cstring>
 #include <exception>
-#include <iostream>
 #include <algorithm>
 
 CodeInjectionHandler::CodeInjectionHandler(
@@ -32,7 +31,7 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->inj_instructions_size = instructions.size();
 
     // memory size to allocate for injected instructions
-    // instructions size + absolute JMP back instruction size
+    // instructions size + relative JMP back instruction size
     this->alloc_size = this->inj_instructions_size + 1 + this->ptr_size;
     this->inj_instructions = new std::byte[this->alloc_size];
 
@@ -62,7 +61,6 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->new_jmp_instruction[0] = (std::byte)0xE9;
 
     auto diff = this->jmp_addr - this->regular_pointer - this->inj_size;
-    std::cout << std::hex << jmp_addr << std::endl;
 
     std::reverse(this->new_jmp_instruction + 1, this->new_jmp_instruction + this->inj_size);
 
