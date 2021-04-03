@@ -50,26 +50,25 @@ CodeInjectionHandler::CodeInjectionHandler(
 
     // injection point code
     this->new_jmp_instruction = new std::byte[this->inj_size];
-    // NOP all extra bytes
+    // NOP all extra bytes in case there are
     std::memset(this->new_jmp_instruction, 0x90, this->inj_size);
-
-    // original code
-    this->saved_value = new std::byte[this->replace_size];
-    this->editor->read_p(this->regular_pointer, this->saved_value, this->replace_size);
-
-    this->new_jmp_instruction[0] = (std::byte)0xFF;
-
     this->jmp_addr = this->editor->allocate(this->alloc_size);
-    this->editor->write_p(
-        this->jmp_addr,
-        this->inj_instructions,
-        this->inj_instructions_size
-    );
-
     std::memcpy(
         this->new_jmp_instruction + 1,
         (void*)this->jmp_addr,
         this->ptr_size
+    );
+
+    // original code
+    this->saved_value = new std::byte[this->replace_size];
+    this->editor->read_p(this->regular_pointer, this->saved_value, this->inj_size);
+
+    this->new_jmp_instruction[0] = (std::byte)0xFF;
+
+    this->editor->write_p(
+        this->jmp_addr,
+        this->inj_instructions,
+        this->alloc_size
     );
 }
 
