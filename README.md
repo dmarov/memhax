@@ -6,10 +6,6 @@ This repository is a collection of hacks and utils for reverse engineering progr
 - dll-injector.exe - attempt to make dll injector (work in progress)
 - ac-hack.exe - hack for Assault Cube (works)
 - ac-internal-hack.dll - attempt to make internal hack for Assault Cube (work in progress)
-- sigmaker.exe - utility used to generate AOB signatures from multilevel pointers (doesnt't work, not wery useful, will be deleted)
-- sigmaker-monitor.exe - same as sigmaker.exe, but works in monitoring mode (doesn't work, will be deleted)
-
-Edit `CMakeLists.txt` in the root to enable or disable build of particular projects (will be improved).
 
 ## How to work using any text editor
 
