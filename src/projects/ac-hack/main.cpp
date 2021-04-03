@@ -8,6 +8,18 @@
 #include "modules/code-injection-handler.h"
 #include <winuser.h>
 
+bool interupted = false;
+
+BOOL WINAPI consoleHandler(DWORD signal) {
+
+    if (signal == CTRL_C_EVENT)
+    {
+        interupted = true;
+    }
+
+    return TRUE;
+}
+
 int main(int argc, char **argv)
 {
     try {
@@ -19,7 +31,7 @@ int main(int argc, char **argv)
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
 
-        int instructions[] = {
+        unsigned char instructions[] = {
             0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
             0x74, 0x07,                               // 2: je 5:
             0x0F, 0x1F, 0x40, 0x00,                   // 3: nop dword ptr [eax+00]
@@ -44,6 +56,11 @@ int main(int argc, char **argv)
 
         while (true)
         {
+            if (interupted)
+            {
+                return 0;
+            }
+
             SHORT f9_key_state = GetAsyncKeyState(VK_F9);
             bool f9_key_down = (f9_key_state & 0x8000) && (f9_key_state & 0x0001);
 
