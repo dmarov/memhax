@@ -7,14 +7,15 @@ class CodeInjectionHandler {
 
 private:
     const static short max_len = 100;
+    size_t ptr_size;
 
     const ProcessMemoryEditor* editor;
     uintptr_t regular_pointer;
 
     std::byte* new_jmp_instruction;
     std::byte* saved_value;
-    std::byte* instructions;
-    size_t instructions_size;
+    std::byte* inj_instructions;
+    size_t inj_instructions_size;
 
     bool initialized;
     bool enabled;
@@ -22,10 +23,16 @@ private:
     uintptr_t jmp_addr;
     size_t alloc_size;
     size_t replace_size;
+    size_t ptr_instruction_size;
 
 public:
 
-    CodeInjectionHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions);
+    CodeInjectionHandler(
+        const ProcessMemoryEditor& editor,
+        const AOBSignaturePtr& ptr,
+        size_t ptr_instruction_size,
+        const std::vector<std::byte>& instructions
+    );
 
     void enable();
     void disable();
