@@ -1,4 +1,5 @@
 #include "win-api-external-process-memory-editor.h"
+#include <exception>
 #include <tuple>
 #include <vector>
 #include <windows.h>
@@ -178,12 +179,15 @@ unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
 
 uintptr_t WinApiExternalProcessMemoryEditor::allocate(size_t size) const
 {
-    return NULL;
+    auto addr =  VirtualAllocEx(this->handle, NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    if (addr == NULL) throw std::exception("failed to allocate memory");
+
+    return (uintptr_t)addr;
 }
 
 void WinApiExternalProcessMemoryEditor::free(uintptr_t address, size_t size) const
 {
-
+    VirtualFreeEx(this->handle, (LPVOID)address, size, MEM_RELEASE);
 }
 
 WinApiExternalProcessMemoryEditor::~WinApiExternalProcessMemoryEditor()
