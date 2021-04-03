@@ -8,6 +8,7 @@
 CodeInjectionHandler::CodeInjectionHandler(
     const ProcessMemoryEditor& editor,
     const AOBSignaturePtr& ptr,
+    size_t inj_size,
     const std::vector<std::byte>& instructions
 )
 {
@@ -15,6 +16,7 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->enabled = false;
     this->editor = &editor;
     this->ptr_size = this->editor->getPointerSize();
+    this->inj_size = inj_size;
 
     this->inj_instructions_size = instructions.size();
     this->alloc_size = this->inj_instructions_size + 1 + this->ptr_size;
@@ -35,14 +37,28 @@ CodeInjectionHandler::CodeInjectionHandler(
     );
 
     this->replace_size = 1 + this->ptr_size;
-    this->new_jmp_instruction = new std::byte[this->replace_size];
+
+    if (this->inj_size < this->replace_size)
+        throw std::exception("invalid instruction length specified");
+
+    this->new_jmp_instruction = new std::byte[this->inj_size];
+    std::memset(this->new_jmp_instruction, 0x90, this->inj_size);
+
     this->saved_value = new std::byte[this->replace_size];
     this->new_jmp_instruction[0] = (std::byte)0xFF;
 
     this->jmp_addr = this->editor->allocate(this->alloc_size);
-    this->editor->write_p(this->jmp_addr, this->inj_instructions, this->inj_instructions_size);
+    this->editor->write_p(
+        this->jmp_addr,
+        this->inj_instructions,
+        this->inj_instructions_size
+    );
 
-    std::memcpy(this->new_jmp_instruction + 1, (void*)this->jmp_addr, this->ptr_size);
+    std::memcpy(
+        this->new_jmp_instruction + 1,
+        (void*)this->jmp_addr,
+        this->ptr_size
+    );
 }
 
 void CodeInjectionHandler::enable()
@@ -52,10 +68,10 @@ void CodeInjectionHandler::enable()
         if (!this->initialized)
         {
             this->initialized = true;
-            this->editor->read_p(this->regular_pointer, this->saved_value, this->replace_size);
+            this->editor->read_p(this->regular_pointer, this->saved_value, this->inj_size);
         }
 
-        this->editor->write_p(this->regular_pointer, this->new_jmp_instruction, this->replace_size);
+        this->editor->write_p(this->regular_pointer, this->new_jmp_instruction, this->inj_size);
         this->enabled = true;
     }
 }
@@ -64,7 +80,7 @@ void CodeInjectionHandler::disable()
 {
     if (this->enabled)
     {
-        this->editor->write_p(this->regular_pointer, this->saved_value, this->replace_size);
+        this->editor->write_p(this->regular_pointer, this->saved_value, this->inj_size);
         this->enabled = false;
     }
 }
