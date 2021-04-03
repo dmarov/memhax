@@ -17,7 +17,6 @@ private:
     std::byte* inj_instructions;
     size_t inj_instructions_size;
 
-    bool initialized;
     bool enabled;
 
     uintptr_t jmp_addr;
