@@ -44,9 +44,11 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->inj_instructions[this->inj_instructions_size] = (std::byte)0xFF;
     // absolute jump to next instruction after injection point
     // edian? not memset?
-    std::memset(
+    auto return_ptr = this->regular_pointer + this->inj_size;
+
+    std::memcpy(
         this->inj_instructions + this->inj_instructions_size + 1,
-        this->regular_pointer + this->inj_size,
+        &return_ptr,
         this->ptr_size
     );
 
@@ -57,10 +59,9 @@ CodeInjectionHandler::CodeInjectionHandler(
     this->new_jmp_instruction[0] = (std::byte)0xFF;
     this->jmp_addr = this->editor->allocate(this->alloc_size);
 
-    // memcpy?
     std::memcpy(
         this->new_jmp_instruction + 1,
-        (void*)this->jmp_addr,
+        &this->jmp_addr,
         this->ptr_size
     );
 
