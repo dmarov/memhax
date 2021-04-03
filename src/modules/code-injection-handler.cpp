@@ -1,11 +1,11 @@
-#include "code-injection-cheat-handler.h"
+#include "code-injection-handler.h"
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 #include <cstring>
 #include <exception>
 #include <iostream>
 
-CodeInjectionCheatHandler::CodeInjectionCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions)
+CodeInjectionHandler::CodeInjectionHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions)
 {
     this->initialized = false;
     this->enabled = false;
@@ -35,7 +35,7 @@ CodeInjectionCheatHandler::CodeInjectionCheatHandler(const ProcessMemoryEditor& 
     std::memcpy(this->new_jmp_instruction + 1, (void*)this->jmp_addr, this->editor->getPointerSize());
 }
 
-void CodeInjectionCheatHandler::enable()
+void CodeInjectionHandler::enable()
 {
     if (!this->enabled)
     {
@@ -49,7 +49,7 @@ void CodeInjectionCheatHandler::enable()
     }
 }
 
-void CodeInjectionCheatHandler::disable()
+void CodeInjectionHandler::disable()
 {
     if (this->enabled)
     {
@@ -58,7 +58,7 @@ void CodeInjectionCheatHandler::disable()
     }
 }
 
-CodeInjectionCheatHandler::~CodeInjectionCheatHandler()
+CodeInjectionHandler::~CodeInjectionHandler()
 {
     if (this->enabled)
     {

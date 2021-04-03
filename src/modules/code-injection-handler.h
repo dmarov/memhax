@@ -3,7 +3,7 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 
-class CodeInjectionCheatHandler {
+class CodeInjectionHandler {
 
 private:
     const static short max_len = 100;
@@ -25,10 +25,10 @@ private:
 
 public:
 
-    CodeInjectionCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions);
+    CodeInjectionHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions);
 
     void enable();
     void disable();
 
-    ~CodeInjectionCheatHandler();
+    ~CodeInjectionHandler();
 };

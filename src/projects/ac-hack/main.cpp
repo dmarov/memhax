@@ -5,6 +5,7 @@
 #include "modules/aob-signature.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include "modules/instruction-nop-handler.h"
+#include "modules/code-injection-handler.h"
 #include <winuser.h>
 
 
