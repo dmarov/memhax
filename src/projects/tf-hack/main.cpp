@@ -3,7 +3,7 @@
 #include <iostream>
 #include <thread>
 #include "modules/aob-signature-ptr.h"
-#include "modules/instruction-nop-cheat-handler.h"
+#include "modules/instruction-nop-handler.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include <tuple>
 #include <winuser.h>
@@ -43,10 +43,10 @@ int main(int argc, char **argv)
         AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions);
         AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions);
 
-        InstructionNopCheatHandler player_z_handler(editor, player_z_ptr, 6);
-        InstructionNopCheatHandler ammo_handler(editor, ammo_ptr, 5);
-        InstructionNopCheatHandler health_handler_1(editor, health_ptr_1, 5);
-        InstructionNopCheatHandler health_handler_2(editor, health_ptr_2, 5);
+        InstructionNopHandler player_z_handler(editor, player_z_ptr, 6);
+        InstructionNopHandler ammo_handler(editor, ammo_ptr, 5);
+        InstructionNopHandler health_handler_1(editor, health_ptr_1, 5);
+        InstructionNopHandler health_handler_2(editor, health_ptr_2, 5);
 
         bool enabled_f8 = false;
         bool enabled_f9 = false;

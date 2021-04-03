@@ -1,10 +1,10 @@
-#include "instruction-nop-cheat-handler.h"
+#include "instruction-nop-handler.h"
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 #include <exception>
 #include <iostream>
 
-InstructionNopCheatHandler::InstructionNopCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length)
+InstructionNopHandler::InstructionNopHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length)
 {
     if (length > this->max_len)
     {
@@ -23,7 +23,7 @@ InstructionNopCheatHandler::InstructionNopCheatHandler(const ProcessMemoryEditor
     this->enabled = false;
 }
 
-void InstructionNopCheatHandler::enable()
+void InstructionNopHandler::enable()
 {
     if (!this->enabled)
     {
@@ -37,7 +37,7 @@ void InstructionNopCheatHandler::enable()
     }
 }
 
-void InstructionNopCheatHandler::disable()
+void InstructionNopHandler::disable()
 {
     if (this->enabled)
     {
@@ -46,7 +46,7 @@ void InstructionNopCheatHandler::disable()
     }
 }
 
-InstructionNopCheatHandler::~InstructionNopCheatHandler()
+InstructionNopHandler::~InstructionNopHandler()
 {
     if (this->enabled)
     {

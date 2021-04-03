@@ -3,7 +3,7 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 
-class InstructionNopCheatHandler {
+class InstructionNopHandler {
 
 private:
     const ProcessMemoryEditor* editor;
@@ -18,10 +18,10 @@ private:
 
 public:
 
-    InstructionNopCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length);
+    InstructionNopHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length);
 
     void enable();
     void disable();
 
-    ~InstructionNopCheatHandler();
+    ~InstructionNopHandler();
 };

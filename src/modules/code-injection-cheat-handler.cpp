@@ -7,7 +7,10 @@
 
 CodeInjectionCheatHandler::CodeInjectionCheatHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, const std::vector<std::byte>& instructions)
 {
+    this->initialized = false;
+    this->enabled = false;
     this->editor = &editor;
+
     this->instructions_size = instructions.size();
     this->alloc_size = this->instructions_size + 1 + this->editor->getPointerSize();
     this->instructions = new std::byte[this->instructions_size];
@@ -16,9 +19,10 @@ CodeInjectionCheatHandler::CodeInjectionCheatHandler(const ProcessMemoryEditor& 
         this->instructions[i] = instructions.at(i);
     }
 
+    this->instructions[this->instructions_size] = (std::byte)0xFF;
+
     this->regular_pointer = this->editor->getRegularPointer(ptr);
-    this->initialized = false;
-    this->enabled = false;
+    std::memcpy(this->instructions + this->instructions_size + 1, (void*)this->regular_pointer, this->editor->getPointerSize());
 
     this->replace_size = 1 + this->editor->getPointerSize();
     this->new_jmp_instruction = new std::byte[this->replace_size];
@@ -26,6 +30,7 @@ CodeInjectionCheatHandler::CodeInjectionCheatHandler(const ProcessMemoryEditor& 
     this->new_jmp_instruction[0] = (std::byte)0xFF;
 
     this->jmp_addr = this->editor->allocate(this->alloc_size);
+    this->editor->write_p(this->jmp_addr, this->instructions, this->instructions_size);
 
     std::memcpy(this->new_jmp_instruction + 1, (void*)this->jmp_addr, this->editor->getPointerSize());
 }

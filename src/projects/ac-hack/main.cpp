@@ -4,7 +4,7 @@
 #include "modules/aob-signature-ptr.h"
 #include "modules/aob-signature.h"
 #include "modules/win-api-external-process-memory-editor.h"
-#include "modules/instruction-nop-cheat-handler.h"
+#include "modules/instruction-nop-handler.h"
 #include <winuser.h>
 
 
@@ -22,10 +22,10 @@ int main(int argc, char **argv)
         const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
 
-        /* CodeInjectionCheatHandler health_cheat_handler(editor, health_signature_ptr, 3); */
-        /* CodeInjectionCheatHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
-        InstructionNopCheatHandler health_cheat_handler(editor, health_signature_ptr, 3);
-        InstructionNopCheatHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
+        /* CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 3); */
+        /* CodeInjectionHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
+        InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3);
+        InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
         bool enabled = false;
 
