@@ -19,7 +19,7 @@ CodeInjectionHandler::CodeInjectionHandler(
     // size of instructions available for injection point
     this->inj_size = inj_size;
     // minimal number of bytes needed to replace for injection
-    this->replace_size = 1 + this->ptr_size;
+    this->replace_size = 2 + this->ptr_size;
 
     if (this->inj_size < this->replace_size)
         throw std::exception("invalid injection length value");
@@ -32,7 +32,7 @@ CodeInjectionHandler::CodeInjectionHandler(
 
     // memory size to allocate for injected instructions
     // instructions size + absolute JMP back instruction size
-    this->alloc_size = this->inj_instructions_size + 1 + this->ptr_size;
+    this->alloc_size = this->inj_instructions_size + 2 + this->ptr_size;
     this->inj_instructions = new std::byte[this->alloc_size];
 
     for (size_t i = 0; i < this->inj_instructions_size; ++i)
@@ -42,12 +42,13 @@ CodeInjectionHandler::CodeInjectionHandler(
 
     // absolute JMP 0xFF
     this->inj_instructions[this->inj_instructions_size] = (std::byte)0xFF;
+    this->inj_instructions[this->inj_instructions_size + 1] = (std::byte)0x25;
     // absolute jump to next instruction after injection point
     // edian? not memset?
     auto return_ptr = this->regular_pointer + this->inj_size;
 
     std::memcpy(
-        this->inj_instructions + this->inj_instructions_size + 1,
+        this->inj_instructions + this->inj_instructions_size + 2,
         &return_ptr,
         this->ptr_size
     );
@@ -57,10 +58,12 @@ CodeInjectionHandler::CodeInjectionHandler(
     // NOP all extra bytes in case there are
     std::memset(this->new_jmp_instruction, 0x90, this->inj_size);
     this->new_jmp_instruction[0] = (std::byte)0xFF;
+    this->new_jmp_instruction[1] = (std::byte)0x25;
     this->jmp_addr = this->editor->allocate(this->alloc_size);
+    std::cout << std::hex << this->jmp_addr << std::endl;
 
     std::memcpy(
-        this->new_jmp_instruction + 1,
+        this->new_jmp_instruction + 2,
         &this->jmp_addr,
         this->ptr_size
     );

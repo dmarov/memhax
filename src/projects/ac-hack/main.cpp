@@ -8,10 +8,6 @@
 #include "modules/code-injection-handler.h"
 #include <winuser.h>
 
-
-
-
-
 int main(int argc, char **argv)
 {
     try {
@@ -24,11 +20,12 @@ int main(int argc, char **argv)
         const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
 
         int instructions[] = {
-            0x83, 0xBB, 0xE4, 0x00, 0x00, 0x00, 0x01, // 1: cmp dword ptr [ebx+000000E4],01
-            0x74, 0x07,                               // 2: je 5:
+            0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
+            0x74, 0x08,                               // 2: je 6:
             0x0F, 0x1F, 0x40, 0x00,                   // 3: nop dword ptr [eax+00]
             0x29, 0x7B, 0x04,                         // 4: sub [ebx+04],edi
-            0x8B, 0xC7                                // 5: mov eax,edi
+            0x8B, 0xC7,                               // 5: mov eax,edi
+            0x5F                                      // 6: pop edi
             // jump back
         };
 
@@ -39,10 +36,10 @@ int main(int argc, char **argv)
             instr_vec.push_back((std::byte)b);
         }
 
-        CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
+        CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 6, instr_vec);
         /* CodeInjectionHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
         /* InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3); */
-        InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
+        /* InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
 
         bool enabled = false;
 
@@ -55,12 +52,12 @@ int main(int argc, char **argv)
             {
                 if (enabled)
                 {
-                    ammo_cheat_handler.disable();
+                    /* ammo_cheat_handler.disable(); */
                     health_cheat_handler.disable();
                 }
                 else
                 {
-                    ammo_cheat_handler.enable();
+                    /* ammo_cheat_handler.enable(); */
                     health_cheat_handler.enable();
                 }
 
