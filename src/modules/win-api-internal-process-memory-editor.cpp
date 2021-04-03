@@ -136,6 +136,17 @@ unsigned short WinApiInternalProcessMemoryEditor::getPointerSize() const
     return is_32_bit ? 4 : 8;
 }
 
+
+uintptr_t WinApiInternalProcessMemoryEditor::allocate(size_t size) const
+{
+    return (uintptr_t)std::malloc(size);
+}
+
+void WinApiInternalProcessMemoryEditor::free(uintptr_t address, size_t size) const
+{
+    std::free((void*)address);
+}
+
 WinApiInternalProcessMemoryEditor::~WinApiInternalProcessMemoryEditor()
 {
     CloseHandle(this->handle);

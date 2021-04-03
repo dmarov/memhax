@@ -17,6 +17,8 @@ public:
     virtual unsigned short getPointerSize() const = 0;
     virtual std::vector<ModuleInfo> getModules() const = 0;
     virtual std::vector<MemorySpan> getRegions() const = 0;
+    virtual uintptr_t allocate(size_t size) const = 0;
+    virtual void free(uintptr_t address, size_t size) const = 0;
 
     MemorySpan getModuleSpan(std::wstring module_name) const;
 

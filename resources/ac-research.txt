@@ -1,0 +1,42 @@
+Player
+
+00F0 player index
+
+E4 1 // boolean
+
+F0 0 // player number
+
+0131 MDS // player name
+
+
+
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+cmp [ebx+E4],1
+je continue
+originalcode:
+sub [ebx+04],edi
+
+continue:
+mov eax,edi
+
+exit:
+jmp returnhere
+
+"ac_client.exe"+29D1F:
+jmp newmem
+returnhere:
+
+
+006C0000 - 83 BB E4000000 01     - cmp dword ptr [ebx+000000E4],01
+006C0007 - 74 07                 - je 006C0010
+006C0009 - 0F1F 40 00            - nop dword ptr [eax+00]
+006C000D - 29 7B 04              - sub [ebx+04],edi
+006C0010 - 8B C7                 - mov eax,edi
+006C0012 - E9 0D9DD6FF           - jmp 00429D24

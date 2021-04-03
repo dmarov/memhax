@@ -20,6 +20,8 @@ public:
     void write_p(uintptr_t address, void* value, size_t n_bytes) const;
     std::vector<ModuleInfo> getModules() const;
     std::vector<MemorySpan> getRegions() const;
+    uintptr_t allocate(size_t size) const;
+    void free(uintptr_t address, size_t size) const;
 
     unsigned short getPointerSize() const;
 

@@ -176,6 +176,16 @@ unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
     return is_32_bit ? 4 : 8;
 }
 
+uintptr_t WinApiExternalProcessMemoryEditor::allocate(size_t size) const
+{
+    return NULL;
+}
+
+void WinApiExternalProcessMemoryEditor::free(uintptr_t address, size_t size) const
+{
+
+}
+
 WinApiExternalProcessMemoryEditor::~WinApiExternalProcessMemoryEditor()
 {
     CloseHandle(this->handle);
