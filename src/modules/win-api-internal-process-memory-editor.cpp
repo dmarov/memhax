@@ -137,7 +137,7 @@ unsigned short WinApiInternalProcessMemoryEditor::getPointerSize() const
 }
 
 
-uintptr_t WinApiInternalProcessMemoryEditor::allocate(size_t size) const
+uintptr_t WinApiInternalProcessMemoryEditor::allocate(size_t size, uintptr_t desired_addr) const
 {
     return (uintptr_t)std::malloc(size);
 }

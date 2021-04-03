@@ -21,11 +21,10 @@ int main(int argc, char **argv)
 
         int instructions[] = {
             0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
-            0x74, 0x08,                               // 2: je 6:
+            0x74, 0x07,                               // 2: je 5:
             0x0F, 0x1F, 0x40, 0x00,                   // 3: nop dword ptr [eax+00]
             0x29, 0x7B, 0x04,                         // 4: sub [ebx+04],edi
             0x8B, 0xC7,                               // 5: mov eax,edi
-            0x5F                                      // 6: pop edi
             // jump back
         };
 
@@ -36,7 +35,7 @@ int main(int argc, char **argv)
             instr_vec.push_back((std::byte)b);
         }
 
-        CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 6, instr_vec);
+        CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
         /* CodeInjectionHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
         /* InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3); */
         /* InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */

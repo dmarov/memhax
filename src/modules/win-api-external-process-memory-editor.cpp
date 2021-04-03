@@ -177,9 +177,9 @@ unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
     return is_32_bit ? 4 : 8;
 }
 
-uintptr_t WinApiExternalProcessMemoryEditor::allocate(size_t size) const
+uintptr_t WinApiExternalProcessMemoryEditor::allocate(size_t size, uintptr_t desired_addr) const
 {
-    auto addr =  VirtualAllocEx(this->handle, NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    auto addr =  VirtualAllocEx(this->handle, (LPVOID)desired_addr, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     if (addr == NULL) throw std::exception("failed to allocate memory");
 
     return (uintptr_t)addr;
