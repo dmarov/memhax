@@ -22,6 +22,12 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 
 int main(int argc, char **argv)
 {
+
+    if (!SetConsoleCtrlHandler(consoleHandler, TRUE))
+    {
+        return 1;
+    }
+
     std::cout << "Searching for signatures..." << std::endl;
 
     try {
@@ -61,7 +67,7 @@ int main(int argc, char **argv)
         {
             if (interupted)
             {
-                return 0;
+                break;
             }
 
             SHORT f9_key_state = GetAsyncKeyState(VK_F9);
