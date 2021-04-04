@@ -10,8 +10,8 @@
 
 bool interupted = false;
 
-BOOL WINAPI consoleHandler(DWORD signal) {
-
+BOOL WINAPI consoleHandler(DWORD signal)
+{
     if (signal == CTRL_C_EVENT)
     {
         interupted = true;
@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 
     std::cout << "Searching for signatures..." << std::endl;
 
-    try {
+    try
+    {
         const wchar_t* exe = L"ac_client.exe";
         const wchar_t* module_name = L"ac_client.exe";
 
@@ -55,7 +56,6 @@ int main(int argc, char **argv)
         }
 
         CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
-        /* InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3); */
         InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
         bool enabled = false;
