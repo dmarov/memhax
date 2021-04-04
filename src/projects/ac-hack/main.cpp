@@ -35,10 +35,9 @@ int main(int argc, char **argv)
 
         unsigned char instructions[] = {
             0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
-            0x74, 0x07,                               // 2: je 5:
-            0x0F, 0x1F, 0x40, 0x00,                   // 3: nop dword ptr [eax+00]
-            0x29, 0x7B, 0x04,                         // 4: sub [ebx+04],edi
-            0x8B, 0xC7,                               // 5: mov eax,edi
+            0x74, 0x03,                               // 2: je 4:
+            0x29, 0x7B, 0x04,                         // 3: sub [ebx+04],edi
+            0x8B, 0xC7,                               // 4: mov eax,edi
             // jump back
         };
 

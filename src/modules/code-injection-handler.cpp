@@ -62,8 +62,6 @@ CodeInjectionHandler::CodeInjectionHandler(
 
     auto diff = this->jmp_addr - this->regular_pointer - this->inj_size;
 
-    std::reverse(this->new_jmp_instruction + 1, this->new_jmp_instruction + this->inj_size);
-
     std::memcpy(
         this->new_jmp_instruction + 1,
         &diff,
