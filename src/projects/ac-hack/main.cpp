@@ -22,9 +22,7 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 
 int main(int argc, char **argv)
 {
-
-    std::cout << "Press F9 to toggle infinite health" << std::endl;
-    std::cout << "Press Ctrl+C to quit" << std::endl;
+    std::cout << "Searching for signatures..." << std::endl;
 
     try {
         const wchar_t* exe = L"ac_client.exe";
@@ -52,11 +50,13 @@ int main(int argc, char **argv)
         }
 
         CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
-        /* CodeInjectionHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
         /* InstructionNopHandler health_cheat_handler(editor, health_signature_ptr, 3); */
-        /* InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2); */
+        InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
         bool enabled = false;
+
+        std::cout << "Press F9 to toggle infinite health" << std::endl;
+        std::cout << "Press Ctrl+C to quit" << std::endl;
 
         while (true)
         {
@@ -72,12 +72,12 @@ int main(int argc, char **argv)
             {
                 if (enabled)
                 {
-                    /* ammo_cheat_handler.disable(); */
+                    ammo_cheat_handler.disable();
                     health_cheat_handler.disable();
                 }
                 else
                 {
-                    /* ammo_cheat_handler.enable(); */
+                    ammo_cheat_handler.enable();
                     health_cheat_handler.enable();
                 }
 
