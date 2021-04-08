@@ -8,6 +8,8 @@
 
 namespace po = boost::program_options;
 
+// .\dll-injector\dll-injector.exe --target ac_client.exe --lib "C:\Users\mds3d\repos\memhax\build\ac-internal-hack\ac-internal-hack.dll"
+
 int main(int argc, char **argv)
 {
     po::options_description desc("Supported options");
@@ -59,7 +61,7 @@ int main(int argc, char **argv)
                 throw std::exception("could not find specified process");
             }
 
-            LPVOID loadLibAddr = (LPVOID)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
+            LPTHREAD_START_ROUTINE loadLibAddr = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
             Sleep(1000);
 
             if (!loadLibAddr)
@@ -70,27 +72,42 @@ int main(int argc, char **argv)
             std::cout << "LoadLibraryA located at 0x" << std::hex << loadLibAddr << std::endl;
 
             HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-            LPVOID pDllPath = VirtualAllocEx(handle, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+            LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
             Sleep(1000);
+
+            if (!handle)
+            {
+                throw std::exception("could not get handle");
+            }
 
             if (!pDllPath)
             {
                 throw std::exception("could not allocate memory");
             }
 
-            bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, NULL);
+            SIZE_T wr;
+
+            bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, &wr);
             Sleep(1000);
             if (!success)
             {
                 throw std::exception("could not write memory");
             }
 
-            HANDLE th = CreateRemoteThread(handle, NULL, NULL, (LPTHREAD_START_ROUTINE)LoadLibraryA, pDllPath, 0, NULL);
+            std::cout << wr << std::endl;
+
+            DWORD res;
+            HANDLE th = CreateRemoteThread(handle, NULL, 0, loadLibAddr, pDllPath, 0, &res);
             Sleep(1000);
 
             if (!th)
             {
                 throw std::exception("could not create thread");
+            }
+
+            if (!res)
+            {
+                throw std::exception("no res");
             }
 
             WaitForSingleObject(th, INFINITE);

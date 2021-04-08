@@ -2,9 +2,10 @@
 #include <exception>
 #include <iostream>
 #include <thread>
-#include "modules/aob-signature-ptr.h"
-#include "modules/instruction-nop-cheat-handler.h"
-#include "modules/win-api-internal-process-memory-editor.h"
+#include <fstream>
+#include <windows.h>
+/* #include "modules/aob-signature-ptr.h" */
+/* #include "modules/win-api-internal-process-memory-editor.h" */
 
 /* void cheat_main() */
 /* { */
@@ -18,19 +19,18 @@
 /* } */
 
 
-BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
-    OutputDebugString("HERE WE ARE");
-    /* switch (fdwReason) */
-    /* { */
-    /*     case DLL_PROCESS_ATTACH: */
-    /*         /1* MessageBox(NULL, NULL, "Cheat is ready now", MB_OK); *1/ */
-    /*         /1* CreateThread(0, 0x1000, &main_thread, 0, 0, NULL); *1/ */
-    /*         break; */
-    /*     default: */
-    /*         MessageBox(NULL, NULL, "Error", MB_OK); */
-    /*         break; */
-    /* } */
+            std::ofstream("C:\\Users\\mds3d\\ac-hack-test-success.txt");
+    switch (fdwReason)
+    {
+        case DLL_PROCESS_ATTACH:
+            MessageBox(NULL, NULL, "Cheat is ready now", MB_OK);
+            /* CreateThread(0, 0x1000, &main_thread, 0, 0, NULL); */
+            break;
+        default:
+            break;
+    }
 
     return TRUE;
 }

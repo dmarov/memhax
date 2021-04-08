@@ -27,7 +27,13 @@ git clone https://github.com/microsoft/vcpkg
 install dependencies
 
 ```
-.\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
+.\vcpkg\vcpkg.exe install
+    boost:x64-windows-static
+    sqlite3:x64-windows-static
+    yaml-cpp:x64-windows-static
+    boost:x86-windows-static
+    sqlite3:x86-windows-static
+    yaml-cpp:x86-windows-static
 ```
 
 configure environment
@@ -66,7 +72,13 @@ git clone https://github.com/microsoft/vcpkg
 install dependencies
 
 ```
-.\vcpkg\vcpkg.exe install boost:x64-windows-static sqlite3:x64-windows-static yaml-cpp:x64-windows-static
+.\vcpkg\vcpkg.exe install
+    boost:x64-windows-static
+    sqlite3:x64-windows-static
+    yaml-cpp:x64-windows-static
+    boost:x86-windows-static
+    sqlite3:x86-windows-static
+    yaml-cpp:x86-windows-static
 ```
 
 configure environment

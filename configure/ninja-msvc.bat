@@ -14,7 +14,7 @@ set vars_arch=amd64
 
 if [%1]==[Release] set build_type=%1
 if [%2]==[x86] set arch=%2
-if [%2]==[x86] set vars_arch=x86_amd64
+if [%2]==[x86] set vars_arch=x64_x86
 
 set vcvars="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
 set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"

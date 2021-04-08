@@ -1,4 +1,5 @@
-add_library(ac-internal-hack SHARED main.cpp ${modules_src})
+# add_library(ac-internal-hack SHARED main.cpp ${modules_src})
+add_library(ac-internal-hack SHARED main.cpp)
 
 configure_file(main.h.in main.h)
 
