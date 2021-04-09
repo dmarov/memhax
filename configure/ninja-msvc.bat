@@ -16,7 +16,15 @@ if [%1]==[Release] set build_type=%1
 if [%2]==[x86] set arch=%2
 if [%2]==[x86] set vars_arch=x64_x86
 
-set vcvars="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+set vcvars_community="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+set vcvars_enterprise="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+
+if exist %vcvars_community% (
+    set vcvars=%vcvars_community%
+) else (
+    set vcvars=%vcvars_enterprise%
+)
+
 set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"
 set triplet="%arch%-windows-static"
 
