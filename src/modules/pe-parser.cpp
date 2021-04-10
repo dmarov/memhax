@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <windows.h>
+#include <winbase.h>
 
 namespace memhax {
 
@@ -27,48 +29,55 @@ PEParser::PEParser(const std::wstring path)
 
     std::cout << std::endl;
 
-    if (*(short*)buffer != *((short*)this->MAGIC_BYTES[1]))
+    this->dos_header = (PIMAGE_DOS_HEADER)this->buffer;
+
+    if (this->dos_header->e_magic != IMAGE_DOS_SIGNATURE)
     {
         throw std::exception("wrong PE file magic number");
     }
 
-    this->header = (DOSHeader*)this->buffer;
-
-    if (this->header->e_lfanew != *((long*)this->DOS_SIGNATURE))
+    if (this->dos_header->e_lfanew != IMAGE_DOS_SIGNATURE)
     {
-        throw std::exception("signature mismatch");
+        throw std::exception("dos signature mismatch");
     }
 
-    auto nt_headers_ptr = this->header + this->header->e_lfanew;
+    this->nt_headers = (PIMAGE_NT_HEADERS)(this->dos_header + this->dos_header->e_lfanew);
 
-    /* auto pimage_nt_headers = reinterpret_cast< PIMAGE_NT_HEADERS >( module_base + pimage_dos_header->e_lfanew ); */
+    if (this->nt_headers->Signature != IMAGE_NT_SIGNATURE)
+    {
+        throw std::exception("nt signature mismatch");
+    }
 
-    /* if ( pimage_nt_headers->Signature != IMAGE_NT_SIGNATURE ) */
-    /*     return 0; */
+    auto export_directory_rva = this->nt_headers->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
 
-    /* auto export_directory_rva = pimage_nt_headers->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress; */
+    if (!export_directory_rva)
+    {
+        throw std::exception("failed to get export directory RVA");
+    }
 
-    /* if ( !export_directory_rva ) */
-    /*     return 0; */
+    this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + export_directory_rva);
 
-    /* auto pimage_export_directory = reinterpret_cast< PIMAGE_EXPORT_DIRECTORY >( module_base + export_directory_rva ); */
-    /* auto peat = reinterpret_cast< PDWORD >( module_base + pimage_export_directory->AddressOfFunctions ); */
-    /* auto pent = reinterpret_cast< PDWORD >( module_base + pimage_export_directory->AddressOfNames ); */
-    /* auto peot = reinterpret_cast< PWORD >( module_base + pimage_export_directory->AddressOfNameOrdinals ); */
-
-    /* unsigned short ordinal = 0; */
-
-    /* for ( DWORD i = 0; i < pimage_export_directory->NumberOfNames; ++i ) */
-    /* { */
-    /*     if ( !lstrcmpiA( export_name, reinterpret_cast< const char* >( module_base + pent[i] ) ) ) */
-    /*     { */
-    /*         ordinal = peot[i]; */
-    /*         break; */
-    /*     } */
-    /* } */
-    /* return ordinal ? module_base + peat[ordinal] : 0; */
+    this->peat = (PDWORD)(this->buffer + pimage_export_directory->AddressOfFunctions);
+    this->pent = (PDWORD)(this->buffer + pimage_export_directory->AddressOfNames);
+    this->peot = (PWORD)(this->buffer + pimage_export_directory->AddressOfNameOrdinals);
 }
 
+size_t PEParser::getExportRVA(const std::wstring name) {
+
+    unsigned short ordinal = 0;
+    auto c_name = name.c_str();
+
+    for (DWORD i = 0; i < pimage_export_directory->NumberOfNames; ++i )
+    {
+        if (!lstrcmpiA( (LPCSTR)c_name, (LPCSTR)( this->buffer + pent[i])))
+        {
+            ordinal = peot[i];
+            break;
+        }
+    }
+
+    return ordinal ? peat[ordinal] : 0;
+}
 
 PEParser::~PEParser()
 {
