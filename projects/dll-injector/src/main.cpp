@@ -59,8 +59,8 @@ int main(int argc, char **argv)
     auto lib_cstr = library_file.c_str();
     /* std::cout << lib_cstr << std::endl; */
 
-    while (true)
-    {
+    /* while (true) */
+    /* { */
         try
         {
             auto pid = memhax::WinApiExternalProcessMemoryEditor::getProcessId(target_name_str);
@@ -72,11 +72,13 @@ int main(int argc, char **argv)
 
             auto path = info.path;
             auto base = info.addr;
-            size_t offset;
 
-            memhax::PEParser paser(path);
+            memhax::PEParser parser(path);
+            /* size_t offset = parser.getExportRVA(L"LoadLibraryA"); */
+            /* std::cout << offset << std::endl; */
+            /* std::cout << "HERE" << std::endl; */
 
-            /* std::wcout << path << std::endl; */
+            std::wcout << path << std::endl;
 
             /* auto loadLibraryAddr = base + offset; */
             /* if (pid == NULL) */
@@ -149,11 +151,11 @@ int main(int argc, char **argv)
         {
             std::cout << "Error: " << e.what() << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-            continue;
+            /* continue; */
         }
 
-        break;
-    }
+        /* break; */
+    /* } */
 
     /* std::cout << "Injected successfully" << std::endl; */
 
