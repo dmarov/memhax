@@ -1,7 +1,7 @@
 # Build
 
 `
-cd projects\ac-hack
+cd projects\ac-internal-hack
 mkdir build
 cd build
 
@@ -12,8 +12,6 @@ cmake --build .
 cmake --build .
 `
 
-now you can run `.\ac-hack.exe`
-
 # Install
 `
 cmake --install
@@ -21,9 +19,7 @@ cmake --install
 
 now hack is installed somewhere in `C:\Program Files`
 
-# Run
+# Inject
 `
-.\ac-hack.exe
-.\ac-hack.exe --version
-.\ac-hack.exe --help
+dll-injector --target=ac_client.exe --lib=C:\path\to\dll\ac-internal-hack.dll
 `

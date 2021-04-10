@@ -1,4 +1,13 @@
-# add_library(ac-internal-hack SHARED main.cpp ${modules_src})
+cmake_minimum_required(VERSION 3.18.0)
+project(ac-hack VERSION 1.0.0)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+file(GLOB modules_src
+    "../../../src/modules/*.cpp"
+    "../../../src/exceptions/*.cpp"
+)
+
 add_library(ac-internal-hack SHARED main.cpp)
 
 configure_file(main.h.in main.h)
@@ -7,8 +16,4 @@ target_include_directories(ac-internal-hack PUBLIC ".." PUBLIC "${CMAKE_CURRENT_
 
 set_property(TARGET ac-internal-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-target_link_libraries(ac-internal-hack PRIVATE yaml-cpp)
-target_link_libraries(ac-internal-hack PRIVATE unofficial::sqlite3::sqlite3)
-target_link_libraries(ac-internal-hack PUBLIC Boost::program_options)
-
-install(TARGETS ac-internal-hack DESTINATION bin)
+install(TARGETS ac-internal-hack DESTINATION lib)
