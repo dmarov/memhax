@@ -25,15 +25,15 @@ if exist %vcvars_community% (
     set vcvars=%vcvars_enterprise%
 )
 
-set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"
+set toolchain="../../../vcpkg/scripts/buildsystems/vcpkg.cmake"
 set triplet="%arch%-windows-static"
 
 call %vcvars% %vars_arch%
 
-cmake -G "Ninja" ..^
+cmake -G "Ninja" "../src"^
  "-DCMAKE_TOOLCHAIN_FILE=%toolchain%"^
  "-DVCPKG_TARGET_TRIPLET=%triplet%"^
  "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"^
  "-DCMAKE_BUILD_TYPE=%build_type%"
 
-cp .\compile_commands.json ..\compile_commands.json
+cp .\compile_commands.json ..\..\..\compile_commands.json

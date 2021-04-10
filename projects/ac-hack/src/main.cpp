@@ -1,11 +1,11 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "core/modules/aob-signature-ptr.h"
-#include "core/modules/aob-signature.h"
-#include "core/modules/win-api-external-process-memory-editor.h"
-#include "core/modules/instruction-nop-handler.h"
-#include "core/modules/code-injection-handler.h"
+#include "modules/aob-signature-ptr.h"
+#include "modules/aob-signature.h"
+#include "modules/win-api-external-process-memory-editor.h"
+#include "modules/instruction-nop-handler.h"
+#include "modules/code-injection-handler.h"
 #include <winuser.h>
 
 bool interupted = false;

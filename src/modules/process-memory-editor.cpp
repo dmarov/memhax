@@ -8,7 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include "core/exceptions/bad-memory-access.h"
+#include "../exceptions/bad-memory-access.h"
 
 namespace memhax {
 
