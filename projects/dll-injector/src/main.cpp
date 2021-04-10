@@ -1,10 +1,12 @@
 #include <chrono>
+#include <fstream>
 #include <locale>
 #include <thread>
 #include <iostream>
 #include <boost/program_options.hpp>
 #include "main.h"
 #include "modules/win-api-external-process-memory-editor.h"
+#include "modules/pe-parser.h"
 #include <windows.h>
 
 // 64 bit 0x00007FF9B9AA04F0
@@ -55,7 +57,7 @@ int main(int argc, char **argv)
     auto library_file = vm["lib"].as<std::string>();
     std::wstring target_name_str(target_name.begin(), target_name.end());
     auto lib_cstr = library_file.c_str();
-    std::cout << lib_cstr << std::endl;
+    /* std::cout << lib_cstr << std::endl; */
 
     while (true)
     {
@@ -69,9 +71,14 @@ int main(int argc, char **argv)
             auto info = editor.getModuleInfo(L"KERNEL32.DLL");
 
             auto path = info.path;
+            auto base = info.addr;
+            size_t offset;
 
-            std::wcout << path << std::endl;
+            memhax::PEParser paser(path);
 
+            /* std::wcout << path << std::endl; */
+
+            /* auto loadLibraryAddr = base + offset; */
             /* if (pid == NULL) */
             /* { */
             /*     throw std::exception("could not find specified process"); */
