@@ -2,9 +2,9 @@
 #include <exception>
 #include <iostream>
 #include <thread>
-#include "core/modules/aob-signature-ptr.h"
-#include "core/modules/instruction-nop-handler.h"
-#include "core/modules/win-api-external-process-memory-editor.h"
+#include "modules/aob-signature-ptr.h"
+#include "modules/instruction-nop-handler.h"
+#include "modules/win-api-external-process-memory-editor.h"
 #include <tuple>
 #include <winuser.h>
 #include <bitset>

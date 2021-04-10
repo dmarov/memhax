@@ -1,5 +1,6 @@
 # MemHax
 This repository is a collection of hacks and utils for reverse engineering program memory
+source code divided into .\projects\ and .\src 
 
 - tf-hack.exe - hack for TankForce game (works, F9 - toggle infinity health and ammo, F8 - freeze Z coordinate, needs optimization)
 - tf-internal-hack.dll - attempt to make internal hack (work in progress)
@@ -20,6 +21,7 @@ choco install ninja
 install package manager for C++
 
 ```
+cd memhax
 git clone https://github.com/microsoft/vcpkg
 .\vcpkg\bootstrap-vcpkg.bat
 ```
@@ -36,67 +38,13 @@ install dependencies
     yaml-cpp:x86-windows-static
 ```
 
-configure environment
-
-```
-mkdir build
-cd build
-..\configure\ninja-msvc.bat // (or "..\configure\ninja-msvc.bat Release" for release build)
-```
-
-build projects
-
-```
-cmake --build .
-```
-
-now your build directory contains all binaries
-
-execute 
-
-```
-cmake --install . --prefix ..
-```
-
-to install binaries into `.\bin` directory
-
-## How to work using Visual Studio
-
-install package manager for C++
-
-```
-git clone https://github.com/microsoft/vcpkg
-.\vcpkg\bootstrap-vcpkg.bat
-```
-
-install dependencies
-
-```
-.\vcpkg\vcpkg.exe install
-    boost:x64-windows-static
-    sqlite3:x64-windows-static
-    yaml-cpp:x64-windows-static
-    boost:x86-windows-static
-    sqlite3:x86-windows-static
-    yaml-cpp:x86-windows-static
-```
-
-configure environment
-
-```
-mkdir build
-cd build
-..\configure\vs-msvc.bat
-```
-
-now build directory should contain Visual Studio solution
+then refer to specific README in .\projects\{{project_name}}\README.md
 
 ## Backlog
 
-- improve ac-hack - disable is for opponents
-- improve project setup - separate for each project
-- optimize signature scan - scan for multiple signature in one scan (signature pool)
+- improve ac-hack - refactor
 - make dll-injector work
+- optimize signature scan - scan for multiple signature in one scan (signature pool)
 - migrate external hacks to internal
 - figure out direct3d hooking
 - create UI
