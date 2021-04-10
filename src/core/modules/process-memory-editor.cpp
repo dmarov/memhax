@@ -8,7 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include "exceptions/bad-memory-access.h"
+#include "core/exceptions/bad-memory-access.h"
 
 void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {

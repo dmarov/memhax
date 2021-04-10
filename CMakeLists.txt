@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 file(GLOB modules_src
-    "src/modules/*.cpp"
+    "src/core/modules/*.cpp"
 )
 
 add_custom_target(memhax ALL)

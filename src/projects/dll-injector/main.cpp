@@ -3,7 +3,7 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include "main.h"
-#include "modules/win-api-external-process-memory-editor.h"
+#include "core/modules/win-api-external-process-memory-editor.h"
 #include <windows.h>
 
 namespace po = boost::program_options;

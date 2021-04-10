@@ -2,9 +2,9 @@
 #include <exception>
 #include <iostream>
 #include <thread>
-#include "modules/aob-signature-ptr.h"
-#include "modules/instruction-nop-cheat-handler.h"
-#include "modules/win-api-internal-process-memory-editor.h"
+#include "core/modules/aob-signature-ptr.h"
+#include "core/modules/instruction-nop-cheat-handler.h"
+#include "core/modules/win-api-internal-process-memory-editor.h"
 
 void cheat_main() {
 

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <TlHelp32.h>
 #include <memoryapi.h>
-#include "exceptions/bad-memory-access.h"
+#include "core/exceptions/bad-memory-access.h"
 #include <iostream>
 
 WinApiInternalProcessMemoryEditor::WinApiInternalProcessMemoryEditor()
