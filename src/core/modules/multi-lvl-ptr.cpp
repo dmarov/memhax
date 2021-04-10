@@ -1,5 +1,7 @@
 #include "multi-lvl-ptr.h"
 
+namespace memhax {
+
 MultiLvlPtr::MultiLvlPtr(uintptr_t base, std::vector<uintptr_t> offsets)
 {
     this->base = base;
@@ -14,4 +16,6 @@ uintptr_t MultiLvlPtr::getBase() const
 std::vector<uintptr_t> MultiLvlPtr::getOffsets() const
 {
     return this->offsets;
+}
+
 }

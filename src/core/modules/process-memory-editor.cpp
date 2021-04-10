@@ -10,6 +10,8 @@
 #include <iterator>
 #include "core/exceptions/bad-memory-access.h"
 
+namespace memhax {
+
 void ProcessMemoryEditor::read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const
 {
     uintptr_t ptr_reg = this->getRegularPointer(ptr);
@@ -245,5 +247,7 @@ MemorySpan ProcessMemoryEditor::getModuleSpan(std::wstring module_name) const
 
 ProcessMemoryEditor::~ProcessMemoryEditor()
 {
+
+}
 
 }

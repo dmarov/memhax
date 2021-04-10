@@ -2,6 +2,8 @@
 #include <sstream>
 #include <string>
 
+namespace memhax {
+
 class BadMemoryAccess : virtual public std::exception
 {
 protected:
@@ -17,3 +19,5 @@ public:
 
     virtual ~BadMemoryAccess() throw () {}
 };
+
+}

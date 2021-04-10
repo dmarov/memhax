@@ -8,6 +8,8 @@
 #include "core/exceptions/bad-memory-access.h"
 #include <iostream>
 
+namespace memhax {
+
 WinApiInternalProcessMemoryEditor::WinApiInternalProcessMemoryEditor()
 {
     HANDLE proc_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -150,4 +152,6 @@ void WinApiInternalProcessMemoryEditor::free(uintptr_t address, size_t size) con
 WinApiInternalProcessMemoryEditor::~WinApiInternalProcessMemoryEditor()
 {
     CloseHandle(this->handle);
+}
+
 }

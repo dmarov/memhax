@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+namespace memhax {
+
 class MultiLvlPtr {
 
 private:
@@ -14,3 +16,5 @@ public:
     uintptr_t getBase() const;
     std::vector<uintptr_t> getOffsets() const;
 };
+
+}

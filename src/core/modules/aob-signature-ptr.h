@@ -5,6 +5,8 @@
 #include "aob-signature.h"
 #include "memory-span.h"
 
+namespace memhax {
+
 class AOBSignaturePtr {
 
 private:
@@ -23,3 +25,5 @@ public:
 
     ~AOBSignaturePtr();
 };
+
+}

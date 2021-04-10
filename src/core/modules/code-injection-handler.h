@@ -1,7 +1,8 @@
 #pragma once
-
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
+
+namespace memhax {
 
 class CodeInjectionHandler {
 
@@ -38,3 +39,5 @@ public:
 
     ~CodeInjectionHandler();
 };
+
+}

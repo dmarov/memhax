@@ -4,6 +4,8 @@
 #include "process-memory-editor.h"
 #include "module-info.h"
 
+namespace memhax {
+
 class WinApiInternalProcessMemoryEditor : public ProcessMemoryEditor {
 
 private:
@@ -26,3 +28,5 @@ public:
 
     ~WinApiInternalProcessMemoryEditor();
 };
+
+}

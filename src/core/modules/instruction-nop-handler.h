@@ -3,6 +3,8 @@
 #include "process-memory-editor.h"
 #include "aob-signature-ptr.h"
 
+namespace memhax {
+
 class InstructionNopHandler {
 
 private:
@@ -25,3 +27,5 @@ public:
 
     ~InstructionNopHandler();
 };
+
+}

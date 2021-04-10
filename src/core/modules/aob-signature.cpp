@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <regex>
 
+namespace memhax {
+
 AOBSignature::AOBSignature() {}
 
 AOBSignature::AOBSignature(const AOBSignature& sig) {
@@ -150,5 +152,7 @@ std::ostream& operator<<(std::ostream &os, const AOBSignature& sig)
 
 AOBSignature::~AOBSignature()
 {
+
+}
 
 }

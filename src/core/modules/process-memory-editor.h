@@ -6,6 +6,8 @@
 #include "module-info.h"
 #include <string>
 
+namespace memhax {
+
 class ProcessMemoryEditor {
 
 private:
@@ -77,4 +79,6 @@ template <typename T>
 void ProcessMemoryEditor::get(const AOBSignaturePtr& ptr, T* value) const
 {
     this->read(ptr, value, sizeof(T));
+}
+
 }

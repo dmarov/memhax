@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+namespace memhax {
+
 class AOBSignature {
 
 public:
@@ -27,3 +29,5 @@ public:
 
     friend std::ostream& operator<<(std::ostream &os, const AOBSignature& sig);
 };
+
+}

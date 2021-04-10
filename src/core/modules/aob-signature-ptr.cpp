@@ -6,6 +6,8 @@
 #include "aob-signature-ptr.h"
 #include "memory-span.h"
 
+namespace memhax {
+
 AOBSignaturePtr::AOBSignaturePtr(std::string pattern, int begin, MemorySpan scan_span)
 {
     this->signature = new AOBSignature(pattern);
@@ -38,4 +40,6 @@ const std::vector<MemorySpan>& AOBSignaturePtr::getScanSpans() const
 AOBSignaturePtr::~AOBSignaturePtr()
 {
     delete this->signature;
+}
+
 }

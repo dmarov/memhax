@@ -4,6 +4,8 @@
 #include <exception>
 #include <iostream>
 
+namespace memhax {
+
 InstructionNopHandler::InstructionNopHandler(const ProcessMemoryEditor& editor, const AOBSignaturePtr& ptr, short length)
 {
     if (length > this->max_len)
@@ -52,4 +54,6 @@ InstructionNopHandler::~InstructionNopHandler()
     {
         this->disable();
     }
+}
+
 }

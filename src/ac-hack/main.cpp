@@ -35,10 +35,10 @@ int main(int argc, char **argv)
         const wchar_t* exe = L"ac_client.exe";
         const wchar_t* module_name = L"ac_client.exe";
 
-        WinApiExternalProcessMemoryEditor editor(exe);
+        memhax::WinApiExternalProcessMemoryEditor editor(exe);
 
-        const AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
-        const AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
+        const memhax::AOBSignaturePtr health_signature_ptr("2B F8 29 7B ?? 8B C7 5F 5E 8B E5", 2, editor.getModuleSpan(module_name));
+        const memhax::AOBSignaturePtr ammo_signature_ptr("8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24", 8, editor.getModuleSpan(module_name));
 
         unsigned char instructions[] = {
             0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
@@ -55,8 +55,8 @@ int main(int argc, char **argv)
             instr_vec.push_back((std::byte)b);
         }
 
-        CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
-        InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
+        memhax::CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
+        memhax::InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
         bool enabled = false;
 

@@ -33,20 +33,20 @@ int main(int argc, char **argv)
 
     try
     {
-        WinApiExternalProcessMemoryEditor editor(exe);
+        memhax::WinApiExternalProcessMemoryEditor editor(exe);
 
         auto regions = editor.getRegions();
         auto mod_span = editor.getModuleSpan(L"UnityPlayer.dll");
 
-        AOBSignaturePtr player_z_ptr("89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? E9 ?? ?? ?? ?? 0F BA E6", 9, mod_span);
-        AOBSignaturePtr ammo_ptr("E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C 8B 7D", 1, regions);
-        AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions);
-        AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions);
+        memhax::AOBSignaturePtr player_z_ptr("89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? E9 ?? ?? ?? ?? 0F BA E6", 9, mod_span);
+        memhax::AOBSignaturePtr ammo_ptr("E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C 8B 7D", 1, regions);
+        memhax::AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions);
+        memhax::AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions);
 
-        InstructionNopHandler player_z_handler(editor, player_z_ptr, 6);
-        InstructionNopHandler ammo_handler(editor, ammo_ptr, 5);
-        InstructionNopHandler health_handler_1(editor, health_ptr_1, 5);
-        InstructionNopHandler health_handler_2(editor, health_ptr_2, 5);
+        memhax::InstructionNopHandler player_z_handler(editor, player_z_ptr, 6);
+        memhax::InstructionNopHandler ammo_handler(editor, ammo_ptr, 5);
+        memhax::InstructionNopHandler health_handler_1(editor, health_ptr_1, 5);
+        memhax::InstructionNopHandler health_handler_2(editor, health_ptr_2, 5);
 
         bool enabled_f8 = false;
         bool enabled_f9 = false;

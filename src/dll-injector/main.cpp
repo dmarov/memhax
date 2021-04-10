@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     {
         try
         {
-            auto pid = WinApiExternalProcessMemoryEditor::getProcessId(target_name_str);
+            auto pid = memhax::WinApiExternalProcessMemoryEditor::getProcessId(target_name_str);
 
             if (pid == NULL)
             {

@@ -5,6 +5,8 @@
 #include <exception>
 #include <algorithm>
 
+namespace memhax {
+
 CodeInjectionHandler::CodeInjectionHandler(
     const ProcessMemoryEditor& editor,
     const AOBSignaturePtr& ptr,
@@ -109,4 +111,6 @@ CodeInjectionHandler::~CodeInjectionHandler()
     delete[] this->inj_instructions;
     delete[] this->new_jmp_instruction;
     delete[] this->saved_value;
+}
+
 }
