@@ -23,6 +23,7 @@ public:
     virtual void free(uintptr_t address, size_t size) const = 0;
 
     MemorySpan getModuleSpan(std::wstring module_name) const;
+    ModuleInfo getModuleInfo(std::wstring module_name) const;
 
     void read(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;
     void write(const MultiLvlPtr& ptr, void* value, size_t n_bytes) const;

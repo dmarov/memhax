@@ -234,15 +234,30 @@ MemorySpan ProcessMemoryEditor::getModuleSpan(std::wstring module_name) const
 {
     auto modules = this->getModules();
 
-    for (auto [name, begin, size] : modules)
+    for (auto mod : modules)
     {
-        if (!module_name.compare(name))
+        if (!module_name.compare(mod.name))
         {
-            return std::make_tuple(begin, size);
+            return std::make_tuple(mod.addr, mod.size);
         }
     }
 
     return std::make_tuple(0, 0);
+}
+
+ModuleInfo ProcessMemoryEditor::getModuleInfo(std::wstring module_name) const
+{
+    auto modules = this->getModules();
+
+    for (auto mod : modules)
+    {
+        if (!module_name.compare(mod.name))
+        {
+            return mod;
+        }
+    }
+
+    return { 0 };
 }
 
 ProcessMemoryEditor::~ProcessMemoryEditor()

@@ -6,6 +6,14 @@
 #include "modules/win-api-external-process-memory-editor.h"
 #include <windows.h>
 
+// 64 bit 0x00007FF9B9AA04F0
+// start 0x00007ff9b9a80000
+// 2 04F0
+//
+// 32 bit 0x75ea0bd0 
+// start  0x75e80000
+// 2 0BD0
+
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
@@ -53,76 +61,79 @@ int main(int argc, char **argv)
         try
         {
             auto pid = memhax::WinApiExternalProcessMemoryEditor::getProcessId(target_name_str);
+            memhax::WinApiExternalProcessMemoryEditor editor(target_name_str);
 
-            if (pid == NULL)
-            {
-                throw std::exception("could not find specified process");
-            }
+            auto info = editor.getModuleInfo(L"kernel32.dll");
 
-            LPTHREAD_START_ROUTINE loadLibAddr = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
-            Sleep(1000);
+            auto path = info.path;
 
-            if (!loadLibAddr)
-            {
-                throw std::exception("could not locate real address of LoadLibraryA");
-            }
+            std::wcout << path << std::endl;
 
-            std::cout << "LoadLibraryA located at 0x" << std::hex << loadLibAddr << std::endl;
+            /* if (pid == NULL) */
+            /* { */
+            /*     throw std::exception("could not find specified process"); */
+            /* } */
 
-            HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-            LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-            Sleep(1000);
+            /* FARPROC loadLibAddr = GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA"); */
 
-            if (!handle)
-            {
-                throw std::exception("could not get handle");
-            }
+            /* if (!loadLibAddr) */
+            /* { */
+            /*     throw std::exception("could not locate real address of LoadLibraryA"); */
+            /* } */
 
-            if (!pDllPath)
-            {
-                throw std::exception("could not allocate memory");
-            }
+            /* std::cout << "LoadLibraryA located at 0x"  << (uintptr_t*)loadLibAddr << std::endl; */
 
-            SIZE_T wr;
+            /* HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid); */
+            /* LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE); */
+            /* Sleep(1000); */
 
-            bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, &wr);
-            Sleep(1000);
-            if (!success)
-            {
-                throw std::exception("could not write memory");
-            }
+            /* if (!handle) */
+            /* { */
+            /*     throw std::exception("could not get handle"); */
+            /* } */
 
-            std::cout << wr << std::endl;
+            /* if (!pDllPath) */
+            /* { */
+            /*     throw std::exception("could not allocate memory"); */
+            /* } */
 
-            DWORD res;
-            HANDLE th = CreateRemoteThread(handle, NULL, 0, loadLibAddr, pDllPath, 0, &res);
-            Sleep(1000);
+            /* SIZE_T wr; */
 
-            if (!th)
-            {
-                throw std::exception("could not create thread");
-            }
+            /* bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, &wr); */
+            /* Sleep(1000); */
+            /* if (!success) */
+            /* { */
+            /*     throw std::exception("could not write memory"); */
+            /* } */
 
-            if (!res)
-            {
-                throw std::exception("no res");
-            }
+            /* std::cout << wr << std::endl; */
 
-            WaitForSingleObject(th, INFINITE);
-            Sleep(1000);
+            /* DWORD res; */
+            /* HANDLE th = CreateRemoteThread(handle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibAddr, pDllPath, 0, &res); */
+            /* Sleep(1000); */
 
-            bool free_success = VirtualFreeEx(handle, pDllPath, 0, MEM_RELEASE);
+            /* if (!th) */
+            /* { */
+            /*     throw std::exception("could not create thread"); */
+            /* } */
 
-            if (!free_success)
-            {
-                throw std::exception("failed to free memory");
-            }
+            /* if (!res) */
+            /* { */
+            /*     throw std::exception("no res"); */
+            /* } */
 
-            CloseHandle(th);
-            CloseHandle(handle);
-            /*     std::stringstream ss; */
-            /*     ss << "failed to get thread handle [0x" << std::hex << GetLastError() << "]"; */
-            /*     throw std::exception(ss.str().c_str()); */
+            /* WaitForSingleObject(th, INFINITE); */
+            /* Sleep(1000); */
+
+            /* bool free_success = VirtualFreeEx(handle, pDllPath, 0, MEM_RELEASE); */
+
+            /* if (!free_success) */
+            /* { */
+            /*     throw std::exception("failed to free memory"); */
+            /* } */
+
+            /* CloseHandle(th); */
+            /* CloseHandle(handle); */
         }
         catch(std::exception e)
         {
@@ -131,7 +142,7 @@ int main(int argc, char **argv)
             continue;
         }
 
-        break;
+        /* break; */
     }
 
     std::cout << "Injected successfully" << std::endl;

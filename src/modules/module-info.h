@@ -5,7 +5,11 @@
 
 namespace memhax {
 
-typedef std::tuple<std::wstring, uintptr_t, size_t> ModuleInfo;
+struct ModuleInfo {
+    std::wstring name;
+    std::wstring path;
+    uintptr_t addr;
+    size_t size;
+};
 
 }
-

@@ -118,7 +118,7 @@ std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
 
     if (hSnap != INVALID_HANDLE_VALUE)
     {
-        MODULEENTRY32 modEntry;
+        MODULEENTRY32 modEntry = { 0 };
         modEntry.dwSize = sizeof(modEntry);
 
         if (Module32First(hSnap, &modEntry))
@@ -127,7 +127,15 @@ std::vector<ModuleInfo> WinApiExternalProcessMemoryEditor::getModules() const
             {
                 std::string buf(modEntry.szModule);
                 std::wstring wbuf(buf.begin(), buf.end());
-                res.push_back(std::make_tuple(wbuf, (uintptr_t)modEntry.modBaseAddr, (size_t)modEntry.modBaseSize));
+                std::string path(modEntry.szExePath);
+                std::wstring wpath(path.begin(), path.end());
+
+                res.push_back({
+                    wbuf,
+                    wpath,
+                    (uintptr_t)modEntry.modBaseAddr,
+                    (size_t)modEntry.modBaseSize
+                });
 
             } while (Module32Next(hSnap, &modEntry));
         }
