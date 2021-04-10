@@ -25,10 +25,14 @@ PEParser::PEParser(const std::wstring path)
         std::cout << "0x" << std::hex << (int)buffer[i] << " ";
     }
 
-    if (buffer[0] != this->MAGIC_1 || buffer[1] != this->MAGIC_2)
+    std::cout << std::endl;
+
+    if (buffer[0] != this->MAGIC_BYTES[0] || buffer[1] != this->MAGIC_BYTES[1])
     {
         throw std::exception("wrong PE file magic number");
     }
+
+    this->header = (DOSHeader*)this->buffer;
 }
 
 

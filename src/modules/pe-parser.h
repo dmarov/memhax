@@ -1,17 +1,19 @@
 #pragma once
 
 #include <string>
+#include "modules/dos-header.h"
 
 namespace memhax {
 
 class PEParser {
 
 private:
-    const static std::byte MAGIC_1 = (std::byte)0x4D;
-    const static std::byte MAGIC_2 = (std::byte)0x5A;
+    constexpr static std::byte MAGIC_BYTES[2] = {(std::byte)'M', (std::byte)'Z'};
 
 private:
     std::byte* buffer;
+    DOSHeader* header;
+
 
 public:
     PEParser(const std::wstring path);

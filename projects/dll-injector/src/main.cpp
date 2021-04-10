@@ -155,7 +155,7 @@ int main(int argc, char **argv)
         break;
     }
 
-    std::cout << "Injected successfully" << std::endl;
+    /* std::cout << "Injected successfully" << std::endl; */
 
     return 0;
 }
