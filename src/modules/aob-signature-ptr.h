@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "aob-signature.h"
-#include "memory-span.h"
+#include "structs/memory-span.h"
 
 namespace memhax {
 

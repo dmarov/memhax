@@ -2,7 +2,7 @@
 
 #include <windows.h>
 #include "process-memory-editor.h"
-#include "module-info.h"
+#include "structs/module-info.h"
 
 namespace memhax {
 

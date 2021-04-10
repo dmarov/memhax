@@ -39,8 +39,7 @@ PEParser::PEParser(const std::wstring path)
         throw std::exception("signature mismatch");
     }
 
-    /* if ( pimage_dos_header->e_magic != IMAGE_DOS_SIGNATURE ) */
-    /*     return 0; */
+    auto nt_headers_ptr = this->header + this->header->e_lfanew;
 
     /* auto pimage_nt_headers = reinterpret_cast< PIMAGE_NT_HEADERS >( module_base + pimage_dos_header->e_lfanew ); */
 

@@ -4,7 +4,7 @@
 #include <regex>
 #include <vector>
 #include "aob-signature-ptr.h"
-#include "memory-span.h"
+#include "structs/memory-span.h"
 
 namespace memhax {
 

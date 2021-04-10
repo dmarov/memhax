@@ -2,8 +2,8 @@
 
 #include "multi-lvl-ptr.h"
 #include "aob-signature-ptr.h"
-#include "memory-span.h"
-#include "module-info.h"
+#include "structs/memory-span.h"
+#include "structs/module-info.h"
 #include <string>
 
 namespace memhax {
