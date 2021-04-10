@@ -23,7 +23,6 @@ now hack is installed somewhere in `C:\Program Files\bin`
 
 # Run
 `
-.\ac-hack.exe
-.\ac-hack.exe --version
-.\ac-hack.exe --help
+.\dll-injector\dll-injector.exe --target ac_client.exe --lib "C:\{{PATH}}\ac-internal-hack.dll"
+
 `

@@ -17,9 +17,9 @@ cmake --build .
 cmake --install
 `
 
-now hack is installed somewhere in `C:\Program Files`
+now hack is installed somewhere in `C:\Program Files\lib`
 
 # Inject
 `
-dll-injector --target=ac_client.exe --lib=C:\path\to\dll\ac-internal-hack.dll
+dll-injector --target="ac_client.exe" --lib="C:\{{PATH}}\ac-internal-hack.dll"
 `

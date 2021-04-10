@@ -3,12 +3,10 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include "main.h"
-#include "core/modules/win-api-external-process-memory-editor.h"
+#include "modules/win-api-external-process-memory-editor.h"
 #include <windows.h>
 
 namespace po = boost::program_options;
-
-// .\dll-injector\dll-injector.exe --target ac_client.exe --lib "C:\Users\mds3d\repos\memhax\build\ac-internal-hack\ac-internal-hack.dll"
 
 int main(int argc, char **argv)
 {
@@ -25,7 +23,7 @@ int main(int argc, char **argv)
     po::notify(vm);
 
     if (vm.count("version")) {
-        std::cout << "v" << memhax_VERSION_MAJOR << "." << memhax_VERSION_MINOR << "." << memhax_VERSION_PATCH << std::endl;
+        std::cout << "v" << dll_injector_VERSION_MAJOR << "." << dll_injector_VERSION_MINOR << "." << dll_injector_VERSION_PATCH << std::endl;
         return 0;
     }
 

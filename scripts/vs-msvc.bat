@@ -19,12 +19,21 @@ if [%2]==[x86] set vars_arch=x86_amd64
 if [%arch%]==[x86] set bit_flag=-A Win32
 
 set triplet="%arch%-windows-static"
-set vcvars="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
-set toolchain="../vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+set vcvars_community="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+set vcvars_enterprise="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+
+if exist %vcvars_community% (
+    set vcvars=%vcvars_community%
+) else (
+    set vcvars=%vcvars_enterprise%
+)
+
+set toolchain="../../../vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 call %vcvars% %vars_arch%
 
-cmake -G "Visual Studio 16 2019" %bit_flag% ..^
+cmake -G "Visual Studio 16 2019" %bit_flag% "../src"^
  "-DCMAKE_TOOLCHAIN_FILE=%toolchain%"^
  "-DVCPKG_TARGET_TRIPLET=%triplet%"^
  "-DCMAKE_BUILD_TYPE=%build_type%"
