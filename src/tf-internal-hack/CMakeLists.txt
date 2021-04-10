@@ -2,7 +2,7 @@ add_library(tf-internal-hack SHARED main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)
 
-target_include_directories(tf-internal-hack PUBLIC "../.." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(tf-internal-hack PUBLIC ".." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 set_property(TARGET tf-internal-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 

@@ -3,7 +3,7 @@ add_library(ac-internal-hack SHARED main.cpp)
 
 configure_file(main.h.in main.h)
 
-target_include_directories(ac-internal-hack PUBLIC "../.." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(ac-internal-hack PUBLIC ".." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 set_property(TARGET ac-internal-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 

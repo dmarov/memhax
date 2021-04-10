@@ -2,7 +2,7 @@ add_executable(ac-hack main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)
 
-target_include_directories(ac-hack PUBLIC "../.." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(ac-hack PUBLIC ".." PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 set_property(TARGET ac-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
