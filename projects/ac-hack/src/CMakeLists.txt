@@ -20,4 +20,4 @@ set_property(TARGET ac-hack PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONF
 
 target_link_libraries(ac-hack PUBLIC Boost::program_options)
 
-install(TARGETS ac-hack DESTINATION bin)
+install(TARGETS ac-hack DESTINATION "bin")

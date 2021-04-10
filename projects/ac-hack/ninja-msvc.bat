@@ -1,2 +1,1 @@
-..\..\..\scripts\ninja-msvc.bat Release x86 ac-hack
-cp .\compile_commands.json ..\..\..\compile_commands.json
+..\..\..\scripts\ninja-msvc.bat Release x64 ac-hack
