@@ -1,4 +1,5 @@
 #include <chrono>
+#include <locale>
 #include <thread>
 #include <iostream>
 #include <boost/program_options.hpp>
@@ -63,7 +64,9 @@ int main(int argc, char **argv)
             auto pid = memhax::WinApiExternalProcessMemoryEditor::getProcessId(target_name_str);
             memhax::WinApiExternalProcessMemoryEditor editor(target_name_str);
 
-            auto info = editor.getModuleInfo(L"kernel32.dll");
+            auto modules = editor.getModules();
+
+            auto info = editor.getModuleInfo(L"KERNEL32.DLL");
 
             auto path = info.path;
 
@@ -142,7 +145,7 @@ int main(int argc, char **argv)
             continue;
         }
 
-        /* break; */
+        break;
     }
 
     std::cout << "Injected successfully" << std::endl;

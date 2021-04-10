@@ -5,7 +5,6 @@
 #include <tuple>
 #include <vector>
 #include <windows.h>
-#include <iostream>
 #include <algorithm>
 #include <iterator>
 #include "../exceptions/bad-memory-access.h"
