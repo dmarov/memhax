@@ -7,6 +7,10 @@
 #include "modules/instruction-nop-handler.h"
 #include "modules/code-injection-handler.h"
 #include <winuser.h>
+#include <boost/program_options.hpp>
+#include "main.h"
+
+namespace po = boost::program_options;
 
 bool interupted = false;
 
@@ -22,6 +26,26 @@ BOOL WINAPI consoleHandler(DWORD signal)
 
 int main(int argc, char **argv)
 {
+
+    po::options_description desc("Supported options");
+
+    desc.add_options()
+        ("help", "produce help message")
+        ("version,v", "print version");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("version")) {
+        std::cout << "v" << ac_hack_VERSION_MAJOR << "." << ac_hack_VERSION_MINOR << "." << ac_hack_VERSION_PATCH << std::endl;
+        return 0;
+    }
+
+    if (vm.count("help")) {
+        std::cout << desc << std::endl;
+        return 0;
+    }
 
     if (!SetConsoleCtrlHandler(consoleHandler, TRUE))
     {
