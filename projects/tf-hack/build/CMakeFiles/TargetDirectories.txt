@@ -1,0 +1,6 @@
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/tf-hack.dir
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/install/local.dir
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/install.dir
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/edit_cache.dir
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/rebuild_cache.dir
+C:/Users/mds3d/repos/memhax/projects/tf-hack/build/CMakeFiles/list_install_components.dir
