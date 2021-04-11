@@ -92,18 +92,29 @@ PEParser::PEParser(const ProcessMemoryEditor& editor)
     std::cout << std::hex << info.addr + dir_mem->AddressOfNames << std::endl;
     std::cout << std::hex << info.addr + dir_mem->AddressOfNameOrdinals << std::endl;
 
-    const char* test = "TEST";
-    std::cout << test << std::endl;
-    DWORD* names = new DWORD[dir_mem->NumberOfFunctions];
+    DWORD* names = new DWORD[dir_mem->NumberOfNames];
+    DWORD* functions = new DWORD[dir_mem->NumberOfFunctions];
+    WORD* ordinals = new WORD[dir_mem->NumberOfFunctions];
+
     editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfFunctions);
+    editor.read_p(info.addr + dir_mem->AddressOfFunctions, functions, sizeof(DWORD) * dir_mem->NumberOfFunctions);
+    editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfFunctions);
 
     char strbuf[100];
+    const char* c_name = "LoadLibraryA";
 
     for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
     {
-        std::cout << std::hex << info.addr + names[i] << std::endl;
         editor.read_p(info.addr + names[i], strbuf, 100);
-        std::cout << "" << strbuf  << std::endl;
+        /* std::cout << strbuf << std::endl; */
+
+        if (!strcmp(c_name, strbuf))
+        {
+            auto ordinal = ordinals[i];
+            std::cout << "ordinal: " << std::hex << ordinals[i] << std::endl;
+            std::cout << "address: " << info.addr + functions[ordinal] << std::endl;
+            break;
+        }
     }
 
     /* this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + dir.VirtualAddress); */
