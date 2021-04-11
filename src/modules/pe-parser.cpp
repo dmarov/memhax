@@ -1,4 +1,5 @@
 #include "pe-parser.h"
+#include <exception>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -8,9 +9,13 @@
 namespace memhax {
 
 PEParser::PEParser(const std::wstring path)
+/* PEParser::PEParser(std::byte* buf, size_t size) */
 {
+
+    auto libhandle = GetModuleHandleA("KERNEL32.DLL");
     std::ifstream lib_file;
 
+    /* this->buffer = buf; */
     lib_file.open(path, std::ios::binary);
     lib_file.seekg(0, std::ios::end);
 
@@ -36,36 +41,127 @@ PEParser::PEParser(const std::wstring path)
         throw std::exception("nt signature mismatch");
     }
 
-    auto export_directory_rva = this->nt_headers->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+    // COFF file header
+    auto fileHeader = (IMAGE_FILE_HEADER)(this->nt_headers->FileHeader);
+    // Optional header
+    auto optHeader = (IMAGE_OPTIONAL_HEADER)(this->nt_headers->OptionalHeader);
 
-    if (!export_directory_rva)
-    {
-        throw std::exception("failed to get export directory RVA");
-    }
+    std::cout << "Machine: " << std::hex << fileHeader.Machine << std::endl;
+    /* this->dos_header-> */
+/* #ifdef _WIN64 */
+    /* if (fileHeader.Machine != IMAGE_FILE_MACHINE_AMD64) */
+    /* { */
+    /*     delete[] this->buffer; */
+    /*     throw std::exception("invalid platform"); */
+    /* } */
+/* #else */
+    /* if (fileHeader.Machine != IMAGE_FILE_MACHINE_I386) */
+    /*     delete[] this->buffer; */
+    /*     throw std::exception("invalid platform"); */
+    /* } */
+/* #endif */
 
+// 0x10b - PE32  (32bit)
+// 0x20b - PE32+ (64bit)
+    std::cout << "magic: " << std::hex << optHeader.Magic << std::endl;
+    std::cout << "size in memory: " << std::hex << optHeader.SizeOfImage << std::endl;
+    std::cout << "size of headers: " << std::hex << optHeader.SizeOfHeaders << std::endl;
+    std::cout << "preferred base addr: " << std::hex << optHeader.ImageBase << std::endl;
+    auto dir = (IMAGE_DATA_DIRECTORY)(optHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]);
+    this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + dir.VirtualAddress);
 
-    this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + export_directory_rva);
+    std::cout << "Exports table char: " << this->pimage_export_directory->Characteristics << std::endl;
+    std::cout << "Exports table RVA: " << this->pimage_export_directory->Base << std::endl;
+    std::cout << "Exports table size: " << optHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size << std::endl;
+    std::cout << "file size: " << std::hex << length << std::endl;
+    std::cout << "Address of name ordinals: " << std::hex << this->pimage_export_directory->AddressOfNameOrdinals << std::endl;
+    std::cout << "Address of functions: " << std::hex << this->pimage_export_directory->AddressOfFunctions << std::endl;
+    std::cout << "Address of names: " << std::hex << this->pimage_export_directory->AddressOfNames << std::endl;
+    std::cout << "Number of names: " << std::dec << (this->pimage_export_directory->NumberOfNames) << std::endl;
+    std::cout << "Number of functions: " << std::dec << (this->pimage_export_directory->NumberOfFunctions) << std::endl;
+    std::cout << "Exports base: " << std::hex << (this->pimage_export_directory->Base) << std::endl;
+    /* std::cout << (char*)this->buffer[this->pimage_export_directory->AddressOfNames] << std::endl; */
 
-    this->peat = (PDWORD)(this->buffer + this->pimage_export_directory->AddressOfFunctions);
+    /* for (DWORD i = 0; i < this->pimage_export_directory->NumberOfNames; ++i) */
+    /* { */
+
+    /*     auto ord = (PDWORD)(this->buffer + this->pimage_export_directory->Base + this->pimage_export_directory->AddressOfNames + i); */
+    /*     std::cout << *ord << std::endl; */
+    /*     /1* auto addr = (PDWORD)(this->buffer + this->pimage_export_directory->AddressOfFunctions)[i]; *1/ */
+    /*     /1* auto v = addr; *1/ */
+    /*     /1* std::cout << v << std::endl; *1/ */
+    /*     /1* std::cout << (int)*(this->buffer + arr[i]) << std::endl; *1/ */
+
+    /*     /1* if (!lstrcmpiA((LPCSTR)c_name, (LPCSTR)(this->buffer + pent[i]))) *1/ */
+    /*     /1* { *1/ */
+    /*     /1*     ordinal = peot[i]; *1/ */
+    /*     /1*     break; *1/ */
+    /*     /1* } *1/ */
+    /* } */
+    /* char* nt_headers = (char*)(this->buffer + this->dos_header->e_lfanew); */
+
+    /* PIMAGE_NT_HEADERS32 nt_header32 = (PIMAGE_NT_HEADERS32)nt_headers; */
+    /* PIMAGE_NT_HEADERS64 nt_header64 = (PIMAGE_NT_HEADERS64)nt_headers; */
+
+    /* bool is32bit = false; */
+
+    /* if (nt_header32->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) */
+    /* { */
+    /*     is32bit = true; */
+    /* } */
+    /* else if (nt_header32->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC) */
+    /* { */
+    /*     is32bit = false; */
+    /* } */
+
+    /* if (is32bit) */
+    /* { */
+    /*     this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY) */
+    /*         (&nt_header32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress); */
+    /*     /1* std::cout << std::hex << nt_header32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress << std::endl; *1/ */
+    /* } */
+    /* else */
+    /* { */
+    /*     this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY) */
+    /*         (this->buffer + nt_header64->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress); */
+    /*     std::cout << (DWORD)this->pimage_export_directory->NumberOfNames << std::endl; */
+    /* } */
+
+    /* if (this->pimage_export_directory == NULL) */
+    /* { */
+    /*     throw std::exception("failed to get export directory RVA"); */
+    /* } */
+
+    /* std::cout << (DWORD)this->pimage_export_directory->NumberOfNames << std::endl; */
+    /* std::cout << (int)this->buffer[this->pimage_export_directory->AddressOfFunctions] << std::endl; */
+
+    /* this->peat = (PDWORD)(this->buffer + this->pimage_export_directory->AddressOfFunctions); */
     /* this->pent = (PDWORD)(this->buffer + this->pimage_export_directory->AddressOfNames); */
     /* this->peot = (PWORD)(this->buffer + this->pimage_export_directory->AddressOfNameOrdinals); */
+
+
+
+    /* std::cout << ">" << addrelib << std::endl; */
+
+    /* std::cout << (char*)((addrelib + this->pent[2])) <<std::endl; */
 }
 
 size_t PEParser::getExportRVA(const std::wstring name) {
 
     unsigned short ordinal = 0;
-    auto c_name = name.c_str();
-
-    /* for (DWORD i = 0; i < pimage_export_directory->NumberOfNames; ++i ) */
+    /* auto c_name = name.c_str(); */
+    /* /1* std::cout << this->pimage_export_directory->NumberOfNames << std::endl; *1/ */
+    /* for (DWORD i = 0; i < this->pimage_export_directory->NumberOfNames; ++i ) */
     /* { */
-    /*     if (!lstrcmpiA((LPCSTR)c_name, (LPCSTR)(this->buffer + pent[i]))) */
-    /*     { */
-    /*         ordinal = peot[i]; */
-    /*         break; */
-    /*     } */
+    /*     /1* std::cout << (LPCSTR)(&this->pent[i]) <<std::endl; *1/ */
+
+    /*     /1* if (!lstrcmpiA((LPCSTR)c_name, (LPCSTR)(this->buffer + pent[i]))) *1/ */
+    /*     /1* { *1/ */
+    /*     /1*     ordinal = peot[i]; *1/ */
+    /*     /1*     break; *1/ */
+    /*     /1* } *1/ */
     /* } */
 
-    return 0;
     return ordinal ? peat[ordinal] : 0;
 }
 

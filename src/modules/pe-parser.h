@@ -20,6 +20,7 @@ private:
 
 public:
     PEParser(const std::wstring path);
+    /* PEParser(std::byte* addr, size_t size); */
 
     size_t getExportRVA(const std::wstring name);
 

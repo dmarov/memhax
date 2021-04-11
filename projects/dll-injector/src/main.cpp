@@ -71,14 +71,19 @@ int main(int argc, char **argv)
             auto info = editor.getModuleInfo(L"KERNEL32.DLL");
 
             auto path = info.path;
-            auto base = info.addr;
+            std::wcout << path << std::endl;
+            /* auto base = info.addr; */
+            /* std::byte* buf = new std::byte[info.size]; */
+            /* editor.read_p(base, buf, info.size); */
 
+            /* memhax::PEParser parser(buf, info.size); */
             memhax::PEParser parser(path);
-            /* size_t offset = parser.getExportRVA(L"LoadLibraryA"); */
+            size_t offset = parser.getExportRVA(L"LoadLibraryA");
             /* std::cout << offset << std::endl; */
             /* std::cout << "HERE" << std::endl; */
 
-            std::wcout << path << std::endl;
+            auto addr_test = GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
+            /* std::cout << "should be" << std::hex << (uintptr_t)addr_test << std::endl; */
 
             /* auto loadLibraryAddr = base + offset; */
             /* if (pid == NULL) */
