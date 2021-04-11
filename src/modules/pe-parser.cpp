@@ -92,6 +92,20 @@ PEParser::PEParser(const ProcessMemoryEditor& editor)
     std::cout << std::hex << info.addr + dir_mem->AddressOfNames << std::endl;
     std::cout << std::hex << info.addr + dir_mem->AddressOfNameOrdinals << std::endl;
 
+    const char* test = "TEST";
+    std::cout << test << std::endl;
+    DWORD* names = new DWORD[dir_mem->NumberOfFunctions];
+    editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfFunctions);
+
+    for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
+    {
+        std::cout << std::hex << info.addr + names[i] << std::endl;
+        /* char* strbuf[4]; */
+        /* editor.read_p(info.addr + names[i], strbuf, 4); */
+        /* strbuf[3] = '\0'; */
+        /* std::cout << "" << strbuf  << std::endl; */
+    }
+
     /* this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + dir.VirtualAddress); */
 
     /* std::cout << "Exports table char: " << this->pimage_export_directory->Characteristics << std::endl; */
