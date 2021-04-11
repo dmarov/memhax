@@ -97,13 +97,13 @@ PEParser::PEParser(const ProcessMemoryEditor& editor)
     DWORD* names = new DWORD[dir_mem->NumberOfFunctions];
     editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfFunctions);
 
+    char strbuf[100];
+
     for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
     {
         std::cout << std::hex << info.addr + names[i] << std::endl;
-        /* char* strbuf[4]; */
-        /* editor.read_p(info.addr + names[i], strbuf, 4); */
-        /* strbuf[3] = '\0'; */
-        /* std::cout << "" << strbuf  << std::endl; */
+        editor.read_p(info.addr + names[i], strbuf, 100);
+        std::cout << "" << strbuf  << std::endl;
     }
 
     /* this->pimage_export_directory = (PIMAGE_EXPORT_DIRECTORY)(this->buffer + dir.VirtualAddress); */
