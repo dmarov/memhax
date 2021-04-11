@@ -2,6 +2,7 @@
 
 #include <string>
 #include <windows.h>
+#include "modules/process-memory-editor.h"
 
 namespace memhax {
 
@@ -19,10 +20,10 @@ private:
     PWORD peot;
 
 public:
-    PEParser(const std::wstring path);
+    PEParser(const ProcessMemoryEditor& editor);
     /* PEParser(std::byte* addr, size_t size); */
 
-    size_t getExportRVA(const std::wstring name);
+    /* size_t getExportRVA(const std::wstring name); */
 
     ~PEParser();
 };
