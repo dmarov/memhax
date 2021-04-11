@@ -96,9 +96,9 @@ PEParser::PEParser(const ProcessMemoryEditor& editor)
     DWORD* functions = new DWORD[dir_mem->NumberOfFunctions];
     WORD* ordinals = new WORD[dir_mem->NumberOfFunctions];
 
-    editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfFunctions);
+    editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfNames);
     editor.read_p(info.addr + dir_mem->AddressOfFunctions, functions, sizeof(DWORD) * dir_mem->NumberOfFunctions);
-    editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfFunctions);
+    editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfNames);
 
     char strbuf[100];
     const char* c_name = "LoadLibraryA";
