@@ -36,6 +36,11 @@ unsigned WinApiExternalProcessMemoryEditor::getProcessId(std::wstring exe_name)
     return pid;
 }
 
+HANDLE WinApiExternalProcessMemoryEditor::getHandle() const
+{
+    return this->handle;
+}
+
 WinApiExternalProcessMemoryEditor::WinApiExternalProcessMemoryEditor(std::wstring exe_name)
 {
     this->process_id = this->getProcessId(exe_name);
@@ -189,8 +194,11 @@ unsigned short WinApiExternalProcessMemoryEditor::getPointerSize() const
 
 uintptr_t WinApiExternalProcessMemoryEditor::allocate(size_t size, uintptr_t desired_addr) const
 {
-    auto addr =  VirtualAllocEx(this->handle, (LPVOID)desired_addr, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    if (addr == NULL) throw std::exception("failed to allocate memory");
+    auto addr =  VirtualAllocEx(this->handle, (LPVOID)desired_addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    if (addr == NULL)
+    {
+        throw std::exception("failed to allocate memory");
+    }
 
     return (uintptr_t)addr;
 }

@@ -92,86 +92,48 @@ int main(int argc, char **argv)
 
         char strbuf[100];
         const char* c_name = "LoadLibraryA";
+        uintptr_t liba_addr = NULL;
 
         for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
         {
             editor.read_p(info.addr + names[i], strbuf, 100);
-            /* std::cout << strbuf << std::endl; */
 
             if (!strcmp(c_name, strbuf))
             {
                 auto ordinal = ordinals[i];
+                liba_addr = info.addr + functions[ordinal];
                 std::cout << "ordinal: " << std::hex << ordinals[i] << std::endl;
-                std::cout << "address: " << info.addr + functions[ordinal] << std::endl;
+                std::cout << "address: " << std::hex << liba_addr << std::endl;
                 break;
             }
         }
 
+        if (!liba_addr)
+        {
+            throw new std::exception("could not find LoadLibraryA in target process");
+        }
 
+        auto length = strlen(lib_cstr) + 1;
+        auto addr = editor.allocate(length, NULL);
+        editor.write_p(addr, (void*)lib_cstr, length);
+        HANDLE handle = editor.getHandle();
 
+        HANDLE th = CreateRemoteThread(handle, NULL, 0, (LPTHREAD_START_ROUTINE)liba_addr, (LPVOID)addr, 0, NULL);
+        WaitForSingleObject(th, INFINITE);
+        editor.free(addr, length);
+        CloseHandle(th);
 
+        std::cout << "Injected successfully" << std::endl;
 
-        /* HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid); */
-        /* LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE); */
-        /* Sleep(1000); */
-
-        /* if (!handle) */
-        /* { */
-        /*     throw std::exception("could not get handle"); */
-        /* } */
-
-        /* if (!pDllPath) */
-        /* { */
-        /*     throw std::exception("could not allocate memory"); */
-        /* } */
-
-        /* SIZE_T wr; */
-
-        /* bool success = WriteProcessMemory(handle, pDllPath, (LPVOID)lib_cstr, strlen(lib_cstr) + 1, &wr); */
-        /* Sleep(1000); */
-        /* if (!success) */
-        /* { */
-        /*     throw std::exception("could not write memory"); */
-        /* } */
-
-        /* std::cout << wr << std::endl; */
-
-        /* DWORD res; */
-        /* HANDLE th = CreateRemoteThread(handle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibAddr, pDllPath, 0, &res); */
-        /* Sleep(1000); */
-
-        /* if (!th) */
-        /* { */
-        /*     throw std::exception("could not create thread"); */
-        /* } */
-
-        /* if (!res) */
-        /* { */
-        /*     throw std::exception("no res"); */
-        /* } */
-
-        /* WaitForSingleObject(th, INFINITE); */
-        /* Sleep(1000); */
-
-        /* bool free_success = VirtualFreeEx(handle, pDllPath, 0, MEM_RELEASE); */
-
-        /* if (!free_success) */
-        /* { */
-        /*     throw std::exception("failed to free memory"); */
-        /* } */
-
-        /* CloseHandle(th); */
-        /* CloseHandle(handle); */
-        /* std::cout << "Injected successfully" << std::endl; */
+        delete[] names;
+        delete[] functions;
+        delete[] ordinals;
     }
     catch(std::exception e)
     {
         std::cout << "Error: " << e.what() << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        /* continue; */
     }
-
-
 
     return 0;
 }
