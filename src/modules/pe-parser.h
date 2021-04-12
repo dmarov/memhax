@@ -9,8 +9,6 @@ namespace memhax {
 class PEParser {
 
 private:
-
-private:
     std::byte* buffer;
     PIMAGE_DOS_HEADER dos_header;
     PIMAGE_NT_HEADERS32 nt_headers32;
@@ -24,9 +22,10 @@ private:
     IMAGE_DATA_DIRECTORY entry_directory;
 
 public:
-    PEParser(const ProcessMemoryEditor& editor);
+    PEParser(const std::wstring& path);
 
     uintptr_t getEntryDirectoryRVA();
+    size_t getEntryDirectorySize();
 
     uintptr_t getNamesRVA(IMAGE_EXPORT_DIRECTORY dir);
     uintptr_t getFunctionsRVA(IMAGE_EXPORT_DIRECTORY dir);

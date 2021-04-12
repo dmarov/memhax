@@ -24,4 +24,5 @@ now hack is installed somewhere in `C:\Program Files\bin`
 # Run
 ```
 .\dll-injector\dll-injector.exe --target ac_client.exe --lib "C:\{{PATH}}\ac-internal-hack.dll"
+.\dll-injector.exe --target Calculator.exe --lib C:\Windows\System32\kernel32.dll
 ```

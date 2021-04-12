@@ -65,25 +65,51 @@ int main(int argc, char **argv)
 
         auto modules = editor.getModules();
 
-        memhax::PEParser parser(editor);
-        /* size_t offset = parser.getExportRVA(L"LoadLibraryA"); */
-        /* std::cout << offset << std::endl; */
-        /* std::cout << "HERE" << std::endl; */
+        auto info = editor.getModuleInfo(L"KERNEL32.DLL");
 
-        /* auto loadLibraryAddr = base + offset; */
-        /* if (pid == NULL) */
-        /* { */
-        /*     throw std::exception("could not find specified process"); */
-        /* } */
+        memhax::PEParser parser(info.path);
 
-        /* FARPROC loadLibAddr = GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA"); */
+        auto exp_addr = info.addr + parser.getEntryDirectoryRVA();
+        auto mem = new std::byte[parser.getEntryDirectorySize()];
 
-        /* if (!loadLibAddr) */
-        /* { */
-        /*     throw std::exception("could not locate real address of LoadLibraryA"); */
-        /* } */
+        editor.read_p(exp_addr, mem, parser.getEntryDirectorySize());
 
-        /* std::cout << "LoadLibraryA located at 0x"  << (uintptr_t*)loadLibAddr << std::endl; */
+        auto dir_mem = (PIMAGE_EXPORT_DIRECTORY)mem;
+
+        std::cout << std::dec << dir_mem->NumberOfNames << std::endl;
+        std::cout << std::dec << dir_mem->NumberOfFunctions << std::endl;
+        std::cout << std::hex << info.addr + dir_mem->AddressOfFunctions << std::endl;
+        std::cout << std::hex << info.addr + dir_mem->AddressOfNames << std::endl;
+        std::cout << std::hex << info.addr + dir_mem->AddressOfNameOrdinals << std::endl;
+
+        DWORD* names = new DWORD[dir_mem->NumberOfNames];
+        DWORD* functions = new DWORD[dir_mem->NumberOfFunctions];
+        WORD* ordinals = new WORD[dir_mem->NumberOfFunctions];
+
+        editor.read_p(info.addr + dir_mem->AddressOfNames, names, sizeof(DWORD) * dir_mem->NumberOfNames);
+        editor.read_p(info.addr + dir_mem->AddressOfFunctions, functions, sizeof(DWORD) * dir_mem->NumberOfFunctions);
+        editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfNames);
+
+        char strbuf[100];
+        const char* c_name = "LoadLibraryA";
+
+        for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
+        {
+            editor.read_p(info.addr + names[i], strbuf, 100);
+            /* std::cout << strbuf << std::endl; */
+
+            if (!strcmp(c_name, strbuf))
+            {
+                auto ordinal = ordinals[i];
+                std::cout << "ordinal: " << std::hex << ordinals[i] << std::endl;
+                std::cout << "address: " << info.addr + functions[ordinal] << std::endl;
+                break;
+            }
+        }
+
+
+
+
 
         /* HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid); */
         /* LPVOID pDllPath = VirtualAllocEx(handle, 0, strlen(lib_cstr) + 1, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE); */
