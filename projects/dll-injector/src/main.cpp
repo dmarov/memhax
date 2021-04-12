@@ -25,22 +25,26 @@ int main(int argc, char **argv)
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
-    if (vm.count("version")) {
+    if (vm.count("version"))
+    {
         std::cout << "v" << dll_injector_VERSION_MAJOR << "." << dll_injector_VERSION_MINOR << "." << dll_injector_VERSION_PATCH << std::endl;
         return 0;
     }
 
-    if (vm.count("help")) {
+    if (vm.count("help"))
+    {
         std::cout << desc << std::endl;
         return 0;
     }
 
-    if (!vm.count("lib")) {
+    if (!vm.count("lib"))
+    {
         std::cout << "specify library file via --lib" << std::endl;
         return 1;
     }
 
-    if (!vm.count("target")) {
+    if (!vm.count("target"))
+    {
         std::cout << "specify target process name via --target" << std::endl;
         return 1;
     }
@@ -118,7 +122,8 @@ int main(int argc, char **argv)
         editor.write_p(addr, (void*)lib_cstr, length);
         HANDLE handle = editor.getHandle();
 
-        HANDLE th = CreateRemoteThread(handle, NULL, 0, (LPTHREAD_START_ROUTINE)liba_addr, (LPVOID)addr, 0, NULL);
+        DWORD res;
+        HANDLE th = CreateRemoteThread(handle, NULL, 0, (LPTHREAD_START_ROUTINE)liba_addr, (LPVOID)addr, 0, &res);
         WaitForSingleObject(th, INFINITE);
         editor.free(addr, length);
         CloseHandle(th);
@@ -132,7 +137,6 @@ int main(int argc, char **argv)
     catch(std::exception e)
     {
         std::cout << "Error: " << e.what() << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 
     return 0;
