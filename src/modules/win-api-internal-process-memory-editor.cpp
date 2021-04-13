@@ -7,6 +7,8 @@
 #include <memoryapi.h>
 #include "../exceptions/bad-memory-access.h"
 #include <iostream>
+#include <sstream>
+#include <windows.h>
 
 namespace memhax {
 
@@ -27,46 +29,46 @@ WinApiInternalProcessMemoryEditor::WinApiInternalProcessMemoryEditor()
 
 void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, size_t n_bytes) const
 {
-    auto q_success = VirtualQuery((LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQuery((LPCVOID)address, &(this->mbi), sizeof(this->mbi));
 
     if (q_success == 0)
     {
         throw (BadMemoryAccess());
     }
 
-    if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
+    if (this->mbi.State != MEM_COMMIT || this->mbi.Protect == PAGE_NOACCESS)
     {
         throw (BadMemoryAccess());
     }
 
-    VirtualProtect((LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+    VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
 
+    /* auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, NULL); */
     std::memcpy(value, (void*)address, n_bytes);
 
-    VirtualProtect((LPVOID)(address), n_bytes, oldProtection, NULL);
+    VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
 }
 
 void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
 {
-    unsigned long oldProtection;
-    MEMORY_BASIC_INFORMATION mbi = { 0 };
-    auto q_success = VirtualQuery((LPCVOID)address, &mbi, sizeof(mbi));
+    auto q_success = VirtualQuery((LPCVOID)address, &(this->mbi), sizeof(this->mbi));
 
     if (q_success == 0)
     {
         throw (BadMemoryAccess());
     }
 
-    if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
+    if (this->mbi.State != MEM_COMMIT || this->mbi.Protect == PAGE_NOACCESS)
     {
         throw (BadMemoryAccess());
     }
 
-    VirtualProtect((LPVOID)(address), n_bytes, mbi.Protect, &oldProtection);
+    VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
 
-    std::memcpy((void*)address, value, n_bytes);
+    auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, NULL);
+    /* std::memcpy((void*)address, value, n_bytes); */
 
-    VirtualProtect((LPVOID)(address), n_bytes, oldProtection, NULL);
+    VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
 }
 
 std::vector<ModuleInfo> WinApiInternalProcessMemoryEditor::getModules() const

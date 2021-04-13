@@ -9,7 +9,6 @@ HANDLE th;
 bool interupted = false;
 
 using namespace memhax;
-
 DWORD WINAPI main_loop(LPVOID lpParam)
 {
     const wchar_t* module_name = L"ac_client.exe";
@@ -34,7 +33,7 @@ DWORD WINAPI main_loop(LPVOID lpParam)
         instr_vec.push_back((std::byte)b);
     }
 
-    memhax::CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
+    /* memhax::CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec); */
     memhax::InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
     bool enabled = false;
@@ -57,12 +56,12 @@ DWORD WINAPI main_loop(LPVOID lpParam)
             if (enabled)
             {
                 ammo_cheat_handler.disable();
-                health_cheat_handler.disable();
+                /* health_cheat_handler.disable(); */
             }
             else
             {
                 ammo_cheat_handler.enable();
-                health_cheat_handler.enable();
+                /* health_cheat_handler.enable(); */
             }
 
             enabled = !enabled;
