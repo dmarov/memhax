@@ -1,12 +1,9 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "modules/aob-signature-ptr.h"
-#include "modules/aob-signature.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include "modules/instruction-nop-handler.h"
 #include "modules/code-injection-handler.h"
-#include <winuser.h>
 #include <boost/program_options.hpp>
 #include "main.h"
 
