@@ -2,10 +2,10 @@
 This repository is a collection of hacks and utils for reverse engineering program memory
 source code divided into .\projects\ and .\src 
 
-- tf-hack.exe - hack for TankForce game (works, F9 - toggle infinity health and ammo, F8 - freeze Z coordinate, needs optimization)
-- dll-injector.exe - attempt to make dll injector (work in progress)
-- ac-hack.exe - hack for Assault Cube (works)
-- ac-internal-hack.dll - attempt to make internal hack for Assault Cube (work in progress)
+- tf-external-hack.exe - hack for TankForce game (F9 - toggle infinity health and ammo, F8 - freeze Z coordinate, needs optimization)
+- dll-injector.exe - attempt to make dll injector `.\dll-injector\dll-injector.exe --target ac_client.exe --lib "C:\{{PATH}}\ac-internal-hack.dll"`
+- ac-external-hack.exe - hack for Assault Cube (F9 - toggle infinity health and ammo, F8 - interrupt)
+- ac-internal-hack.dll - internal hack for Assault Cube, inject using aly dll injector (F9 - toggle infinity health and ammo, F8 - interrupt)
 
 ## How to work using any text editor
 
