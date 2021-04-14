@@ -1,15 +1,15 @@
 cd projects/ac-external-hack
-.\build.bat
-cd ..\..
+CALL .\build.bat
+cd ..\..\..
 
 cd projects/ac-internal-hack
-.\build.bat
-cd ..\..
+CALL .\build.bat
+cd ..\..\..
 
 cd projects/dll-injector
-.\build.bat
-cd ..\..
+CALL .\build.bat
+cd ..\..\..
 
 cd projects/tf-external-hack
-.\build.bat
-cd ..\..
+CALL .\build.bat
+cd ..\..\..
