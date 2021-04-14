@@ -1,0 +1,3 @@
+#define ac_hack_VERSION_MAJOR @ac-hack_VERSION_MAJOR@
+#define ac_hack_VERSION_MINOR @ac-hack_VERSION_MINOR@
+#define ac_hack_VERSION_PATCH @ac-hack_VERSION_PATCH@
