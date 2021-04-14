@@ -33,7 +33,7 @@ DWORD WINAPI main_loop(LPVOID lpParam)
         instr_vec.push_back((std::byte)b);
     }
 
-    /* memhax::CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec); */
+    memhax::CodeInjectionHandler health_cheat_handler(editor, health_signature_ptr, 5, instr_vec);
     memhax::InstructionNopHandler ammo_cheat_handler(editor, ammo_signature_ptr, 2);
 
     bool enabled = false;
@@ -56,12 +56,12 @@ DWORD WINAPI main_loop(LPVOID lpParam)
             if (enabled)
             {
                 ammo_cheat_handler.disable();
-                /* health_cheat_handler.disable(); */
+                health_cheat_handler.disable();
             }
             else
             {
                 ammo_cheat_handler.enable();
-                /* health_cheat_handler.enable(); */
+                health_cheat_handler.enable();
             }
 
             enabled = !enabled;
@@ -83,7 +83,6 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID lpReserved)
     switch (fdwReason)
     {
         case DLL_PROCESS_ATTACH:
-            /* MessageBox(NULL, NULL, "Cheat is ready now", MB_OK); */
             th = CreateThread(NULL, NULL, &main_loop, NULL, 0, NULL);
             break;
         default:

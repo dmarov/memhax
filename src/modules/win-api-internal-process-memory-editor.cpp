@@ -41,9 +41,8 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
+    VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
 
-    /* auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, NULL); */
     std::memcpy(value, (void*)address, n_bytes);
 
     VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
@@ -63,10 +62,9 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
+    VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
 
-    auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, NULL);
-    /* std::memcpy((void*)address, value, n_bytes); */
+    std::memcpy((void*)address, value, n_bytes);
 
     VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
 }

@@ -71,7 +71,7 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
 
     auto success = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, (SIZE_T*)&bytes_read);
 
@@ -101,7 +101,7 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection));
+    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
 
     auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, (SIZE_T*)&bytes_written);
 
