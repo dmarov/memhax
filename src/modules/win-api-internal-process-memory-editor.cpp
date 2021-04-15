@@ -53,7 +53,8 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 
     std::memcpy(value, (void*)address, n_bytes);
 
-    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
+    DWORD prev_protect;
+    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
 
     if (!res)
     {
@@ -92,7 +93,8 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
 
     std::memcpy((void*)address, value, n_bytes);
 
-    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
+    DWORD prev_protect;
+    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
 
     if (!res)
     {
