@@ -6,6 +6,7 @@
 #include <TlHelp32.h>
 #include <memoryapi.h>
 #include "../exceptions/bad-memory-access.h"
+#include <iostream>
 
 namespace memhax {
 
@@ -72,13 +73,18 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     // which one is correct?
     /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection)); */
     BOOL res;
-    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE)
     {
-        std::stringstream ss;
-        ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
+        if (!res)
+        {
+            /* std::cout << std::hex << address << std::endl; */
+            /* std::cout << std::hex << this->oldProtection << std::endl; */
+            /* std::cout << std::hex << this->mbi.Protect << std::endl; */
+            std::stringstream ss;
+            ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 
     res = ReadProcessMemory(this->handle, (LPCVOID)address, (LPVOID)value, (SIZE_T)n_bytes, (SIZE_T*)&bytes_read);
@@ -91,14 +97,17 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw std::exception(ss.str().c_str());
     }
 
-    DWORD prev_protect;
-    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE)
     {
-        std::stringstream ss;
-        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        DWORD prev_protect;
+        res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 }
 
@@ -118,13 +127,16 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     }
 
     BOOL res;
-    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ)
     {
-        std::stringstream ss;
-        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 
     res = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, (SIZE_T*)&bytes_written);
@@ -136,14 +148,17 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw std::exception(ss.str().c_str());
     }
 
-    DWORD prev_protect;
-    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ)
     {
-        std::stringstream ss;
-        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        DWORD prev_protect;
+        res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 }
 

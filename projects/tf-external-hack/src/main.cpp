@@ -23,15 +23,15 @@ int main(int argc, char **argv)
         auto regions = editor.getRegions();
         auto mod_span = editor.getModuleSpan(L"UnityPlayer.dll");
 
-        /* memhax::AOBSignaturePtr player_z_ptr("89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? E9 ?? ?? ?? ?? 0F BA E6", 9, mod_span); */
+        memhax::AOBSignaturePtr player_z_ptr("89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? 8B 41 ?? 89 81 ?? ?? ?? ?? E9 ?? ?? ?? ?? 0F BA E6", 9, mod_span);
         memhax::AOBSignaturePtr ammo_ptr("E8 F3 0F 11 68 ?? 48 8B 7D ?? 4C 8B 7D", 1, regions);
-        /* memhax::AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions); */
-        /* memhax::AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions); */
+        memhax::AOBSignaturePtr health_ptr_1("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 48 8B 7D ?? 48 8D 65 ?? 5D C3", 8, regions);
+        memhax::AOBSignaturePtr health_ptr_2("F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 68 ?? 45 85 FF 0F 8D", 8, regions);
 
-        /* memhax::InstructionNopHandler player_z_handler(editor, player_z_ptr, 6); */
+        memhax::InstructionNopHandler player_z_handler(editor, player_z_ptr, 6);
         memhax::InstructionNopHandler ammo_handler(editor, ammo_ptr, 5);
-        /* memhax::InstructionNopHandler health_handler_1(editor, health_ptr_1, 5); */
-        /* memhax::InstructionNopHandler health_handler_2(editor, health_ptr_2, 5); */
+        memhax::InstructionNopHandler health_handler_1(editor, health_ptr_1, 5);
+        memhax::InstructionNopHandler health_handler_2(editor, health_ptr_2, 5);
 
         bool enabled_f8 = false;
         bool enabled_f9 = false;
@@ -59,14 +59,14 @@ int main(int argc, char **argv)
                 if (enabled_f9)
                 {
                     ammo_handler.disable();
-                    /* health_handler_1.disable(); */
-                    /* health_handler_2.disable(); */
+                    health_handler_1.disable();
+                    health_handler_2.disable();
                 }
                 else
                 {
                     ammo_handler.enable();
-                    /* health_handler_1.enable(); */
-                    /* health_handler_2.enable(); */
+                    health_handler_1.enable();
+                    health_handler_2.enable();
                 }
 
                 enabled_f9 = !enabled_f9;
@@ -76,11 +76,11 @@ int main(int argc, char **argv)
             {
                 if (enabled_f8)
                 {
-                    /* player_z_handler.disable(); */
+                    player_z_handler.disable();
                 }
                 else
                 {
-                    /* player_z_handler.enable(); */
+                    player_z_handler.enable();
                 }
 
                 enabled_f8 = !enabled_f8;
