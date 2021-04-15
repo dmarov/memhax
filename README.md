@@ -37,9 +37,11 @@ then refer to specific README in .\projects\{{project_name}}\README.md
 
 ## Backlog
 
-- improve ac-hack - refactor
-- make dll-injector work
 - optimize signature scan - scan for multiple signature in one scan (signature pool)
-- migrate external hacks to internal
+- improve ac-hack - refactor, fix reltive jump
+- optimize dll-injector work
+- add dll-injector protection from idiot
+- implement dll-injector manual mapping
 - figure out direct3d hooking
 - create UI
+- make build cross-platform (Ansible)
