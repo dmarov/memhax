@@ -84,9 +84,6 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    // which one is correct?
-    //
-    /* VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection)); */
     BOOL res;
     if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
     {

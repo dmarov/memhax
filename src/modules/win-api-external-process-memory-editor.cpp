@@ -70,17 +70,12 @@ void WinApiExternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    // which one is correct?
-    /* VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection)); */
     BOOL res;
     if (mbi.Protect == PAGE_EXECUTE)
     {
         res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
         if (!res)
         {
-            /* std::cout << std::hex << address << std::endl; */
-            /* std::cout << std::hex << this->oldProtection << std::endl; */
-            /* std::cout << std::hex << this->mbi.Protect << std::endl; */
             std::stringstream ss;
             ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
             throw std::exception(ss.str().c_str());
