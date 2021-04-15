@@ -127,7 +127,7 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     }
 
     BOOL res;
-    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
     {
         res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
 
@@ -148,7 +148,7 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw std::exception(ss.str().c_str());
     }
 
-    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
     {
         DWORD prev_protect;
         res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);

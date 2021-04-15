@@ -42,25 +42,31 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     }
 
     BOOL res;
-    res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE)
     {
-        std::stringstream ss;
-        ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 
     std::memcpy(value, (void*)address, n_bytes);
 
-    DWORD prev_protect;
-    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE)
     {
-        std::stringstream ss;
-        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        DWORD prev_protect;
+        res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 }
 
@@ -82,25 +88,31 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     //
     /* VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection)); */
     BOOL res;
-    res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
     {
-        std::stringstream ss;
-        ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 
     std::memcpy((void*)address, value, n_bytes);
 
-    DWORD prev_protect;
-    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
-
-    if (!res)
+    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
     {
-        std::stringstream ss;
-        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
-        throw std::exception(ss.str().c_str());
+        DWORD prev_protect;
+        res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
+
+        if (!res)
+        {
+            std::stringstream ss;
+            ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+            throw std::exception(ss.str().c_str());
+        }
     }
 }
 
