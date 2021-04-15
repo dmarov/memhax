@@ -41,11 +41,26 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
         throw (BadMemoryAccess());
     }
 
-    VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
+    BOOL res;
+    res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
+
+    if (!res)
+    {
+        std::stringstream ss;
+        ss << "failed to set protection [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
 
     std::memcpy(value, (void*)address, n_bytes);
 
-    VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
+    res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, NULL);
+
+    if (!res)
+    {
+        std::stringstream ss;
+        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
 }
 
 void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, size_t n_bytes) const
@@ -62,6 +77,9 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
+    // which one is correct?
+    //
+    /* VirtualProtect((LPVOID)(address), n_bytes, this->mbi.Protect, &(this->oldProtection)); */
     VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
 
     std::memcpy((void*)address, value, n_bytes);

@@ -9,7 +9,6 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-
     po::options_description desc("Supported options");
 
     desc.add_options()
@@ -34,8 +33,6 @@ int main(int argc, char **argv)
 
     const wchar_t* exe = L"ac_client.exe";
     memhax::WinApiExternalProcessMemoryEditor editor(exe);
-
-    std::cout << "Searching for signatures..." << std::endl;
 
     try
     {
