@@ -1,12 +1,8 @@
 #include <windows.h>
-#include <chrono>
-#include <thread>
 #include "modules/win-api-internal-process-memory-editor.h"
 #include "loops/ac-hack-loop.h"
 
 HANDLE th;
-
-using namespace memhax;
 
 DWORD WINAPI main_loop(LPVOID lpParam)
 {
