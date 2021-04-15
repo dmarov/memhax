@@ -118,11 +118,26 @@ void WinApiExternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
         throw (BadMemoryAccess());
     }
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
+    BOOL res;
+    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
+
+    if (!res)
+    {
+        std::stringstream ss;
+        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
 
     auto success = WriteProcessMemory(this->handle, (LPVOID)address, (LPCVOID)value, (SIZE_T)n_bytes, (SIZE_T*)&bytes_written);
 
-    VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, NULL);
+    res = VirtualProtectEx(this->handle, (LPVOID)(address), n_bytes, this->oldProtection, NULL);
+
+    if (!res)
+    {
+        std::stringstream ss;
+        ss << "failed to restore protection [0x" << std::hex << GetLastError() << "]";
+        throw std::exception(ss.str().c_str());
+    }
 
     if (success == 0 || bytes_written != n_bytes)
     {
