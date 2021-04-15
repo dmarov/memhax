@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 file(GLOB modules_src
     "../../../src/modules/*.cpp"
     "../../../src/exceptions/*.cpp"
+    "../../../src/loops/*.cpp"
 )
 
 add_library(ac-internal-hack SHARED main.cpp ${modules_src})
