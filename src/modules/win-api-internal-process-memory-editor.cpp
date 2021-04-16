@@ -201,12 +201,19 @@ unsigned short WinApiInternalProcessMemoryEditor::getPointerSize() const
 
 uintptr_t WinApiInternalProcessMemoryEditor::allocate(size_t size, uintptr_t desired_addr) const
 {
-    return (uintptr_t)std::malloc(size);
+    auto addr =  VirtualAlloc((LPVOID)desired_addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+    if (addr == NULL)
+    {
+        throw std::exception("failed to allocate memory");
+    }
+
+    return (uintptr_t)addr;
 }
 
 void WinApiInternalProcessMemoryEditor::free(uintptr_t address, size_t size) const
 {
-    std::free((void*)address);
+    VirtualFree((LPVOID)address, size, MEM_RELEASE);
 }
 
 WinApiInternalProcessMemoryEditor::~WinApiInternalProcessMemoryEditor()
