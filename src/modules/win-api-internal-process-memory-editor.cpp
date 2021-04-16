@@ -42,7 +42,9 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
     }
 
     BOOL res;
-    if (mbi.Protect == PAGE_EXECUTE)
+    bool change_protect = mbi.Protect == PAGE_EXECUTE;
+
+    if (change_protect)
     {
         res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READ, &(this->oldProtection));
 
@@ -56,7 +58,7 @@ void WinApiInternalProcessMemoryEditor::read_p(uintptr_t address, void* value, s
 
     std::memcpy(value, (void*)address, n_bytes);
 
-    if (mbi.Protect == PAGE_EXECUTE)
+    if (change_protect)
     {
         DWORD prev_protect;
         res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
@@ -85,7 +87,12 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
     }
 
     BOOL res;
-    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
+    bool change_protect = mbi.Protect == PAGE_EXECUTE ||
+        mbi.Protect == PAGE_EXECUTE_READ ||
+        mbi.Protect == PAGE_READONLY ||
+        mbi.Protect == PAGE_READWRITE;
+
+    if (change_protect)
     {
         res = VirtualProtect((LPVOID)(address), n_bytes, PAGE_EXECUTE_READWRITE, &(this->oldProtection));
 
@@ -99,7 +106,7 @@ void WinApiInternalProcessMemoryEditor::write_p(uintptr_t address, void* value, 
 
     std::memcpy((void*)address, value, n_bytes);
 
-    if (mbi.Protect == PAGE_EXECUTE || mbi.Protect == PAGE_EXECUTE_READ || mbi.Protect == PAGE_READONLY)
+    if (change_protect)
     {
         DWORD prev_protect;
         res = VirtualProtect((LPVOID)(address), n_bytes, this->oldProtection, &prev_protect);
