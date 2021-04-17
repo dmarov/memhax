@@ -1,12 +1,12 @@
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <windows.h>
+#include <filesystem>
 #include "main.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include "modules/pe-parser.h"
-#include <string>
-#include <windows.h>
 #include "create-remote-thread-method.h"
-#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -46,7 +46,7 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
     editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfNames);
 
     char strbuf[100];
-    const char* c_name = "LoadLibraryA";
+    const char* c_name = "LoadLibrary";
     uintptr_t liba_addr = NULL;
 
     for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
@@ -66,9 +66,9 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
         throw new std::exception("could not find LoadLibraryA in target process");
     }
 
-    std::string full_lib_path_str(full_lib_path.begin(), full_lib_path.end());
-    const char* lib_cstr = full_lib_path_str.c_str();
-    auto length = strlen(lib_cstr) + 1;
+    /* std::string full_lib_path_str(full_lib_path.begin(), full_lib_path.end()); */
+    const wchar_t* lib_cstr = full_lib_path.c_str();
+    auto length = (full_lib_path.size() + 1) * sizeof(wchar_t);
     auto addr = editor.allocate(length, NULL);
     editor.write_p(addr, (void*)lib_cstr, length);
     HANDLE handle = editor.getHandle();

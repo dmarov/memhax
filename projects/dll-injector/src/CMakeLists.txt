@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 file(GLOB modules_src
     "../../../src/modules/*.cpp"
     "../../../src/exceptions/*.cpp"
+    "./**/*.cpp"
 )
 
 find_package(Boost REQUIRED COMPONENTS program_options)

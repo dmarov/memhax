@@ -5,5 +5,5 @@
 class GenericMethod {
 
 public:
-    virtual void inject(std::wstring process_name, std::wstring full_lib_path) = 0;
+    virtual void inject(std::wstring target_name, std::wstring lib_file) = 0;
 };

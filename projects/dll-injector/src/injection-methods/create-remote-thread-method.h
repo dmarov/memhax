@@ -1,4 +1,5 @@
 #pragma once
+
 #include "generic-method.h"
 
 class CreateRemoteThreadMethod : public GenericMethod {
