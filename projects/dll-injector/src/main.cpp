@@ -9,7 +9,6 @@ namespace po = boost::program_options;
 
 int wmain(int argc, wchar_t *argv[])
 {
-
     try
     {
         po::options_description desc("Supported options");
