@@ -61,13 +61,11 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
         }
     }
 
-    std::cout << std::hex << liba_addr << std::endl;
     if (!liba_addr)
     {
-        throw new std::exception("could not find LoadLibraryA in target process");
+        throw new std::exception("could not find LoadLibraryW in target process");
     }
 
-    /* std::string full_lib_path_str(full_lib_path.begin(), full_lib_path.end()); */
     const wchar_t* lib_cstr = full_lib_path.c_str();
     auto length = (full_lib_path.size() + 1) * sizeof(wchar_t);
     auto addr = editor.allocate(length, NULL);

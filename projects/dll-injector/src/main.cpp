@@ -17,11 +17,15 @@ int wmain(int argc, wchar_t *argv[])
         desc.add_options()
             ("help", "produce help message")
             ("version,v", "print version")
-            ("lib", po::wvalue<std::wstring>(),
+            ("lib", po::wvalue<std::wstring>()
+                ->required(),
                 "specify library to inject via --lib")
-            ("target", po::wvalue<std::wstring>(),
+            ("target", po::wvalue<std::wstring>()
+                ->required(),
                 "specify target process name via --target")
-            ("method", po::wvalue<std::wstring>(),
+            ("method", po::wvalue<std::wstring>()
+                ->required()
+                ->default_value(L"create-remote-thread", "create-remote-thread"),
                 "specify injection method");
 
         po::variables_map vm;
