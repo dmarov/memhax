@@ -37,6 +37,9 @@ public:
     bool isForAMD64Arch();
     bool isForX86Arch();
 
+    uintptr_t getOptionalHeaderImageBase();
+    size_t getOptionalHeaderImageSize();
+
     ~PEParser();
 };
 

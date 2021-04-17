@@ -1,9 +1,7 @@
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <windows.h>
 #include <filesystem>
-#include "main.h"
 #include "modules/win-api-external-process-memory-editor.h"
 #include "modules/pe-parser.h"
 #include "create-remote-thread-method.h"
@@ -14,7 +12,7 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
 {
     std::wstring full_lib_path(fs::absolute(lib_file));
 
-    std::ifstream dll_file(full_lib_path);
+    std::ifstream dll_file(full_lib_path, std::ios::binary);
 
     if (!dll_file.good())
     {

@@ -125,6 +125,34 @@ bool PEParser::isForX86Arch()
     return this->file_header.Machine != IMAGE_FILE_MACHINE_I386;
 }
 
+uintptr_t PEParser::getOptionalHeaderImageBase()
+{
+    if (this->isForAMD64Arch())
+    {
+        return this->opt_header64.ImageBase;
+    }
+    else if(this->isForX86Arch())
+    {
+        return this->opt_header32.ImageBase;
+    }
+
+    throw std::exception("failed to identify architecture");
+}
+
+size_t PEParser::getOptionalHeaderImageSize()
+{
+    if (this->isForAMD64Arch())
+    {
+        return this->opt_header64.SizeOfImage;
+    }
+    else if(this->isForX86Arch())
+    {
+        return this->opt_header32.SizeOfImage;
+    }
+
+    throw std::exception("failed to identify architecture");
+}
+
 PEParser::~PEParser()
 {
     delete[] this->buffer;
