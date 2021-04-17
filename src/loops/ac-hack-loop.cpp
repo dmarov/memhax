@@ -14,31 +14,29 @@ AcHackLoop::AcHackLoop(const memhax::ProcessMemoryEditor& editor)
 
 void AcHackLoop::start()
 {
-    const wchar_t* module_name = L"ac_client.exe";
-
     const memhax::AOBSignaturePtr health_signature_ptr(
         "2B F8 29 7B ?? 8B C7 5F 5E 8B E5",
         2,
-        (*(this->editor)).getModuleSpan(module_name)
+        (*(this->editor)).getModuleSpan(this->module_name)
     );
 
     const memhax::AOBSignaturePtr ammo_signature_ptr(
         "8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24",
         8,
-        (*(this->editor)).getModuleSpan(module_name)
+        (*(this->editor)).getModuleSpan(this->module_name)
     );
 
-    unsigned char instructions[] = {
-        0x83, 0xBB, 0xF0, 0x00, 0x00, 0x00, 0x00, // 1: cmp dword ptr [ebx+000000F0],00
-        0x74, 0x03,                               // 2: je 4:
-        0x29, 0x7B, 0x04,                         // 3: sub [ebx+04],edi
-        0x8B, 0xC7,                               // 4: mov eax,edi
-        // jump back
-    };
+    const memhax::AOBSignaturePtr coords_signature_ptr(
+        "8B 56 ?? 89 0A 8B 76 ?? FF 0E 57 8B 7C 24 ?? 8D 74 24",
+        8,
+        (*(this->editor)).getModuleSpan(this->module_name)
+    );
+
+    auto alloc_mem = this->editor->allocate(1000, NULL);
 
     std::vector<std::byte> instr_vec;
 
-    for (auto b : instructions)
+    for (auto b : this->infinity_health_instructions)
     {
         instr_vec.push_back((std::byte)b);
     }
