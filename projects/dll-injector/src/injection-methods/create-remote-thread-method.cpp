@@ -46,7 +46,7 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
     editor.read_p(info.addr + dir_mem->AddressOfNameOrdinals, ordinals, sizeof(WORD) * dir_mem->NumberOfNames);
 
     char strbuf[100];
-    const char* c_name = "LoadLibrary";
+    const char* c_name = "LoadLibraryW";
     uintptr_t liba_addr = NULL;
 
     for (auto i = 0; i < dir_mem->NumberOfNames; ++i)
@@ -61,6 +61,7 @@ void CreateRemoteThreadMethod::inject(std::wstring target_name, std::wstring lib
         }
     }
 
+    std::cout << std::hex << liba_addr << std::endl;
     if (!liba_addr)
     {
         throw new std::exception("could not find LoadLibraryA in target process");
