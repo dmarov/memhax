@@ -153,6 +153,35 @@ size_t PEParser::getOptionalHeaderImageSize()
     throw std::exception("failed to identify architecture");
 }
 
+const PIMAGE_SECTION_HEADER PEParser::getSectionHeader(unsigned short section_number)
+{
+    if (this->isForAMD64Arch())
+    {
+        return (PIMAGE_SECTION_HEADER)(
+            this->nt_headers64 +
+            sizeof(IMAGE_NT_HEADERS64) +
+            this->file_header.SizeOfOptionalHeader +
+            sizeof(PIMAGE_SECTION_HEADER) * section_number
+        );
+    }
+    else if(this->isForX86Arch())
+    {
+        return (PIMAGE_SECTION_HEADER)(
+            this->nt_headers32 +
+            sizeof(IMAGE_NT_HEADERS32) +
+            this->file_header.SizeOfOptionalHeader +
+            sizeof(PIMAGE_SECTION_HEADER) * section_number
+        );
+    }
+
+    throw std::exception("failed to identify architecture");
+}
+
+unsigned short PEParser::getNumberOfSections()
+{
+    return (unsigned short)(this->file_header.NumberOfSections);
+}
+
 PEParser::~PEParser()
 {
     delete[] this->buffer;

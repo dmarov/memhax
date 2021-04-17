@@ -1,3 +1,4 @@
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -37,9 +38,56 @@ void ManualMappingMethod::inject(std::wstring target_name, std::wstring lib_file
     auto opt_header_base = parser.getOptionalHeaderImageBase();
     auto opt_header_size = parser.getOptionalHeaderImageSize();
 
-    auto opt_alloc_addr = editor.allocate(opt_header_size, opt_header_base);
+    auto opt_alloc_addr = NULL;
 
+    try
+    {
+        editor.allocate(opt_header_size, opt_header_base);
+    }
+    catch (std::exception &e) { }
 
+    if (opt_alloc_addr == NULL)
+    {
+        try
+        {
+            opt_alloc_addr = editor.allocate(opt_header_size, NULL);
+        }
+        catch(std::exception &e) { }
+    }
+
+    if (opt_alloc_addr == NULL)
+    {
+        throw std::exception("memory allocation failed");
+    }
+
+    MANUAL_MAPPING_DATA data { 0 };
+    data.pLoadLibraryA = LoadLibraryW;
+    data.pGetProcAddress = (f_GetProcAddress)GetProcAddress;
+
+    auto number_of_sections = parser.getNumberOfSections();
+    auto first_section = parser.getSectionHeader(0);
+
+    for (unsigned short i = 0; i < number_of_sections; ++i)
+    {
+        auto section_header = parser.getSectionHeader(i);
+
+        if (section_header->SizeOfRawData)
+        {
+            try
+            {
+                editor.write_p(
+                    opt_alloc_addr + section_header->VirtualAddress,
+                    dll_data + section_header->PointerToRawData,
+                    section_header->SizeOfRawData
+                );
+            }
+            catch (std::exception &e)
+            {
+                editor.free(opt_alloc_addr, dll_file_size);
+                throw e;
+            }
+        }
+    }
 
     /* auto modules = editor.getModules(); */
 

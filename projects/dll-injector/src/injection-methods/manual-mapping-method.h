@@ -3,7 +3,7 @@
 #include "generic-method.h"
 #include "windows.h"
 
-using f_LoadLibraryA = HINSTANCE(WINAPI*)(const char* lpLibraryFileName);
+using f_LoadLibraryA = HINSTANCE(WINAPI*)(const wchar_t* lpLibraryFileName);
 using f_GetProcAddress = UINT_PTR(WINAPI*)(HINSTANCE hModule, const char* lpProcName);
 using f_DLL_ENTRY_POINT = BOOL(WINAPI*)(void* hDll, DWORD dwReason, void* pReserved);
 

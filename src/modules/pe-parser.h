@@ -40,6 +40,9 @@ public:
     uintptr_t getOptionalHeaderImageBase();
     size_t getOptionalHeaderImageSize();
 
+    const PIMAGE_SECTION_HEADER getSectionHeader(unsigned short section_number);
+    unsigned short getNumberOfSections();
+
     ~PEParser();
 };
 
