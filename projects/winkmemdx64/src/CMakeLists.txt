@@ -9,8 +9,8 @@ find_package(WDK REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4 /WX")
 
-# set_property(TARGET winkmemdx64 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
 wdk_add_driver(winkmemdx64 "main.c")
 
-target_link_libraries(winkmemdx64 NtifsLib)
+set_property(TARGET winkmemdx64 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+# target_link_libraries(winkmemdx64 NtifsLib)
