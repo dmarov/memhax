@@ -42,7 +42,7 @@ void ManualMappingMethod::inject(std::wstring target_name, std::wstring lib_file
 
     try
     {
-        editor.allocate(opt_header_size, opt_header_base);
+        opt_alloc_addr = editor.allocate(opt_header_size, opt_header_base);
     }
     catch (std::exception &e) { }
 
@@ -145,5 +145,12 @@ void ManualMappingMethod::inject(std::wstring target_name, std::wstring lib_file
     /* delete[] names; */
     /* delete[] functions; */
     /* delete[] ordinals; */
+
     delete[] dll_data;
+}
+
+void __stdcall Shellcode(MANUAL_MAPPING_DATA* pData)
+{
+    std::byte* base = (std::byte*)pData;
+
 }

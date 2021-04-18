@@ -1,12 +1,12 @@
-REM examples:
-REM cd build
-REM ..\configure\ninja-msvc.bat
-REM or
-REM ..\configure\ninja-msvc.bat Debug
-REM or
-REM ..\configure\ninja-msvc.bat Debug x86
-REM or
-REM ..\configure\ninja-msvc.bat Release
+:: examples:
+:: cd build
+:: ..\configure\ninja-msvc.bat
+:: or
+:: ..\configure\ninja-msvc.bat Debug
+:: or
+:: ..\configure\ninja-msvc.bat Debug x86
+:: or
+:: ..\configure\ninja-msvc.bat Release
 
 set arch=x64
 set build_type=Debug
