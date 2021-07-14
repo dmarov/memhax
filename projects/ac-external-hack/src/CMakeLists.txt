@@ -9,6 +9,10 @@ file(GLOB modules_src
     "../../../src/loops/*.cpp"
 )
 
+if (MSVC)
+    add_compile_options(/std:c++17)
+endif()
+
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_executable(ac-hack main.cpp ${modules_src})

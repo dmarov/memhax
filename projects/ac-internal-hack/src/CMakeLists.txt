@@ -9,6 +9,10 @@ file(GLOB modules_src
     "../../../src/loops/*.cpp"
 )
 
+if (MSVC)
+    add_compile_options(/std:c++17)
+endif()
+
 add_library(ac-internal-hack SHARED main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)

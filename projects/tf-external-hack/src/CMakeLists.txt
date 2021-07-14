@@ -8,6 +8,10 @@ file(GLOB modules_src
     "../../../src/exceptions/*.cpp"
 )
 
+if (MSVC)
+    add_compile_options(/std:c++17)
+endif()
+
 add_executable(tf-hack main.cpp ${modules_src})
 
 configure_file(main.h.in main.h)
