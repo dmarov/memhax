@@ -9,14 +9,10 @@ string(REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W1 /WX")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W1 /WX")
 
-wdk_add_driver(winkmemdx64 KMDF 1.15 "main.cpp")
-
-set_property(TARGET winkmemdx64 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+wdk_add_driver(winkmemdx64 KMDF 1.31 "main.cpp")
 
 configure_file(
     "${CMAKE_SOURCE_DIR}/winkmemdx64.inf"
     "${CMAKE_CURRENT_BINARY_DIR}"
     COPYONLY
 )
-
-# target_link_libraries(winkmemdx64 NtifsLib)
