@@ -57,3 +57,8 @@ verify inf file
 "C:\Program Files (x86)\Windows Kits\10\Tools\x64\infverif.exe" ./winkmemdx64.inf
 ```
 
+delete driver
+
+```
+pnputil /delete-driver winkmemdx64.inf /uninstall
+```

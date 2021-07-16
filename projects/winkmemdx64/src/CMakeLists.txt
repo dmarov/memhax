@@ -11,6 +11,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W1 /WX")
 
 wdk_add_driver(winkmemdx64 KMDF 1.15 "main.cpp")
 
+set_property(TARGET winkmemdx64 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 configure_file(
     "${CMAKE_SOURCE_DIR}/winkmemdx64.inf"
     "${CMAKE_CURRENT_BINARY_DIR}"
