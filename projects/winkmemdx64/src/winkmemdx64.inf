@@ -29,7 +29,7 @@ HKR,,Icon,,-5
 
 [SourceDisksFiles]
 winkmemdx64.sys  = 1,,
-WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+;WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 ;*****************************************
 ; Install Section
@@ -68,10 +68,10 @@ AddReg=winkmemdx64_Device_CoInstaller_AddReg
 CopyFiles=winkmemdx64_Device_CoInstaller_CopyFiles
 
 [winkmemdx64_Device_CoInstaller_AddReg]
-HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+;HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
 
 [winkmemdx64_Device_CoInstaller_CopyFiles]
-WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+;WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
 
 [winkmemdx64_Device.NT.Wdf]
 KmdfService =  winkmemdx64, winkmemdx64_wdfsect

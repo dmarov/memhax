@@ -1,5 +1,11 @@
 # Commands
 
+stamp inf file
+
+```
+stampinf.exe -f .\winkmemdx64.inf  -a "amd64" -k "1.15" -v "*" -d "*"
+```
+
 generate cat file
 
 ```
@@ -51,8 +57,3 @@ verify inf file
 "C:\Program Files (x86)\Windows Kits\10\Tools\x64\infverif.exe" ./winkmemdx64.inf
 ```
 
-stamp inf file
-
-```
-stampinf.exe -f .\winkmemdx64.inf  -a "amd64" -k "1.31" -v "*" -d "*"
-```
