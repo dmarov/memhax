@@ -1,4 +1,4 @@
-#include "communication.h"
+#include "ctl.h"
 #include "debug.h"
 
 NTSTATUS IoControl(PDRIVER_OBJECT deviceObject, PIRP irp)
@@ -12,12 +12,26 @@ NTSTATUS IoControl(PDRIVER_OBJECT deviceObject, PIRP irp)
     ULONG controlCode = stack->Parameters.DeviceIoControl.IoControlCode;
 
     switch (controlCode) {
-        case IO_READ_MEMORY:
+        case IO_READ_MEMORY: {
+            PULONG output = (PULONG)irp->AssociatedIrp.SystemBuffer;
+            *output = 1;
+            Debug::info("Read Memory Requested");
+            status = STATUS_SUCCESS;
+            byteIO = sizeof(*output);
+            irp->IoStatus.Pointer = output;
 
             break;
-        case IO_WRITE_MEMORY:
+        }
+        case IO_WRITE_MEMORY: {
+            PULONG output = (PULONG)irp->AssociatedIrp.SystemBuffer;
+            *output = 2;
+            Debug::info("Write Memory Requested");
+            status = STATUS_SUCCESS;
+            byteIO = sizeof(*output);
+            irp->IoStatus.Pointer = output;
 
             break;
+        }
     }
 
     irp->IoStatus.Status = status;

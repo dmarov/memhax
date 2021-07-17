@@ -2,6 +2,10 @@
 #include <wdf.h>
 #include "main.h"
 #include "modules/debug.h"
+#include "modules/ctl.h"
+
+PDEVICE_OBJECT pDeviceObject;
+UNICODE_STRING dev, dos;
 
 extern "C"
 NTSTATUS DriverEntry(
@@ -16,6 +20,20 @@ NTSTATUS DriverEntry(
 
     PsSetLoadImageNotifyRoutine(ImageLoadCallback);
 
+    RtlInitUnicodeString(&dev, L"\\Device\\winmemkdx64");
+    RtlInitUnicodeString(&dos, L"\\DosDevices\\winmemkdx64");
+
+    // IOCTL device
+    IoCreateDevice(pDriverObject, 0 , &dev, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &pDeviceObject);
+    IoCreateSymbolicLink(&dos, &dev);
+
+    pDriverObject->MajorFunction[IRP_MJ_CREATE] = CreateCall;
+    pDriverObject->MajorFunction[IRP_MJ_CLOSE] = CloseCall;
+    pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = IoControl;
+
+    pDeviceObject->Flags |= DO_DIRECT_IO;
+    pDeviceObject->Flags &= ~DO_DEVICE_INITIALIZING;
+
     return STATUS_SUCCESS;
 }
 
@@ -24,11 +42,11 @@ void UnloadDriver(
     _In_ PDRIVER_OBJECT pDriverObject
 )
 {
-    UNREFERENCED_PARAMETER(pDriverObject);
+    PsRemoveLoadImageNotifyRoutine(ImageLoadCallback);
+    IoDeleteSymbolicLink(&dos);
+    IoDeleteDevice(pDriverObject->DeviceObject);
 
     Debug::info("driver unloaded");
-
-    PsRemoveLoadImageNotifyRoutine(ImageLoadCallback);
 }
 
 void ImageLoadCallback(PUNICODE_STRING fullImageName, HANDLE processId, PIMAGE_INFO imageInfo)

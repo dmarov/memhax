@@ -28,3 +28,5 @@ configure_file(
     "${CMAKE_CURRENT_BINARY_DIR}"
     COPYONLY
 )
+
+add_library(winkmemdx64-api STATIC winkmemdx64-api.cpp)
