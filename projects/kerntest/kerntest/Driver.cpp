@@ -6,9 +6,9 @@ DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD KmdfHelloWorldEvtDeviceAdd;
 
 extern "C"
-NTSTATUS 
+NTSTATUS
 DriverEntry(
-    _In_ PDRIVER_OBJECT     DriverObject, 
+    _In_ PDRIVER_OBJECT     DriverObject,
     _In_ PUNICODE_STRING    RegistryPath
 )
 {
@@ -23,23 +23,23 @@ DriverEntry(
 
     // Initialize the driver configuration object to register the
     // entry point for the EvtDeviceAdd callback, KmdfHelloWorldEvtDeviceAdd
-    WDF_DRIVER_CONFIG_INIT(&config, 
+    WDF_DRIVER_CONFIG_INIT(&config,
                            KmdfHelloWorldEvtDeviceAdd
                            );
 
     // Finally, create the driver object
-    status = WdfDriverCreate(DriverObject, 
-                             RegistryPath, 
-                             WDF_NO_OBJECT_ATTRIBUTES, 
-                             &config, 
+    status = WdfDriverCreate(DriverObject,
+                             RegistryPath,
+                             WDF_NO_OBJECT_ATTRIBUTES,
+                             &config,
                              WDF_NO_HANDLE
                              );
     return status;
 }
 
-NTSTATUS 
+NTSTATUS
 KmdfHelloWorldEvtDeviceAdd(
-    _In_    WDFDRIVER       Driver, 
+    _In_    WDFDRIVER       Driver,
     _Inout_ PWDFDEVICE_INIT DeviceInit
 )
 {
@@ -50,13 +50,13 @@ KmdfHelloWorldEvtDeviceAdd(
     NTSTATUS status;
 
     // Allocate the device object
-    WDFDEVICE hDevice;    
+    WDFDEVICE hDevice;
 
     // Print "Hello World"
     KdPrintEx(( DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "KmdfHelloWorld: KmdfHelloWorldEvtDeviceAdd\n" ));
 
     // Create the device object
-    status = WdfDeviceCreate(&DeviceInit, 
+    status = WdfDeviceCreate(&DeviceInit,
                              WDF_NO_OBJECT_ATTRIBUTES,
                              &hDevice
                              );

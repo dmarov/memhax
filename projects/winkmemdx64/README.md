@@ -62,3 +62,20 @@ delete driver
 ```
 pnputil /delete-driver winkmemdx64.inf /uninstall
 ```
+
+install
+```
+C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe install .\winkmemdx64.inf root\winkmemdx64
+```
+
+debug
+```
+bcdedit /debug on
+bcdedit /dbgsettings serial debugport:1 baudrate:115200 /noumex
+shutdown -s -t 0
+```
+
+set debug messages filter mask
+```
+ed nt!Kd_IHVDRIVER_Mask 0xF
+```
