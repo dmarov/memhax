@@ -1,32 +1,41 @@
 #include <ntddk.h>
 #include <wdf.h>
 #include "main.h"
+#include "modules/debug.h"
 
 extern "C"
 NTSTATUS DriverEntry(
-    _In_ PDRIVER_OBJECT DriverObject,
-    _In_ PUNICODE_STRING RegistryPath
+    _In_ PDRIVER_OBJECT pDriverObject,
+    _In_ PUNICODE_STRING pRegistryPath
 )
 {
-    KdPrintEx((
-        DPFLTR_IHVDRIVER_ID,
-        DPFLTR_INFO_LEVEL,
-        "winkmemdx64: loaded\n"
-    ));
+    UNREFERENCED_PARAMETER(pRegistryPath);
+    pDriverObject->DriverUnload = UnloadDriver;
+
+    Debug::info("driver loaded");
+
+    PsSetLoadImageNotifyRoutine(ImageLoadCallback);
 
     return STATUS_SUCCESS;
 }
 
 extern "C"
-NTSTATUS UnloadDriver(
-    _In_ PDRIVER_OBJECT DriverObject
+void UnloadDriver(
+    _In_ PDRIVER_OBJECT pDriverObject
 )
 {
-    KdPrintEx((
-        DPFLTR_IHVDRIVER_ID,
-        DPFLTR_INFO_LEVEL,
-        "winkmemdx64: unloaded\n"
-    ));
+    UNREFERENCED_PARAMETER(pDriverObject);
 
-    return STATUS_SUCCESS;
+    Debug::info("driver unloaded");
+
+    PsRemoveLoadImageNotifyRoutine(ImageLoadCallback);
+}
+
+void ImageLoadCallback(PUNICODE_STRING fullImageName, HANDLE processId, PIMAGE_INFO imageInfo)
+{
+    UNREFERENCED_PARAMETER(fullImageName);
+    UNREFERENCED_PARAMETER(processId);
+    UNREFERENCED_PARAMETER(imageInfo);
+
+
 }

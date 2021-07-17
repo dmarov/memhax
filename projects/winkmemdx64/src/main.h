@@ -9,6 +9,9 @@ NTSTATUS DriverEntry(
 );
 
 extern "C"
-NTSTATUS UnloadDriver(
+void UnloadDriver(
     _In_ PDRIVER_OBJECT DriverObject
 );
+
+void ImageLoadCallback(PUNICODE_STRING fullImageName, HANDLE processId, PIMAGE_INFO imageInfo);
+
