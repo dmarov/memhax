@@ -27,9 +27,9 @@ NTSTATUS DriverEntry(
     IoCreateDevice(pDriverObject, 0 , &dev, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &pDeviceObject);
     IoCreateSymbolicLink(&dos, &dev);
 
-    pDriverObject->MajorFunction[IRP_MJ_CREATE] = CreateCall;
-    pDriverObject->MajorFunction[IRP_MJ_CLOSE] = CloseCall;
-    pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = IoControl;
+    pDriverObject->MajorFunction[IRP_MJ_CREATE] = (PDRIVER_DISPATCH)CreateCall;
+    pDriverObject->MajorFunction[IRP_MJ_CLOSE] = (PDRIVER_DISPATCH)CloseCall;
+    pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = (PDRIVER_DISPATCH)IoControl;
 
     pDeviceObject->Flags |= DO_DIRECT_IO;
     pDeviceObject->Flags &= ~DO_DEVICE_INITIALIZING;
@@ -51,10 +51,7 @@ void UnloadDriver(
 
 void ImageLoadCallback(PUNICODE_STRING fullImageName, HANDLE processId, PIMAGE_INFO imageInfo)
 {
-    Debug::info("processId=%s", processId);
-
     UNREFERENCED_PARAMETER(fullImageName);
+    UNREFERENCED_PARAMETER(processId);
     UNREFERENCED_PARAMETER(imageInfo);
-
-
 }

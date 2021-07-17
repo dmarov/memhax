@@ -44,7 +44,7 @@ bcdedit /set nointegritychecks on
 bcdedit /set nointegritychecks off
 ```
 
-to install/uninstall driver as service
+to install/uninstall driver
 
 ```
 sc create winkmemdx64 binpath="C:\Users\mds3d\repos\memhax\projects\winkmemdx64\build\winkmemdx64.sys" type=kernel
