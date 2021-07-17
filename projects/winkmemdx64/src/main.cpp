@@ -33,8 +33,9 @@ void UnloadDriver(
 
 void ImageLoadCallback(PUNICODE_STRING fullImageName, HANDLE processId, PIMAGE_INFO imageInfo)
 {
+    Debug::info("processId=%s", processId);
+
     UNREFERENCED_PARAMETER(fullImageName);
-    UNREFERENCED_PARAMETER(processId);
     UNREFERENCED_PARAMETER(imageInfo);
 
 
